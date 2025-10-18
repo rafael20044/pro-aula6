@@ -1,0 +1,366 @@
+// Importar variables compartidas
+$primary: #4a90e2;
+$primary-dark: #357abd;
+$primary-light: #6ba3e8;
+$accent: #64748b;
+$bg-dark: #0f1419;
+$bg-card: #1a1f2e;
+$bg-card-elevated: #252d3d;
+$text-primary: #ffffff;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+$border: #2d3748;
+$border-light: #3d4758;
+$success: #10b981;
+$error: #ef4444;
+
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Sección de foto de perfil
+.photo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center the upload buttons */
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.photo-label {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  justify-content: flex-start; /* keep label aligned to the left */
+
+  .input-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-secondary;
+    margin: 0;
+    padding-left: 4px;
+  }
+}
+
+.photo-card {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid $primary;
+  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3),
+              0 0 0 4px rgba(74, 144, 226, 0.1);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.95);
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+
+    ion-icon {
+      font-size: 18px;
+      color: white;
+    }
+
+    &:hover {
+      background: darken(#ef4444, 10%);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(74, 144, 226, 0.95);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.photo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px dashed $border-light;
+  background: $bg-card-elevated;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary;
+    background: lighten($bg-card-elevated, 3%);
+    transform: scale(1.05);
+  }
+
+  &__icon {
+    font-size: 40px;
+    color: $text-secondary;
+    margin-bottom: 8px;
+  }
+
+  &__text {
+    font-size: 13px;
+    font-weight: 600;
+    color: $text-secondary;
+    text-align: center;
+    padding: 0 12px;
+  }
+
+  &__hint {
+    font-size: 11px;
+    color: $text-muted;
+    margin-top: 4px;
+  }
+
+  &__input {
+    display: none;
+  }
+}
+
+.upload-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 2px solid $primary;
+  background: transparent;
+  color: $primary;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-transform: uppercase;
+
+  ion-icon {
+    font-size: 18px;
+    color: $primary;
+  }
+
+  &.camera {
+    background: transparent;
+  }
+
+  &.gallery {
+    background: transparent;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(74, 144, 226, 0.06);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Grid de inputs
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .input-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-secondary;
+    margin: 0;
+    padding-left: 4px;
+  }
+
+  .custom-input {
+    --background: #{$bg-card-elevated};
+    --color: #{$text-primary};
+    --placeholder-color: #{$text-muted};
+    --padding-start: 18px;
+    --padding-end: 18px;
+    --border-radius: 14px;
+    --border-color: #{$border};
+    --border-width: 1px;
+    --highlight-color-focused: #{$primary};
+    
+    min-height: 56px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+
+    &::part(native) {
+      border-radius: 14px;
+    }
+
+    &.ion-focused {
+      --border-color: #{$primary};
+      --background: #{lighten($bg-card-elevated, 2%)};
+    }
+
+    &.ion-invalid.ion-touched {
+      --border-color: #{$error};
+    }
+
+    &.password-match {
+      --border-color: #{$success};
+      
+      &::part(native) {
+        border-color: $success;
+      }
+    }
+
+    &.password-mismatch {
+      --border-color: #{$error};
+      
+      &::part(native) {
+        border-color: $error;
+      }
+    }
+  }
+
+  .error-text {
+    color: $error;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+    padding-left: 4px;
+  }
+
+  .custom-select {
+    --background: #{$bg-card-elevated};
+    --color: #{$text-primary};
+    --placeholder-color: #{$text-muted};
+    --padding-start: 18px;
+    --padding-end: 18px;
+    --border-radius: 14px;
+    --border-color: #{$border};
+    --border-width: 1px;
+    --highlight-color-focused: #{$primary};
+    
+    min-height: 56px;
+    font-size: 16px;
+    width: 100%;
+    border: 1px solid $border;
+    border-radius: 14px;
+    transition: all 0.2s ease;
+
+    &::part(container) {
+      border-radius: 14px;
+    }
+
+    &::part(icon) {
+      color: $text-secondary;
+    }
+
+    &.select-expanded,
+    &:focus {
+      border-color: $primary;
+      --border-color: #{$primary};
+    }
+  }
+}
+
+.submit-btn {
+  --background: #{$primary};
+  --background-hover: #{$primary-light};
+  --background-activated: #{$primary-dark};
+  --color: #ffffff;
+  --border-radius: 14px;
+  --box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+  
+  height: 56px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-top: 12px;
+  text-transform: none;
+  transition: all 0.3s ease;
+
+  &:hover:not([disabled]) {
+    --box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+    transform: translateY(-2px);
+  }
+
+  &[disabled] {
+    --background: #{$accent};
+    opacity: 0.5;
+  }
+}
+
+// Responsive
+@media (max-width: 600px) {
+  .photo-card,
+  .photo-upload {
+    width: 120px;
+    height: 120px;
+  }
+
+  .input-group {
+    .custom-input,
+    .custom-select {
+      min-height: 52px;
+      font-size: 15px;
+    }
+  }
+
+  .submit-btn {
+    height: 52px;
+    font-size: 16px;
+  }
+}

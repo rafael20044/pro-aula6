@@ -4,101 +4,23 @@
 .auth-content {
   align-items: flex-start;
   padding: 40px 20px;
-  min-height: 0;
+  min-height: 100vh;
   height: auto;
 }
 
 .auth-container {
   width: 100%;
+  max-width: 650px;
   margin: 0 auto;
 }
 
 .auth-card {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.form {
-  gap: 18px;
-
-  .input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-
-    @media (max-width: 600px) {
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-  }
-
-  .custom-input {
-    &.password-match {
-      --border-color: #{$success};
-      
-      &::part(native) {
-        border-color: $success;
-      }
-    }
-
-    &.password-mismatch {
-      --border-color: #{$error};
-      
-      &::part(native) {
-        border-color: $error;
-      }
-    }
-  }
-
-  .error-text {
-    color: $error;
-    font-size: 12px;
-    margin-top: 4px;
-    display: block;
-    padding-left: 4px;
-  }
-
-  .custom-select {
-    --background: #{$bg-card-elevated};
-    --color: #{$text-primary};
-    --placeholder-color: #{$text-muted};
-    --padding-start: 16px;
-    --padding-end: 16px;
-    --border-radius: 12px;
-    --border-color: #{$border};
-    --border-width: 1px;
-    --highlight-color-focused: #{$primary};
-    
-    min-height: 50px;
-    font-size: 15px;
-    width: 100%;
-    border: 1px solid $border;
-    border-radius: 12px;
-    transition: all 0.2s ease;
-
-    &::part(container) {
-      border-radius: 12px;
-    }
-
-    &::part(icon) {
-      color: $text-secondary;
-    }
-
-    &.select-expanded,
-    &:focus {
-      border-color: $primary;
-      --border-color: #{$primary};
-    }
-  }
+  width: 100%;
 }
 
 // Responsive para móvil
 @media (max-width: 600px) {
   .auth-content {
     padding: 20px 16px;
-  }
-  
-  .auth-card {
-    padding: 32px 24px;
   }
 }

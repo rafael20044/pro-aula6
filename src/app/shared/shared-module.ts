@@ -4,6 +4,7 @@ import { InputComponent } from './components/input/input.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ButtonComponent } from './components/button/button.component';
+import { UserFormComponent } from './components/user-form/user-form.component';
 
 
 
@@ -11,6 +12,7 @@ import { ButtonComponent } from './components/button/button.component';
   declarations: [
     InputComponent,
     ButtonComponent,
+    UserFormComponent,
   ],
   providers: [],
   imports: [
@@ -23,6 +25,7 @@ import { ButtonComponent } from './components/button/button.component';
   exports: [
     InputComponent,
     ButtonComponent,
+    UserFormComponent,
   ],
 })
 export class SharedModule { }
