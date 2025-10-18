@@ -1,0 +1,54 @@
+<ion-content class="auth-content">
+  <div class="auth-container">
+    <div class="auth-card">
+      <!-- Logo y Branding -->
+      <div class="brand">
+        <div class="logo-wrapper">
+          <img src="assets/icon/logo.png" alt="Logo" class="logo" />
+        </div>
+        <h1 class="title">Bienvenido de nuevo</h1>
+        <p class="subtitle">Inicia sesión para continuar</p>
+      </div>
+
+      <!-- Formulario -->
+      <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+        <div class="input-group">
+          <ion-label class="input-label">Correo electrónico</ion-label>
+          <ion-input 
+            class="custom-input"
+            type="email" 
+            placeholder="tu@email.com"
+            [formControl]="form.controls.email"
+            fill="outline">
+          </ion-input>
+        </div>
+
+        <div class="input-group">
+          <ion-label class="input-label">Contraseña</ion-label>
+          <ion-input 
+            class="custom-input"
+            type="password" 
+            placeholder="••••••••"
+            [formControl]="form.controls.password"
+            fill="outline">
+            <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+          </ion-input>
+        </div>
+
+        <ion-button 
+          expand="block" 
+          type="submit" 
+          class="submit-btn"
+          [disabled]="form.invalid">
+          Iniciar sesión
+        </ion-button>
+      </form>
+
+      <!-- Link a Registro -->
+      <div class="alt-action">
+        <span class="alt-text">¿No tienes cuenta?</span>
+        <a routerLink="/auth/register" class="alt-link">Crear cuenta</a>
+      </div>
+    </div>
+  </div>
+</ion-content>

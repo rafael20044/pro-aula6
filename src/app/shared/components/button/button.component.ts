@@ -8,16 +8,17 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ButtonComponent  implements OnInit {
 
-  @Input() text:string = 'text;'
-  @Input() action = this.actionDefault();
-  @Input() type:ButtonType = 'button';
+  @Input() text: string = 'text';
+  // action should be a function reference passed from the parent.
+  @Input() action: () => void = () => this.actionDefault();
+  @Input() type: ButtonType = 'button';
 
   constructor() { }
 
   ngOnInit() {}
 
   actionDefault(){
-    console.log("HIIIIIIIII")
+    console.log('HIIIIIIIII');
   }
 
 }

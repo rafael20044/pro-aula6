@@ -1,0 +1,216 @@
+// Paleta de colores moderna y elegante basada en el logo
+$primary: #4a90e2;
+$primary-dark: #357abd;
+$primary-light: #6ba3e8;
+$accent: #64748b;
+$bg-dark: #0f1419;
+$bg-card: #1a1f2e;
+$bg-card-elevated: #252d3d;
+$text-primary: #ffffff;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+$border: #2d3748;
+$border-light: #3d4758;
+$success: #10b981;
+$error: #ef4444;
+
+.auth-content {
+  --background: #{$bg-dark};
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 560px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  background: $bg-card;
+  border-radius: 28px;
+  padding: 48px 40px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 40px;
+
+  .logo-wrapper {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3),
+                  0 0 0 4px rgba(74, 144, 226, 0.1);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: $text-secondary;
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .input-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: $text-secondary;
+      margin: 0;
+      padding-left: 4px;
+    }
+
+    .custom-input {
+      --background: #{$bg-card-elevated};
+      --color: #{$text-primary};
+      --placeholder-color: #{$text-muted};
+      --padding-start: 18px;
+      --padding-end: 18px;
+      --border-radius: 14px;
+      --border-color: #{$border};
+      --border-width: 1px;
+      --highlight-color-focused: #{$primary};
+      
+      min-height: 56px;
+      font-size: 16px;
+      transition: all 0.2s ease;
+
+      &::part(native) {
+        border-radius: 12px;
+      }
+
+      &.ion-focused {
+        --border-color: #{$primary};
+        --background: #{lighten($bg-card-elevated, 2%)};
+      }
+
+      &.ion-invalid.ion-touched {
+        --border-color: #{$error};
+      }
+    }
+  }
+
+  .submit-btn {
+    --background: #{$primary};
+    --background-hover: #{$primary-light};
+    --background-activated: #{$primary-dark};
+    --color: #ffffff;
+    --border-radius: 14px;
+    --box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    
+    height: 56px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-top: 12px;
+    text-transform: none;
+    transition: all 0.3s ease;
+
+    &:hover:not([disabled]) {
+      --box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+      transform: translateY(-2px);
+    }
+
+    &[disabled] {
+      --background: #{$accent};
+      opacity: 0.5;
+    }
+  }
+}
+
+.alt-action {
+  margin-top: 32px;
+  text-align: center;
+  padding-top: 28px;
+  border-top: 1px solid $border;
+
+  .alt-text {
+    font-size: 15px;
+    color: $text-secondary;
+    margin-right: 6px;
+  }
+
+  .alt-link {
+    font-size: 15px;
+    font-weight: 600;
+    color: $primary;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $primary-light;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 32px 24px;
+  }
+
+  .brand .title {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .auth-card {
+    padding: 48px 40px;
+  }
+}
