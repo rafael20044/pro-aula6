@@ -1,0 +1,7 @@
+{
+  "name": "pro-aula",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
