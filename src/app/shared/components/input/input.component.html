@@ -1,0 +1,10 @@
+<ion-input 
+  [label]="label" 
+  [placeholder]="placeholder"
+  [type]="type"
+  [formControl]="control"
+>
+@if (isPassword) {
+  <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+}
+</ion-input>
