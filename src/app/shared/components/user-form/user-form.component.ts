@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-user-form',
@@ -21,6 +21,35 @@ export class UserFormComponent implements OnInit {
   @ViewChild('galleryInput') galleryInput!: ElementRef<HTMLInputElement>;
 
   constructor(private fb: FormBuilder) {}
+
+  // Typed getters for template bindings (return FormControl so <app-input> accepts them)
+  get nameControl(): FormControl {
+    return this.form.get('name') as FormControl;
+  }
+
+  get name2Control(): FormControl {
+    return this.form.get('name2') as FormControl;
+  }
+
+  get lastNameControl(): FormControl {
+    return this.form.get('last_name') as FormControl;
+  }
+
+  get lastName2Control(): FormControl {
+    return this.form.get('last_name2') as FormControl;
+  }
+
+  get emailControl(): FormControl {
+    return this.form.get('email') as FormControl;
+  }
+
+  get passwordControl(): FormControl {
+    return this.form.get('password') as FormControl;
+  }
+
+  get confirmPasswordControl(): FormControl {
+    return this.form.get('confirmPassword') as FormControl;
+  }
 
   ngOnInit() {
     this.initForm();
@@ -100,10 +129,6 @@ export class UserFormComponent implements OnInit {
   removePhoto() {
     this.profilePhoto = null;
     this.selectedFile = null;
-  }
-
-  isPrimaryPhoto(): boolean {
-    return !!this.profilePhoto;
   }
 
   submit() {

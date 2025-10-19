@@ -12,6 +12,10 @@ export class ButtonComponent  implements OnInit {
   // action should be a function reference passed from the parent.
   @Input() action: () => void = () => this.actionDefault();
   @Input() type: ButtonType = 'button';
+  // optional icon name for ion-icon
+  @Input() icon?: string;
+  // expand mode for ion-button (e.g., 'block')
+  @Input() expand: 'full' | 'block' | 'inset' | undefined = undefined;
 
   constructor() { }
 

@@ -1,0 +1,28 @@
+/* Basic styles for reusable input used across the app */
+.app-input {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+
+	.input-label {
+		font-size: 13px;
+		font-weight: 600;
+		color: #94a3b8; /* text-secondary */
+		padding-left: 4px;
+	}
+
+	.native-input {
+		--background: #252d3d; /* bg-card-elevated */
+		--color: #ffffff;
+		--placeholder-color: #64748b;
+		--padding-start: 16px;
+		--padding-end: 16px;
+		--border-radius: 12px;
+		--border-color: #2d3748;
+		min-height: 52px;
+		font-size: 15px;
+		border-radius: 12px;
+		width: 100%;
+	}
+}
+

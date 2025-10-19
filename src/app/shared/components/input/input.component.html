@@ -1,10 +1,10 @@
-<ion-input 
-  [label]="label" 
-  [placeholder]="placeholder"
-  [type]="type"
-  [formControl]="control"
->
-@if (isPassword) {
-  <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-}
-</ion-input>
+<div class="app-input">
+  <label class="input-label">{{ label }}</label>
+  <ion-input
+    class="native-input"
+    [placeholder]="placeholder"
+    [type]="type"
+    [formControl]="control">
+    <ion-input-password-toggle *ngIf="isPassword" slot="end"></ion-input-password-toggle>
+  </ion-input>
+</div>

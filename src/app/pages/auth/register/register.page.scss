@@ -18,6 +18,68 @@
   width: 100%;
 }
 
+/* Page-scoped overrides for app-button used in register page */
+::ng-deep .auth-card .upload-buttons app-button {
+  display: block;
+  margin: 8px 0;
+}
+
+/* Make app-button render like the original design: outline container and inner filled rounded button */
+/* Inner ion-button: filled blue background and dark text/icon */
+::ng-deep .auth-card .upload-buttons app-button .ion-button {
+  --background: #4a90e2 !important;
+  --color: #00122a !important;
+  border-radius: 12px !important;
+  padding: 10px 18px !important;
+  height: 44px !important;
+  box-shadow: 0 6px 14px rgba(74,144,226,0.14) !important;
+  border: none !important;
+}
+
+/* Outline effect around each button (outer box) */
+/* Remove outer outline box so buttons show only the filled inner button */
+::ng-deep .auth-card .upload-buttons app-button.upload-btn {
+  display: block;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* Icon color inside the ion-button */
+::ng-deep .auth-card .upload-buttons app-button.upload-btn .ion-button ion-icon {
+  color: #4a90e2 !important;
+  font-size: 18px !important;
+}
+
+/* Make the text appear blue and centered */
+::ng-deep .auth-card .upload-buttons app-button.upload-btn .ion-button .button-inner {
+  color: #4a90e2 !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Remove button color and responsive position */
+.photo-card__remove {
+  background: #ef4444; /* fallback red */
+  right: 6px;
+  top: 6px;
+}
+
+@media (max-width: 480px) {
+  .photo-card__remove {
+    right: 4px;
+    top: 4px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* make the X aqua for better visibility on avatar */
+.photo-card__remove ion-icon {
+  color: #00d1ff;
+}
+
 // Responsive para móvil
 @media (max-width: 600px) {
   .auth-content {

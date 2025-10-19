@@ -29,20 +29,34 @@ $error: #ef4444;
   gap: 8px;
 }
 
-.photo-label {
+.photo-header {
   width: 100%;
-  max-width: 720px;
-  display: flex;
-  justify-content: flex-start; /* keep label aligned to the left */
-
-  .input-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: $text-secondary;
-    margin: 0;
-    padding-left: 4px;
-  }
+  display: block;
+  text-align: left; /* align title left like other labels */
+  position: relative;
 }
+
+/* external remove button positioned to the right, absolute */
+.photo-remove-external {
+  position: absolute;
+  right: 0;
+  top: -6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ef4444; /* red */
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 40;
+
+  ion-icon { color: white; font-size: 16px; }
+}
+
+/* hide the internal remove button inside the avatar so there's no duplicate */
+.photo-card__remove { display: none !important; }
 
 .photo-card {
   position: relative;
@@ -65,34 +79,36 @@ $error: #ef4444;
     object-fit: cover;
   }
 
+  /* remove button positioned slightly outside the avatar */
   &__remove {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 32px;
-    height: 32px;
+    top: -10px;
+    right: -10px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: rgba(239, 68, 68, 0.95);
-    border: 2px solid white;
+    background: transparent;
+    border: 2px solid #00d1ff;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
     padding: 0;
+    z-index: 30;
 
     ion-icon {
-      font-size: 18px;
-      color: white;
+      font-size: 16px;
+      color: #00d1ff;
     }
 
     &:hover {
-      background: darken(#ef4444, 10%);
-      transform: scale(1.1);
+      transform: scale(1.08);
+      box-shadow: 0 6px 12px rgba(0, 209, 255, 0.12);
     }
 
     &:active {
-      transform: scale(0.95);
+      transform: scale(0.98);
     }
   }
 

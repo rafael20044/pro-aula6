@@ -5,91 +5,81 @@
   <!-- Nombres -->
   <div class="input-row">
     <div class="input-group">
-      <ion-label class="input-label">Primer nombre *</ion-label>
-      <ion-input 
+      <app-input
         class="custom-input"
-        type="text" 
-        placeholder="Juan"
-        formControlName="name"
-        fill="outline">
-      </ion-input>
+        [label]="'Primer nombre *'"
+        [placeholder]="'Juan'"
+        [type]="'text'"
+        [control]="nameControl">
+      </app-input>
     </div>
 
     <div class="input-group">
-      <ion-label class="input-label">Segundo nombre</ion-label>
-      <ion-input 
+      <app-input
         class="custom-input"
-        type="text" 
-        placeholder="Carlos"
-        formControlName="name2"
-        fill="outline">
-      </ion-input>
+        [label]="'Segundo nombre'"
+        [placeholder]="'Carlos'"
+        [type]="'text'"
+        [control]="name2Control">
+      </app-input>
     </div>
   </div>
 
   <!-- Apellidos -->
   <div class="input-row">
     <div class="input-group">
-      <ion-label class="input-label">Primer apellido *</ion-label>
-      <ion-input 
+      <app-input
         class="custom-input"
-        type="text" 
-        placeholder="Pérez"
-        formControlName="last_name"
-        fill="outline">
-      </ion-input>
+        [label]="'Primer apellido *'"
+        [placeholder]="'Pérez'"
+        [type]="'text'"
+        [control]="lastNameControl">
+      </app-input>
     </div>
 
     <div class="input-group">
-      <ion-label class="input-label">Segundo apellido</ion-label>
-      <ion-input 
+      <app-input
         class="custom-input"
-        type="text" 
-        placeholder="García"
-        formControlName="last_name2"
-        fill="outline">
-      </ion-input>
+        [label]="'Segundo apellido'"
+        [placeholder]="'García'"
+        [type]="'text'"
+        [control]="lastName2Control">
+      </app-input>
     </div>
   </div>
 
   <!-- Email -->
   <div class="input-group">
-    <ion-label class="input-label">Correo electrónico *</ion-label>
-    <ion-input 
+    <app-input
       class="custom-input"
-      type="email" 
-      placeholder="tu@email.com"
-      formControlName="email"
-      fill="outline">
-    </ion-input>
+      [label]="'Correo electrónico *'"
+      [placeholder]="'tu@email.com'"
+      [type]="'email'"
+      [control]="emailControl">
+    </app-input>
   </div>
 
   <!-- Contraseñas (solo en registro) -->
   <ng-container *ngIf="isRegistration">
     <div class="input-group">
-      <ion-label class="input-label">Contraseña *</ion-label>
-      <ion-input 
+      <app-input
         class="custom-input"
-        type="password" 
-        placeholder="••••••••"
-        formControlName="password"
-        fill="outline">
-        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-      </ion-input>
+        [label]="'Contraseña *'"
+        [placeholder]="'••••••••'"
+        [type]="'password'"
+        [control]="passwordControl">
+      </app-input>
     </div>
 
     <div class="input-group">
-      <ion-label class="input-label">Confirmar contraseña *</ion-label>
-      <ion-input 
+      <app-input
         class="custom-input"
-        [class.password-match]="passwordsMatch && form.get('confirmPassword')?.value"
-        [class.password-mismatch]="!passwordsMatch && form.get('confirmPassword')?.value"
-        type="password" 
-        placeholder="••••••••"
-        formControlName="confirmPassword"
-        fill="outline">
-        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-      </ion-input>
+        [label]="'Confirmar contraseña *'"
+        [placeholder]="'••••••••'"
+        [type]="'password'"
+        [control]="confirmPasswordControl"
+        [ngClass]="{ 'password-match': passwordsMatch && confirmPasswordControl.value, 'password-mismatch': !passwordsMatch && confirmPasswordControl.value }">
+      </app-input>
       <ion-text *ngIf="!passwordsMatch && form.get('confirmPassword')?.value" class="error-text">
         Las contraseñas no coinciden
       </ion-text>
@@ -111,9 +101,15 @@
   </div>
   <!-- Sección de foto de perfil -->
   <div class="photo-section">
-    <div class="photo-label">
-      <label class="input-label">Foto de perfil *</label>
-    </div>
+    <div class="photo-header input-group">
+        <ion-label class="input-label">Foto de perfil *</ion-label>
+        <div class="photo-action">
+          <!-- external remove button placed top-right when a photo exists -->
+          <button *ngIf="profilePhoto" type="button" class="photo-remove-external" (click)="removePhoto()" title="Eliminar foto">
+            <ion-icon name="close"></ion-icon>
+          </button>
+        </div>
+      </div>
     <div class="photo-card" *ngIf="profilePhoto; else uploadPrompt">
       <img [src]="profilePhoto" alt="Foto de perfil" class="photo-card__image" />
       <button
@@ -123,36 +119,28 @@
         (click)="removePhoto()">
         <ion-icon name="close"></ion-icon>
       </button>
-      <span class="photo-card__badge" *ngIf="isPrimaryPhoto()">
-        Avatar
-      </span>
+      <!-- subtitle removed to keep only the photo (was 'Avatar') -->
     </div>
     
     <ng-template #uploadPrompt>
       <div class="upload-buttons">
-        <button type="button" class="upload-btn camera" (click)="triggerCamera()">
-          <ion-icon name="camera"></ion-icon>
-          <span>TOMAR FOTO</span>
-        </button>
+        <app-button class="upload-btn camera" [text]="'TOMAR FOTO'" [action]="triggerCamera.bind(this)" [type]="'button'" [icon]="'camera'" [expand]="'block'"></app-button>
 
-        <button type="button" class="upload-btn gallery" (click)="triggerGallery()">
-          <ion-icon name="images"></ion-icon>
-          <span>SELECCIONAR DE LA GALERÍA</span>
-        </button>
+        <app-button class="upload-btn gallery" [text]="'SELECCIONAR DE LA GALERÍA'" [action]="triggerGallery.bind(this)" [type]="'button'" [icon]="'images'" [expand]="'block'"></app-button>
       </div>
 
       <!-- Hidden inputs: camera uses capture attribute to hint mobile devices to open camera -->
-  <input #cameraInput id="photo-camera" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Subir foto con cámara" aria-label="Subir foto con cámara" />
-  <input #galleryInput id="photo-gallery" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Seleccionar foto de la galería" aria-label="Seleccionar foto de la galería" />
+      <input #cameraInput id="photo-camera" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Subir foto con cámara" aria-label="Subir foto con cámara" />
+      <input #galleryInput id="photo-gallery" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Seleccionar foto de la galería" aria-label="Seleccionar foto de la galería" />
     </ng-template>
   </div>
   
   <!-- Botón submit -->
-  <ion-button 
-    expand="block" 
-    type="submit" 
+  <app-button
     class="submit-btn"
-    [disabled]="form.invalid">
-    {{ isRegistration ? 'Crear cuenta' : 'Guardar cambios' }}
-  </ion-button>
+    [text]="isRegistration ? 'Crear cuenta' : 'Guardar cambios'"
+    [action]="submit.bind(this)"
+    [type]="'submit'"
+    [expand]="'block'">
+  </app-button>
 </form>

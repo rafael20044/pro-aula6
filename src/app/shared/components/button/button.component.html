@@ -1,1 +1,4 @@
-<ion-button (click)="action()" [type]="type">{{ text }}</ion-button>
+<ion-button (click)="action()" [type]="type" [expand]="expand">
+	<ion-icon *ngIf="icon" [name]="icon" slot="start"></ion-icon>
+	{{ text }}
+</ion-button>
