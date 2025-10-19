@@ -16,6 +16,8 @@ export class ButtonComponent  implements OnInit {
   @Input() icon?: string;
   // expand mode for ion-button (e.g., 'block')
   @Input() expand: 'full' | 'block' | 'inset' | undefined = undefined;
+  // allow disabling the button from parent templates
+  @Input() disabled: boolean = false;
 
   constructor() { }
 

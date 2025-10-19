@@ -1,0 +1,26 @@
+<div
+  class="profile-card"
+  [class.active]="isActive"
+  [style.z-index]="100 - stackIndex"
+  [style.transform]="'translateY(' + stackIndex * 16 + 'px)'"
+>
+  <div class="image" [style.background-image]="'url(' + profile.image + ')'">
+    <div class="badge" *ngIf="profile.online">
+      <span></span>
+      En línea
+    </div>
+    <div class="shadow"></div>
+  </div>
+
+  <div class="info">
+    <div class="headline">
+      <h3>{{ profile.name }}, {{ profile.age }}</h3>
+    </div>
+
+    <p class="bio">{{ profile.bio }}</p>
+
+    <div class="passions" *ngIf="profile.passions?.length">
+      <span *ngFor="let passion of profile.passions">#{{ passion }}</span>
+    </div>
+  </div>
+</div>

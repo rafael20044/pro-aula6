@@ -13,35 +13,33 @@
       <!-- Formulario -->
       <form [formGroup]="form" (ngSubmit)="submit()" class="form">
         <div class="input-group">
-          <ion-label class="input-label">Correo electrónico</ion-label>
-          <ion-input 
+          <app-input
             class="custom-input"
-            type="email" 
-            placeholder="tu@email.com"
-            [formControl]="form.controls.email"
-            fill="outline">
-          </ion-input>
+            [label]="'Correo electrónico'"
+            [placeholder]="'tu@email.com'"
+            [type]="'email'"
+            [control]="form.controls.email">
+          </app-input>
         </div>
 
         <div class="input-group">
-          <ion-label class="input-label">Contraseña</ion-label>
-          <ion-input 
+          <app-input
             class="custom-input"
-            type="password" 
-            placeholder="••••••••"
-            [formControl]="form.controls.password"
-            fill="outline">
-            <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-          </ion-input>
+            [label]="'Contraseña'"
+            [placeholder]="'••••••••'"
+            [type]="'password'"
+            [control]="form.controls.password">
+          </app-input>
         </div>
 
-        <ion-button 
-          expand="block" 
-          type="submit" 
+        <app-button
           class="submit-btn"
+          [text]="'Iniciar sesión'"
+          [action]="submit.bind(this)"
+          [type]="'submit'"
+          [expand]="'block'"
           [disabled]="form.invalid">
-          Iniciar sesión
-        </ion-button>
+        </app-button>
       </form>
 
       <!-- Link a Registro -->
