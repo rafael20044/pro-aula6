@@ -17,8 +17,8 @@
             class="custom-input"
             [label]="'Correo electrónico'"
             [placeholder]="'tu@email.com'"
-            [type]="'email'"
-            [control]="form.controls.email">
+            type="email"
+            [control]="emailControl">
           </app-input>
         </div>
 
@@ -27,18 +27,17 @@
             class="custom-input"
             [label]="'Contraseña'"
             [placeholder]="'••••••••'"
-            [type]="'password'"
-            [control]="form.controls.password">
+            type="password"
+            [control]="passwordControl">
           </app-input>
         </div>
 
         <app-button
           class="submit-btn"
           [text]="'Iniciar sesión'"
-          [action]="submit.bind(this)"
-          [type]="'submit'"
+          type="submit"
           [expand]="'block'"
-          [disabled]="form.invalid">
+        >
         </app-button>
       </form>
 
