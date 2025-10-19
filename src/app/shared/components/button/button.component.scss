@@ -1,0 +1,30 @@
+/* Basic variants for app-button */
+:host(.app-btn-filled) ion-button {
+	--background: #4a90e2;
+	--color: #ffffff;
+	--border-radius: 18px;
+	height: 40px;
+	padding: 0 14px;
+	box-shadow: none;
+	border: none !important;
+}
+
+:host(.app-btn-flat) ion-button {
+	--background: transparent;
+	--color: #4a90e2;
+	--border-radius: 6px;
+	height: auto;
+	padding: 0 6px;
+	box-shadow: none;
+	border: none !important;
+}
+
+:host(.app-btn-outline) ion-button {
+	--background: transparent;
+	--color: #4a90e2;
+	--border-radius: 12px;
+	border: 1px solid rgba(74,144,226,0.18);
+	height: 40px;
+	padding: 0 12px;
+}
+

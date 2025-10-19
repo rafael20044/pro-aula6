@@ -2,105 +2,118 @@
   
   
 
-  <!-- Nombres -->
-  <div class="input-row">
-    <div class="input-group">
-      <app-input
-        class="custom-input"
-        [label]="'Primer nombre *'"
-        [placeholder]="'Juan'"
-        [type]="'text'"
-        [control]="nameControl">
-      </app-input>
+  <!-- Progress indicator -->
+  <div class="progress">
+    <span class="dot" [class.active]="currentStep === 1"></span>
+    <span class="dot" [class.active]="currentStep === 2"></span>
+    <span class="dot" [class.active]="currentStep === 3"></span>
+  </div>
+
+  <!-- STEP 1: Nombres y apellidos -->
+  <div class="step step-1" [class.active]="currentStep === 1">
+    <div class="input-row">
+      <div class="input-group">
+        <app-input
+          class="custom-input"
+          [label]="'Primer nombre *'"
+          [placeholder]="'Juan'"
+          [type]="'text'"
+          [control]="nameControl">
+        </app-input>
+      </div>
+
+      <div class="input-group">
+        <app-input
+          class="custom-input"
+          [label]="'Segundo nombre'"
+          [placeholder]="'Carlos'"
+          [type]="'text'"
+          [control]="name2Control">
+        </app-input>
+      </div>
     </div>
 
-    <div class="input-group">
-      <app-input
-        class="custom-input"
-        [label]="'Segundo nombre'"
-        [placeholder]="'Carlos'"
-        [type]="'text'"
-        [control]="name2Control">
-      </app-input>
+    <div class="input-row">
+      <div class="input-group">
+        <app-input
+          class="custom-input"
+          [label]="'Primer apellido *'"
+          [placeholder]="'Pérez'"
+          [type]="'text'"
+          [control]="lastNameControl">
+        </app-input>
+      </div>
+
+      <div class="input-group">
+        <app-input
+          class="custom-input"
+          [label]="'Segundo apellido'"
+          [placeholder]="'García'"
+          [type]="'text'"
+          [control]="lastName2Control">
+        </app-input>
+      </div>
+    </div>
+
+    <!-- rol removed -->
+
+    <div class="step-actions">
+      <ion-button fill="clear" class="nav-left" disabled></ion-button>
+      <app-button class="nav-right" variant="filled" [text]="'Siguiente'" [action]="goToStepTo2" [type]="'button'" [disabled]="!step1Valid()"></app-button>
     </div>
   </div>
 
-  <!-- Apellidos -->
-  <div class="input-row">
+  <!-- STEP 2: Email y Contraseña -->
+  <div class="step step-2" [class.active]="currentStep === 2">
     <div class="input-group">
       <app-input
         class="custom-input"
-        [label]="'Primer apellido *'"
-        [placeholder]="'Pérez'"
-        [type]="'text'"
-        [control]="lastNameControl">
+        [label]="'Correo electrónico *'"
+        [placeholder]="'tu@email.com'"
+        [type]="'email'"
+        [control]="emailControl">
       </app-input>
     </div>
 
-    <div class="input-group">
-      <app-input
-        class="custom-input"
-        [label]="'Segundo apellido'"
-        [placeholder]="'García'"
-        [type]="'text'"
-        [control]="lastName2Control">
-      </app-input>
+    <!-- Contraseñas (solo en registro) -->
+    <ng-container *ngIf="isRegistration">
+      <div class="input-group">
+        <app-input
+          class="custom-input"
+          [label]="'Contraseña *'"
+          [placeholder]="'••••••••'"
+          [type]="'password'"
+          [control]="passwordControl">
+        </app-input>
+        <ion-text *ngIf="passwordControl.touched && passwordControl.errors && passwordControl.errors['minlength']" class="error-text">
+          La contraseña debe tener al menos 7 caracteres
+        </ion-text>
+      </div>
+
+      <div class="input-group">
+        <app-input
+          class="custom-input"
+          [label]="'Confirmar contraseña *'"
+          [placeholder]="'••••••••'"
+          [type]="'password'"
+          [control]="confirmPasswordControl"
+          [ngClass]="{ 'password-match': passwordsMatch && confirmPasswordControl.value, 'password-mismatch': !passwordsMatch && confirmPasswordControl.value }">
+        </app-input>
+        <ion-text *ngIf="!passwordsMatch && confirmPasswordControl.touched" class="error-text">
+          Las contraseñas no coinciden
+        </ion-text>
+      </div>
+    </ng-container>
+
+    <div class="step-actions">
+      <ion-button fill="clear" class="nav-left" (click)="goToStepTo1()">Anterior</ion-button>
+      <app-button class="nav-right" variant="filled" [text]="'Siguiente'" [action]="goToStepTo3" [type]="'button'" [disabled]="!step2Valid()"></app-button>
     </div>
   </div>
-
-  <!-- Email -->
-  <div class="input-group">
-    <app-input
-      class="custom-input"
-      [label]="'Correo electrónico *'"
-      [placeholder]="'tu@email.com'"
-      [type]="'email'"
-      [control]="emailControl">
-    </app-input>
-  </div>
-
-  <!-- Contraseñas (solo en registro) -->
-  <ng-container *ngIf="isRegistration">
-    <div class="input-group">
-      <app-input
-        class="custom-input"
-        [label]="'Contraseña *'"
-        [placeholder]="'••••••••'"
-        [type]="'password'"
-        [control]="passwordControl">
-      </app-input>
-    </div>
-
-    <div class="input-group">
-      <app-input
-        class="custom-input"
-        [label]="'Confirmar contraseña *'"
-        [placeholder]="'••••••••'"
-        [type]="'password'"
-        [control]="confirmPasswordControl"
-        [ngClass]="{ 'password-match': passwordsMatch && confirmPasswordControl.value, 'password-mismatch': !passwordsMatch && confirmPasswordControl.value }">
-      </app-input>
-      <ion-text *ngIf="!passwordsMatch && form.get('confirmPassword')?.value" class="error-text">
-        Las contraseñas no coinciden
-      </ion-text>
-    </div>
-  </ng-container>
-
-  <!-- Rol -->
-  <div class="input-group">
-    <ion-label class="input-label">Rol *</ion-label>
-    <ion-select 
-      class="custom-select"
-      placeholder="Selecciona tu rol"
-      formControlName="rol"
-      interface="popover">
-      <ion-select-option *ngFor="let rol of roles" [value]="rol">
-        {{ rol }}
-      </ion-select-option>
-    </ion-select>
-  </div>
-  <!-- Sección de foto de perfil -->
-  <div class="photo-section">
+  <!-- STEP 3: Foto de perfil -->
+  <div class="step step-3" [class.active]="currentStep === 3">
+    <!-- Sección de foto de perfil -->
+    <div class="photo-section">
     <div class="photo-header input-group">
         <ion-label class="input-label">Foto de perfil *</ion-label>
         <div class="photo-action">
@@ -119,9 +132,9 @@
         (click)="removePhoto()">
         <ion-icon name="close"></ion-icon>
       </button>
-      <!-- subtitle removed to keep only the photo (was 'Avatar') -->
+
     </div>
-    
+
     <ng-template #uploadPrompt>
       <div class="upload-buttons">
         <app-button class="upload-btn camera" [text]="'TOMAR FOTO'" [action]="triggerCamera.bind(this)" [type]="'button'" [icon]="'camera'" [expand]="'block'"></app-button>
@@ -129,18 +142,14 @@
         <app-button class="upload-btn gallery" [text]="'SELECCIONAR DE LA GALERÍA'" [action]="triggerGallery.bind(this)" [type]="'button'" [icon]="'images'" [expand]="'block'"></app-button>
       </div>
 
-      <!-- Hidden inputs: camera uses capture attribute to hint mobile devices to open camera -->
       <input #cameraInput id="photo-camera" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Subir foto con cámara" aria-label="Subir foto con cámara" />
       <input #galleryInput id="photo-gallery" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Seleccionar foto de la galería" aria-label="Seleccionar foto de la galería" />
     </ng-template>
+    
+    <div class="step-actions">
+      <ion-button fill="clear" class="nav-left" (click)="goToStepTo2()">Anterior</ion-button>
+      <app-button class="nav-right submit-btn" variant="filled" [text]="isRegistration ? 'Crear cuenta' : 'Guardar cambios'" [action]="submitForm" [type]="'submit'"></app-button>
+    </div>
+</div>
   </div>
-  
-  <!-- Botón submit -->
-  <app-button
-    class="submit-btn"
-    [text]="isRegistration ? 'Crear cuenta' : 'Guardar cambios'"
-    [action]="submit.bind(this)"
-    [type]="'submit'"
-    [expand]="'block'">
-  </app-button>
 </form>

@@ -13,9 +13,10 @@ export class UserFormComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<any>();
 
   form!: FormGroup;
-  roles = ['Estudiante', 'Profesor'];
   profilePhoto: string | null = null;
   selectedFile: File | null = null;
+  // wizard step: 1 = nombres/apellidos/rol, 2 = email + contraseña, 3 = foto y submit
+  currentStep: number = 1;
 
   @ViewChild('cameraInput') cameraInput!: ElementRef<HTMLInputElement>;
   @ViewChild('galleryInput') galleryInput!: ElementRef<HTMLInputElement>;
@@ -61,18 +62,47 @@ export class UserFormComponent implements OnInit {
     }
   }
 
+  // Wizard navigation helpers
+  goToStep(step: number) {
+    this.currentStep = step;
+  }
+
+  // wrappers so template can bind direct function references
+  goToStepTo1 = () => this.goToStep(1);
+  goToStepTo2 = () => this.goToStep(2);
+  goToStepTo3 = () => this.goToStep(3);
+
+  // Validate step 2 fields (email, password and match)
+  step2Valid(): boolean {
+    if (!this.emailControl || !this.passwordControl || !this.confirmPasswordControl) return false;
+    const emailValid = this.emailControl.valid;
+    const passValid = this.passwordControl.valid;
+    const match = this.passwordsMatch;
+    return emailValid && passValid && match;
+  }
+
+  // Validate step 1 required fields: name, last_name and rol
+  step1Valid(): boolean {
+    const n = this.form.get('name');
+    const ln = this.form.get('last_name');
+    return !!n && !!ln && n.valid && ln.valid;
+  }
+
+  // wrapper for submit to pass as action to button
+  submitForm = () => this.submit();
+
   initForm() {
     const formConfig: any = {
       name: ['', [Validators.required, Validators.minLength(2)]],
       name2: [''],
       last_name: ['', [Validators.required, Validators.minLength(2)]],
       last_name2: [''],
-      email: ['', [Validators.required, Validators.email]],
-      rol: ['', [Validators.required]],
+  email: ['', [Validators.required, Validators.email]],
     };
 
     if (this.isRegistration) {
-      formConfig.password = ['', [Validators.required, Validators.minLength(6)]];
+      // password must be more than 6 characters -> minLength 7
+      formConfig.password = ['', [Validators.required, Validators.minLength(7)]];
       formConfig.confirmPassword = ['', [Validators.required]];
     }
 
