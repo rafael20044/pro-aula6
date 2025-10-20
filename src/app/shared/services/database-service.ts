@@ -15,7 +15,7 @@ export class DatabaseService {
     const {data, error} = await Supabase.from('users').insert(user);
 
     if (error) {
-      this.toast.show('Error al guardar los datos', 1500, 'bottom', 'warning');
+      // this.toast.show('Error al guardar los datos', 1500, 'bottom', 'warning');
       return false;
     }
     

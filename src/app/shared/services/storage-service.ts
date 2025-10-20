@@ -5,13 +5,14 @@ import { Supabase } from 'src/app/core/supabase/supabase';
   providedIn: 'root'
 })
 export class StorageService {
+  constructor() {
 
-  constructor() { }
+  }
 
   async upload(bucket: string, folder: string, name: string, da: string, contentType: string) {
     const path = `${folder}/${name}`;
     //console.log(`path que se crea entes de meterlo a supabase ${path}`)
-    const { data, error } = await Supabase.storage.from(bucket).upload(path, da, {
+    const { data, error } = await Supabase.storage.from(bucket).upload(path, this.base64ToArrayBuffer(da), {
       contentType: contentType
     });
     if (error) {
@@ -24,7 +25,7 @@ export class StorageService {
 
   async getSignUrl(bucket: string, path: string): Promise<{ url: string, path: string } | undefined> {
     //console.log(`path que le mandamos a la funcion para firmar ${path}`)
-    const { data, error } = await Supabase.storage.from(bucket).createSignedUrl(path, 60 * 60);
+    const { data, error } = await Supabase.storage.from(bucket).createSignedUrl(path, 9000000);
     if (error) {
       console.log(error.message);
       return;
@@ -42,6 +43,15 @@ export class StorageService {
     } catch (err) {
       return false;
     }
+  }
+
+  private base64ToArrayBuffer(base64: string) {
+    var binaryString = atob(base64);
+    var bytes = new Uint8Array(binaryString.length);
+    for (var i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
   }
 
 }

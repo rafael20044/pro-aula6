@@ -1,5 +1,7 @@
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Capacitor } from '@capacitor/core';
+import { FilePickerService } from './services/file-picker-service';
 
 
 
@@ -9,4 +11,14 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ]
 })
-export class CoreModule { }
+export class CoreModule implements OnInit{ 
+  constructor(private readonly file:FilePickerService){
+    this.ngOnInit();
+  }
+
+  ngOnInit(): void {
+    if (Capacitor.isNativePlatform()) {
+      this.file.permission();
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { IImage } from 'src/app/interfaces/iimage';
-import { CamaraService } from '../../services/camara-service';
 import { AuthService } from '../../services/auth-service';
 import { DatabaseService } from '../../services/database-service';
 import { ToastService } from '../../services/toast-service';
@@ -11,6 +10,7 @@ import { StorageService } from '../../services/storage-service';
 import { Capacitor } from '@capacitor/core';
 import { IUserCreate } from 'src/app/interfaces/iuser';
 import { Const } from 'src/app/const/const';
+import { FilePickerService } from 'src/app/core/services/file-picker-service';
 
 @Component({
   selector: 'app-user-form',
@@ -45,7 +45,7 @@ export class UserFormComponent implements OnInit {
 
 
   constructor(
-    private readonly camera: CamaraService,
+    private readonly fileS:FilePickerService,
     private readonly auth: AuthService,
     private readonly database: DatabaseService,
     private readonly toast: ToastService,
@@ -122,20 +122,20 @@ export class UserFormComponent implements OnInit {
 
   // Trigger the native camera capture input
   async triggerCamera() {
-    if (Capacitor.isNativePlatform()) {
-      const result = await this.camera.getImageFromCamera();
-      if (result) {
-        this.profilePhoto = result.webPath;
-        this.file = result;
-      }
-    }
+    // if (Capacitor.isNativePlatform()) {
+    //   const result = await this.camera.getImageFromCamera();
+    //   if (result) {
+    //     this.profilePhoto = result.webPath;
+    //     this.file = result;
+    //   }
+    // }
   }
 
   // Trigger the gallery input
   async triggerGallery() {
-    const result = await this.camera.getImageFromGallery();
+    const result = await this.fileS.pickImage();
     if (result) {
-      this.profilePhoto = result.webPath;
+      this.profilePhoto = result.previewUrl;
       this.file = result;
     }
   }
@@ -159,7 +159,7 @@ export class UserFormComponent implements OnInit {
     const uid = await this.auth.registerWithEmailAndPassword(email || '', password || '');
     user.uid = uid;
     if (this.file) {
-      const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.base64, this.file.contentType);
+      const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.data, this.file.mimeType);
       user.photo = result?.url;
       user.path = result?.path
     }

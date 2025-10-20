@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CamaraService } from './camara-service';
+import { ToastNative } from './toast-native';
 
-describe('CamaraService', () => {
-  let service: CamaraService;
+describe('ToastNative', () => {
+  let service: ToastNative;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CamaraService);
+    service = TestBed.inject(ToastNative);
   });
 
   it('should be created', () => {

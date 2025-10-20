@@ -1,6 +1,6 @@
 export interface IImage {
-    webPath:string;
-    name:string;
-    base64:string;
-    contentType:string;
+    data: string;
+    name: string;
+    mimeType: string;
+    previewUrl:string;
 }
