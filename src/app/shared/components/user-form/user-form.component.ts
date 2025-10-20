@@ -1,5 +1,16 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { IImage } from 'src/app/interfaces/iimage';
+import { CamaraService } from '../../services/camara-service';
+import { AuthService } from '../../services/auth-service';
+import { DatabaseService } from '../../services/database-service';
+import { ToastService } from '../../services/toast-service';
+import { Router } from '@angular/router';
+import { LocalStorageService } from '../../services/local-storage-service';
+import { StorageService } from '../../services/storage-service';
+import { Capacitor } from '@capacitor/core';
+import { IUserCreate } from 'src/app/interfaces/iuser';
+import { Const } from 'src/app/const/const';
 
 @Component({
   selector: 'app-user-form',
