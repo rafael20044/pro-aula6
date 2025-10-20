@@ -5,6 +5,10 @@ import { IonicModule } from '@ionic/angular';
 import { ButtonComponent } from './components/button/button.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HomeComponent } from './components/home/home.component';
+import { SearchComponent } from './components/search/search.component';
+import { NotificationComponent } from './components/notification/notification.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 
 
@@ -13,6 +17,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     InputComponent,
     ButtonComponent,
     UserFormComponent,
+    HomeComponent,
+    SearchComponent,
+    NotificationComponent,
+    ProfileComponent,
   ],
   providers: [],
   imports: [
@@ -20,11 +28,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
-],
+  ],
   exports: [
     InputComponent,
     ButtonComponent,
     UserFormComponent,
+    HomeComponent,
+    SearchComponent,
+    NotificationComponent,
+    ProfileComponent,
   ],
 })
 export class SharedModule { }
