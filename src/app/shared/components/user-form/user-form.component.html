@@ -141,9 +141,6 @@
 
         <app-button class="upload-btn gallery" [text]="'SELECCIONAR DE LA GALERÍA'" [action]="triggerGallery.bind(this)" [type]="'button'" [icon]="'images'" [expand]="'block'"></app-button>
       </div>
-
-      <input #cameraInput id="photo-camera" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Subir foto con cámara" aria-label="Subir foto con cámara" />
-      <input #galleryInput id="photo-gallery" type="file" accept="image/*" (change)="onFileSelected($event)" class="photo-upload__input" title="Seleccionar foto de la galería" aria-label="Seleccionar foto de la galería" />
     </ng-template>
     
     <div class="step-actions">

@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-
+import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-user-form',
@@ -10,57 +9,43 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors,
 })
 export class UserFormComponent implements OnInit {
   @Input() isRegistration: boolean = true; // true para registro, false para editar perfil
-  @Input() initialData: any = null;
-  @Output() formSubmit = new EventEmitter<any>();
-
-  form!: FormGroup;
   profilePhoto: string | null = null;
   selectedFile: File | null = null;
+  file: IImage | null = null;
+
+  nameControl = new FormControl('', [Validators.required]);
+  name2Control = new FormControl('', [Validators.required]);
+  lastNameControl = new FormControl('', [Validators.required]);
+  lastName2Control = new FormControl('', [Validators.required]);
+  emailControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordControl = new FormControl('', [Validators.required]);
+  confirmPasswordControl = new FormControl('', [Validators.required]);
+
+  form = new FormGroup({
+    name: this.nameControl,
+    name2: this.name2Control,
+    lastName: this.lastNameControl,
+    lastName2: this.lastName2Control,
+    email: this.emailControl,
+    password: this.passwordControl,
+  });
   // wizard step: 1 = nombres/apellidos/rol, 2 = email + contraseña, 3 = foto y submit
   currentStep: number = 1;
 
-  @ViewChild('cameraInput') cameraInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('galleryInput') galleryInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private readonly camera: CamaraService,
+    private readonly auth: AuthService,
+    private readonly database: DatabaseService,
+    private readonly toast: ToastService,
+    private readonly router: Router,
+    private readonly local: LocalStorageService,
+    private readonly storage: StorageService,
+  ) { }
 
-  // Typed getters for template bindings (return FormControl so <app-input> accepts them)
-  get nameControl(): FormControl {
-    return this.form.get('name') as FormControl;
-  }
-
-  get name2Control(): FormControl {
-    return this.form.get('name2') as FormControl;
-  }
-
-  get lastNameControl(): FormControl {
-    return this.form.get('last_name') as FormControl;
-  }
-
-  get lastName2Control(): FormControl {
-    return this.form.get('last_name2') as FormControl;
-  }
-
-  get emailControl(): FormControl {
-    return this.form.get('email') as FormControl;
-  }
-
-  get passwordControl(): FormControl {
-    return this.form.get('password') as FormControl;
-  }
-
-  get confirmPasswordControl(): FormControl {
-    return this.form.get('confirmPassword') as FormControl;
-  }
 
   ngOnInit() {
     this.initForm();
-    if (this.initialData) {
-      this.form.patchValue(this.initialData);
-      if (this.initialData.photo) {
-        this.profilePhoto = this.initialData.photo;
-      }
-    }
   }
 
   // Wizard navigation helpers
@@ -84,32 +69,15 @@ export class UserFormComponent implements OnInit {
 
   // Validate step 1 required fields: name, last_name and rol
   step1Valid(): boolean {
-    const n = this.form.get('name');
-    const ln = this.form.get('last_name');
-    return !!n && !!ln && n.valid && ln.valid;
+    const { name, lastName } = this.form.value;
+    return !!name && !!lastName;
   }
 
   // wrapper for submit to pass as action to button
   submitForm = () => this.submit();
 
   initForm() {
-    const formConfig: any = {
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      name2: [''],
-      last_name: ['', [Validators.required, Validators.minLength(2)]],
-      last_name2: [''],
-  email: ['', [Validators.required, Validators.email]],
-    };
 
-    if (this.isRegistration) {
-      // password must be more than 6 characters -> minLength 7
-      formConfig.password = ['', [Validators.required, Validators.minLength(7)]];
-      formConfig.confirmPassword = ['', [Validators.required]];
-    }
-
-    this.form = this.fb.group(formConfig, 
-      this.isRegistration ? { validators: this.passwordMatchValidator } : {}
-    );
   }
 
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -125,9 +93,8 @@ export class UserFormComponent implements OnInit {
 
   get passwordsMatch(): boolean {
     if (!this.isRegistration) return true;
-    const password = this.form.get('password')?.value;
-    const confirmPassword = this.form.get('confirmPassword')?.value;
-    return password === confirmPassword;
+    const { password } = this.form.value;
+    return password === this.confirmPasswordControl.value;
   }
 
   onFileSelected(event: any) {
@@ -143,37 +110,53 @@ export class UserFormComponent implements OnInit {
   }
 
   // Trigger the native camera capture input
-  triggerCamera() {
-    try {
-      this.cameraInput.nativeElement.click();
-    } catch (e) {
-      // fallback: trigger the gallery input if camera not available
-      this.galleryInput.nativeElement.click();
+  async triggerCamera() {
+    if (Capacitor.isNativePlatform()) {
+      const result = await this.camera.getImageFromCamera();
+      if (result) {
+        this.profilePhoto = result.webPath;
+        this.file = result;
+      }
     }
   }
 
   // Trigger the gallery input
-  triggerGallery() {
-    this.galleryInput.nativeElement.click();
+  async triggerGallery() {
+    const result = await this.camera.getImageFromGallery();
+    if (result) {
+      this.profilePhoto = result.webPath;
+      this.file = result;
+    }
   }
 
   removePhoto() {
     this.profilePhoto = null;
     this.selectedFile = null;
+    this.file = null;
   }
 
-  submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+  async submit() {
+    const { name, name2, lastName, lastName2, email, password } = this.form.value;
+    const user: IUserCreate = {
+      name: name || '',
+      name2: name2 || '',
+      last_name: lastName || '',
+      last_name2: lastName2 || '',
+      email: email || '',
+      password: password || '',
+    }
+    const uid = await this.auth.registerWithEmailAndPassword(email || '', password || '');
+    user.uid = uid;
+    if (this.file) {
+      const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.base64, this.file.contentType);
+      user.photo = result?.url;
+      user.path = result?.path
+    }
+    const isCreate = await this.database.createUser(user);
+    if (isCreate) {
+      this.local.set(Const.USER_UID, uid);
+      this.router.navigate(['/home']);
       return;
     }
-
-    const formData = {
-      ...this.form.value,
-      photo: this.profilePhoto,
-      photoFile: this.selectedFile
-    };
-
-    this.formSubmit.emit(formData);
   }
 }
