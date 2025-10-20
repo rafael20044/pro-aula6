@@ -35,7 +35,7 @@ const routes: Routes = [
   // Área Admin (privado) - lazy load del FEATURE admin
   {
     path: 'admin',
-    loadChildren: () => import('./pages/admin/admin-module').then(m => m.AdminModule),
+    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
     // canActivate: [AuthGuard]
   },
 
