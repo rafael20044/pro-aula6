@@ -1,0 +1,173 @@
+// ====== Paleta (calcada del login/register) ======
+$primary: #4a90e2;
+$primary-dark: #357abd;
+$primary-light: #6ba3e8;
+$accent: #64748b;
+$bg-dark: #0f1419;
+$bg-card: #1a1f2e;
+$bg-card-elevated: #252d3d;
+$text-primary: #ffffff;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+$border: #2d3748;
+$success: #10b981;
+$error: #ef4444;
+
+// ====== Layout base (mismo patrón que auth) ======
+.admin-content {
+  --background: #{$bg-dark};
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 960px; // más ancho que auth para panel
+  padding: 24px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.admin-card {
+  width: 100%;
+  background: $bg-card;
+  border-radius: 28px;
+  padding: 40px 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+// ====== Branding (igual a auth) ======
+.brand {
+  text-align: center;
+  margin-bottom: 28px;
+
+  .logo-wrapper {
+    margin-bottom: 18px;
+    display: flex; justify-content: center;
+    .logo {
+      width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+      box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3),
+                  0 0 0 4px rgba(74, 144, 226, 0.1);
+      transition: transform .3s ease;
+      &:hover { transform: scale(1.05); }
+    }
+  }
+  .title { font-size: 28px; font-weight: 700; color: $text-primary; margin: 0 0 6px; letter-spacing: -0.3px; }
+  .subtitle { font-size: 15px; color: $text-secondary; margin: 0; }
+}
+
+// ====== Métricas (cards “glass” compactas) ======
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  margin: 24px 0 8px;
+
+  .metric {
+    grid-column: span 12;
+    background: $bg-card-elevated;
+    border: 1px solid $border;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    display: flex; align-items: flex-end; justify-content: space-between;
+
+    .metric__value {
+      color: $text-primary;
+      font-size: 28px; font-weight: 800; letter-spacing: -0.5px;
+    }
+    .metric__label {
+      color: $text-secondary;
+      font-size: 13px; font-weight: 600;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .metric { grid-column: span 6; }
+  }
+  @media (min-width: 992px) {
+    .metric { grid-column: span 4; }
+  }
+}
+
+// ====== Secciones ======
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: $text-secondary;
+  margin: 22px 4px 12px;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+
+// ====== Acciones rápidas (tiles) ======
+.actions__grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+
+.action-tile {
+  grid-column: span 12;
+  display: grid;
+  grid-template-columns: 40px 1fr 24px;
+  align-items: center;
+  gap: 12px;
+
+  background: $bg-card-elevated;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: $text-primary;
+  text-align: left;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+
+  .action-tile__icon { font-size: 22px; color: $primary; }
+  .action-tile__label { font-size: 15px; font-weight: 600; color: $text-primary; }
+  .action-tile__chev { font-size: 18px; color: $text-muted; justify-self: end; }
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: rgba(74, 144, 226, .45);
+    box-shadow: 0 8px 18px rgba(74, 144, 226, .18);
+  }
+  &:active { transform: translateY(0); }
+}
+
+@media (min-width: 576px) {
+  .action-tile { grid-column: span 6; }
+}
+@media (min-width: 992px) {
+  .action-tile { grid-column: span 4; }
+}
+
+// ====== Card “glass” reutilizable ======
+.glass {
+  --background: #{$bg-card-elevated};
+  border-radius: 16px;
+  border: 1px solid $border;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  color: $text-primary;
+}
+
+// ====== Responsivo ======
+@media (max-width: 480px) {
+  .admin-card { padding: 28px 20px; }
+  .brand .title { font-size: 24px; }
+}
+@media (min-width: 768px) {
+  .admin-card { padding: 40px 32px; }
+}

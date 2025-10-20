@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
@@ -28,16 +28,25 @@ export class LoginPage {
     private readonly router:Router,
   ) {}
 
-  async submit() {
-    if (!this.form.valid) {
-      this.toat.show('Rellene los campos correctamente', 1500, 'bottom', 'warning');
-      return;
-    }
-    const {email, password} = this.form.value;
-    const uid = await this.auth.loginWithEmailAndPassword(email || '', password || '');
-    if (uid) {
-      this.local.set(Const.USER_UID, uid);
-      this.router.navigate(['/home']);
-    }
+async submit() {
+  if (!this.form.valid) {
+    this.toat.show('Rellene los campos correctamente', 1500, 'bottom', 'warning');
+    return;
   }
+
+  const { email, password } = this.form.value;
+  const uid = await this.auth.loginWithEmailAndPassword(email || '', password || '');
+  if (!uid) return; // si falló login, no seguimos
+
+  // MOCK de rol local (luego reemplazas por consulta real)
+  const role = (email || '').toLowerCase().includes('admin') ? 'admin' : 'user';
+
+  // guarda sesión
+  this.local.set(Const.USER_UID, uid);
+  localStorage.setItem('USER_UID', uid);
+  localStorage.setItem('USER_ROLE', role);
+
+  this.router.navigate([ role === 'admin' ? '/admin/home' : '/home' ]);
+}
+
 }

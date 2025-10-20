@@ -1,0 +1,47 @@
+<ion-content class="admin-content">
+  <div class="admin-container">
+    <div class="admin-card">
+      <!-- Branding -->
+      <div class="brand">
+        <div class="logo-wrapper">
+          <img src="assets/icon/logo.png" alt="Logo" class="logo" />
+        </div>
+        <h1 class="title">Panel de Administración</h1>
+        <p class="subtitle">Resumen general y acciones rápidas</p>
+      </div>
+
+      <!-- Métricas -->
+      <section class="metrics">
+        <div class="metric" *ngFor="let m of metrics">
+          <div class="metric__value">{{ m.value }}</div>
+          <div class="metric__label">{{ m.label }}</div>
+        </div>
+      </section>
+
+      <!-- Acciones rápidas -->
+      <section class="actions">
+        <h2 class="section-title">Acciones rápidas</h2>
+        <div class="actions__grid">
+          <button type="button"
+                  class="action-tile"
+                  *ngFor="let a of quickActions"
+                  [routerLink]="a.link">
+            <ion-icon class="action-tile__icon" [name]="a.icon"></ion-icon>
+            <span class="action-tile__label">{{ a.label }}</span>
+            <ion-icon class="action-tile__chev" name="chevron-forward"></ion-icon>
+          </button>
+        </div>
+      </section>
+
+      <!-- Resumen / actividad -->
+      <section class="summary">
+        <h2 class="section-title">Resumen</h2>
+        <ion-card class="glass">
+          <ion-card-content>
+            Aquí podrás ver actividad reciente, usuarios nuevos, alertas, etc.
+          </ion-card-content>
+        </ion-card>
+      </section>
+    </div>
+  </div>
+</ion-content>
