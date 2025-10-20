@@ -15,12 +15,13 @@ export class AuthService {
       console.log(error);
       return;
     }
-    return data.user?.email;
+    return data.user?.id;
   }
 
   async loginWithEmailAndPassword(email:string, password:string){
     const {data, error} = await Supabase.auth.signInWithPassword({email: email, password: password});
     if (error) {
+      console.log(error);
       this.toat.show('Correo o contraseña incorrectos', 1500, 'bottom', 'warning');
       return;
     }
