@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
 import { RouteReuseStrategy } from '@angular/router';
-import { AdminModule } from './pages/admin/admin-module';
+import { AdminModule } from './pages/admin/admin.module';
 
 @NgModule({
   declarations: [AppComponent],
