@@ -8,6 +8,11 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+   showLogo = true;
+    onTabChange(event: any) {
+    const selectedTab = event.tab;
+    this.showLogo = selectedTab === 'home';
 
+
+}
 }

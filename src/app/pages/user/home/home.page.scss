@@ -1,12 +1,4 @@
-#container {
-  text-align: center;
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
 
 #container strong {
   font-size: 20px;
@@ -25,3 +17,25 @@
 #container a {
   text-decoration: none;
 }
+
+/* Centro el logo */
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.logo {
+  width: 70px; /* tamaño adaptado */
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.3),
+              0 0 0 3px rgba(74, 144, 226, 0.1);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+

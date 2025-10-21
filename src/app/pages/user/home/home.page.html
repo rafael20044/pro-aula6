@@ -1,22 +1,31 @@
-<ion-tabs>
+<ion-header *ngIf="showLogo">
+  <div class="logo-wrapper">
+    <img src="assets/icon/logo.png" alt="Logo" class="logo" />
+  </div>
+</ion-header>
+
+<ion-tabs (ionTabsWillChange)="onTabChange($event)">
   <ion-tab tab="home">
     <div id="home-page">
-      <app-home-c />
+      <app-home-c></app-home-c>
     </div>
   </ion-tab>
+
   <ion-tab tab="search">
     <div id="search-page">
-      <app-search />
+      <app-search></app-search>
     </div>
   </ion-tab>
+
   <ion-tab tab="notifications">
     <div id="notification-page">
-      <app-notification />
+      <app-notification></app-notification>
     </div>
   </ion-tab>
+
   <ion-tab tab="profile">
     <div id="profile-page">
-      <app-profile />
+      <app-profile></app-profile>
     </div>
   </ion-tab>
 
@@ -25,14 +34,17 @@
       <ion-icon name="home-outline"></ion-icon>
       Home
     </ion-tab-button>
+
     <ion-tab-button tab="search">
       <ion-icon name="search-outline"></ion-icon>
       Search
     </ion-tab-button>
+
     <ion-tab-button tab="notifications">
       <ion-icon name="notifications-outline"></ion-icon>
       Notifications
     </ion-tab-button>
+
     <ion-tab-button tab="profile">
       <ion-icon name="person-outline"></ion-icon>
       Profile

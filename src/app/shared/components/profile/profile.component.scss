@@ -1,0 +1,122 @@
+/* Paleta */
+$primary: #4a90e2;
+$primary-dark: #357abd;
+$primary-light: #6ba3e8;
+$bg-dark: #0f1419;
+$bg-card: #1a1f2e;
+$text-primary: #ffffff;
+$text-secondary: #94a3b8;
+$border: #2d3748;
+
+
+.profile-content {
+  --background: #{$bg-dark};
+}
+
+
+.profile-content::part(scroll) {
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+
+.page {
+ 
+  min-height: 100%;
+  display: flex;
+  align-items: center;     
+  justify-content: center; 
+  padding: 24px 16px;      
+  box-sizing: border-box;
+}
+
+
+.profile-card {
+  background: $bg-card;
+  border-radius: 28px;
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px; 
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow:
+      0 8px 24px rgba(74, 144, 226, 0.3),
+      0 0 0 4px rgba(74, 144, 226, 0.1);
+  }
+
+  .change-photo-btn {
+    color: $primary;
+    font-weight: 600;
+    text-transform: none;
+
+    &:hover {
+      color: $primary-light;
+    }
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  .input-item {
+    --background: transparent;
+    --border-color: #{$border};
+    --border-radius: 14px;
+    --padding-start: 12px;
+    --color: #{$text-primary};
+    border: 1px solid $border;
+    border-radius: 14px;
+
+    ion-label {
+      color: $text-secondary;
+      font-size: 15px;
+    }
+
+    ion-input {
+      color: $text-primary;
+    }
+  }
+
+  .save-btn {
+    --background: #{$primary};
+    --background-hover: #{$primary-light};
+    --background-activated: #{$primary-dark};
+    --color: #fff;
+    --border-radius: 14px;
+    --box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: none;
+
+    &:hover {
+      --box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card { padding: 24px 16px; }
+  .avatar-section .avatar { width: 100px; height: 100px; }
+}
