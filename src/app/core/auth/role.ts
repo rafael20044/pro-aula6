@@ -1,21 +1,28 @@
-// src/app/core/auth/role.service.ts
 import { Injectable } from '@angular/core';
 import { AuthStateService, UserRole } from './auth-state';
+import { Supabase } from 'src/app/core/supabase/supabase';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class Role {
-    constructor(private state: AuthStateService) {}
+  constructor(private state: AuthStateService) {}
 
-  // MOCK actual (lee LocalStorage/estado). Cambia esto por Supabase luego.
   async getRole(): Promise<UserRole> {
-    return this.state.role;
+    if (this.state.role) return this.state.role;
+    const uid = this.state.uid;
+    if (!uid) return 'user';
+    const { data } = await Supabase.from('users')
+      .select('rol')
+      .eq('uid', uid)
+      .single();
+    return (data?.rol ?? 'user') as UserRole;
   }
 
-  // Útil para pruebas locales (quita cuando uses Supabase)
-  setRole(role: UserRole) {
-    if (!this.state.uid) return;
-    this.state.setSession(this.state.uid, role);
+  async setRole(role: UserRole) {
+    const uid = this.state.uid;
+    if (!uid) return;
+    const { error } = await Supabase.from('users')
+      .update({ rol: role })
+      .eq('uid', uid);
+    if (!error) this.state.setSession(uid, role);
   }
 }

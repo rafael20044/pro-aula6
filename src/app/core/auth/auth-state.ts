@@ -1,31 +1,53 @@
 import { Injectable } from '@angular/core';
+import { Supabase } from 'src/app/core/supabase/supabase';
 import { BehaviorSubject } from 'rxjs';
 
-export type UserRole = 'user' | 'admin' | null;
+export type UserRole = 'admin' | 'user';
+type SessionState = {
+  uid: string | null;
+  role: UserRole | null;
+  email?: string | null;
+};
 
 @Injectable({ providedIn: 'root' })
 export class AuthStateService {
-  private uid$ = new BehaviorSubject<string | null>(localStorage.getItem('USER_UID'));
-  private role$ = new BehaviorSubject<UserRole>((localStorage.getItem('USER_ROLE') as UserRole) ?? null);
+  private _state$ = new BehaviorSubject<SessionState>({
+    uid: null,
+    role: null,
+    email: null,
+  });
+  state$ = this._state$.asObservable();
 
-  uidChanges = this.uid$.asObservable();
-  roleChanges = this.role$.asObservable();
-
-  get uid() { return this.uid$.value; }
-  get role() { return this.role$.value; }
-  get isLoggedIn() { return !!this.uid$.value; }
-
-  setSession(uid: string, role: UserRole) {
-    localStorage.setItem('USER_UID', uid);
-    if (role) localStorage.setItem('USER_ROLE', role);
-    this.uid$.next(uid);
-    this.role$.next(role);
+  get uid() {
+    return this._state$.value.uid;
+  }
+  get role() {
+    return this._state$.value.role;
   }
 
-  clear() {
-    localStorage.removeItem('USER_UID');
-    localStorage.removeItem('USER_ROLE');
-    this.uid$.next(null);
-    this.role$.next(null);
+  constructor() {
+    this.bootstrap();
+    Supabase.auth.onAuthStateChange(() => this.bootstrap());
+  }
+
+  private async bootstrap() {
+    const { data } = await Supabase.auth.getUser();
+    const uid = data.user?.id ?? null;
+    const email = data.user?.email ?? null;
+
+    let role: UserRole | null = null;
+    if (uid) {
+      const { data: u, error } = await Supabase.from('users')
+        .select('rol')
+        .eq('uid', uid)
+        .maybeSingle();
+      const role = (u?.rol ?? null) as UserRole | null;
+    }
+    this._state$.next({ uid, role, email });
+  }
+
+  setSession(uid: string, role: UserRole) {
+    const curr = this._state$.value;
+    this._state$.next({ ...curr, uid, role });
   }
 }
