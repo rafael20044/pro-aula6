@@ -1,29 +1,28 @@
-<ion-content class="welcome-content">
-  <div class="container">
-<div class="brand">
-        <div class="logo-wrapper">
-          <img src="assets/icon/logo.png" alt="Logo" class="logo" />
-        </div>    <h1 class="title">WELCOME QUESTOPIA</h1>
-</div>
+<ion-content>
+  <div class="welcome-container">
+
+    <!-- Logo principal -->
+    <img src="assets/icon/logo.png" alt="Questopia Logo" class="logo" />
+
+    <!-- Título y lema -->
+    <h1 class="title">Questopia</h1>
     <p class="subtitle">Crea y contesta al mundo</p>
 
+    <!-- Reglas animadas -->
     <div class="rules">
-      <h2>Reglas de la aplicación</h2>
-      <ul>
-        <li>Respeta a los demás usuarios.</li>
-        <br>
-        <li>Publica preguntas claras y relevantes.</li>
-        <br>
-        <li>No compartas información personal.</li>
-        <br>
-        <li>Participa con respeto y diversión.</li>
-        <br>
-      </ul>
-    </div>
-  <div class="alt-action">
-        <a routerLink="/auth/login" class="alt-link">siguiente</a>
+      <div class="rule-card" *ngFor="let rule of rules; let i = index" [@fadeIn]="i">
+        <img [src]="rule.icon" [alt]="rule.title" class="rule-icon" />
+        <div class="rule-text">
+          <h3>{{ rule.title }}</h3>
+          <p>{{ rule.description }}</p>
+        </div>
       </div>
+    </div>
+
+    <!-- Botón inferior -->
+    <ion-button expand="block" class="login-btn" routerLink="/login">
+      Ir al login
+    </ion-button>
 
   </div>
 </ion-content>
-
