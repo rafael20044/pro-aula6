@@ -1,14 +1,13 @@
 <ion-content>
   <div class="welcome-container">
 
-    <!-- Logo principal -->
     <img src="assets/icon/logo.png" alt="Questopia Logo" class="logo" />
 
-    <!-- Título y lema -->
+  
     <h1 class="title">Questopia</h1>
     <p class="subtitle">Crea y contesta al mundo</p>
 
-    <!-- Reglas animadas -->
+   
     <div class="rules">
       <div class="rule-card" *ngFor="let rule of rules; let i = index" [@fadeIn]="i">
         <img [src]="rule.icon" [alt]="rule.title" class="rule-icon" />
@@ -19,8 +18,8 @@
       </div>
     </div>
 
-    <!-- Botón inferior -->
-    <ion-button expand="block" class="login-btn" routerLink="/login">
+
+    <ion-button expand="block" class="login-btn" routerLink="/auth/login" >
       Ir al login
     </ion-button>
 
