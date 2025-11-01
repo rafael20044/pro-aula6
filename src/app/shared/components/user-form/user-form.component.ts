@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef }
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { IImage } from 'src/app/interfaces/iimage';
 import { AuthService } from '../../services/auth-service';
-import { DatabaseService } from '../../services/database-service';
 import { ToastService } from '../../services/toast-service';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage-service';
@@ -11,6 +10,7 @@ import { Capacitor } from '@capacitor/core';
 import { IUserCreate } from 'src/app/interfaces/iuser';
 import { Const } from 'src/app/const/const';
 import { FilePickerService } from 'src/app/core/services/file-picker-service';
+import { UserService } from '../../services/user-service';
 
 @Component({
   selector: 'app-user-form',
@@ -47,7 +47,7 @@ export class UserFormComponent implements OnInit {
   constructor(
     private readonly fileS:FilePickerService,
     private readonly auth: AuthService,
-    private readonly database: DatabaseService,
+    private readonly user: UserService,
     private readonly toast: ToastService,
     private readonly router: Router,
     private readonly local: LocalStorageService,
@@ -163,7 +163,7 @@ export class UserFormComponent implements OnInit {
       user.photo = result?.url;
       user.path = result?.path
     }
-    const isCreate = await this.database.createUser(user);
+    const isCreate = await this.user.createUser(user);
     if (isCreate) {
       this.local.set(Const.USER_UID, uid);
       this.router.navigate(['/home']);
