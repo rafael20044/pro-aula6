@@ -14,6 +14,7 @@ export class UserService {
 
     if (error) {
       // this.toast.show('Error al guardar los datos', 1500, 'bottom', 'warning');
+      //console.log(error);
       return false;
     }
 
