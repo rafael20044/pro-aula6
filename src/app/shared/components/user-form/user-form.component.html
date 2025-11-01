@@ -113,40 +113,35 @@
   <!-- STEP 3: Foto de perfil -->
   <div class="step step-3" [class.active]="currentStep === 3">
     <!-- Sección de foto de perfil -->
-    <div class="photo-section">
-    <div class="photo-header input-group">
-        <ion-label class="input-label">Foto de perfil *</ion-label>
-        <div class="photo-action">
-          <!-- external remove button placed top-right when a photo exists -->
-          <button *ngIf="profilePhoto" type="button" class="photo-remove-external" (click)="removePhoto()" title="Eliminar foto">
-            <ion-icon name="close"></ion-icon>
-          </button>
-        </div>
-      </div>
-    <div class="photo-card" *ngIf="profilePhoto; else uploadPrompt">
-      <img [src]="profilePhoto" alt="Foto de perfil" class="photo-card__image" />
-      <button
-        type="button"
-        class="photo-card__remove"
-        title="Eliminar foto"
-        (click)="removePhoto()">
-        <ion-icon name="close"></ion-icon>
-      </button>
+    <div class="image-section">
+      <ion-label class="image-label">
+        Foto de perfil
+        <span class="required-asterisk">*</span>
+      </ion-label>
 
+      <div class="image-preview" *ngIf="profilePhoto">
+        <img [src]="profilePhoto" alt="Foto de perfil">
+        <ion-button fill="clear" color="danger" (click)="removePhoto()">
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-button>
+      </div>
+
+      <ion-button expand="block" fill="outline" (click)="triggerCamera()">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        {{ profilePhoto ? 'Cambiar foto' : 'Tomar foto' }}
+      </ion-button>
+
+      <input type="file" accept="image/*" #fileInput class="hidden-file-input" (change)="onFileSelected($event)" title="Seleccionar imagen" aria-label="Seleccionar imagen de perfil">
+
+      <ion-button expand="block" fill="outline" (click)="triggerGallery()">
+        <ion-icon name="image" slot="start"></ion-icon>
+        Seleccionar de la galería
+      </ion-button>
     </div>
-
-    <ng-template #uploadPrompt>
-      <div class="upload-buttons">
-        <!-- <app-button class="upload-btn camera" [text]="'TOMAR FOTO'" [action]="triggerCamera.bind(this)" [type]="'button'" [icon]="'camera'" [expand]="'block'"></app-button> -->
-
-        <app-button class="upload-btn gallery" [text]="'SELECCIONAR DE LA GALERÍA'" [action]="triggerGallery.bind(this)" [type]="'button'" [icon]="'images'" [expand]="'block'"></app-button>
-      </div>
-    </ng-template>
     
     <div class="step-actions">
       <ion-button fill="clear" class="nav-left" (click)="goToStepTo2()">Anterior</ion-button>
       <app-button class="nav-right submit-btn" variant="filled" [text]="isRegistration ? 'Crear cuenta' : 'Guardar cambios'" [action]="submitForm" [type]="'submit'"></app-button>
     </div>
-</div>
   </div>
 </form>

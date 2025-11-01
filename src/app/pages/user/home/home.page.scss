@@ -39,3 +39,8 @@
   }
 }
 
+// Ajuste del FAB para que no tape el tab bar
+ion-fab {
+  margin-bottom: 70px; // Sube el FAB por encima del tab bar
+}
+

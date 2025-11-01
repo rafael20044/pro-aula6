@@ -1,5 +1,8 @@
 <div class="app-input">
-  <label class="input-label">{{ label }}</label>
+  <label class="input-label">
+    {{ displayLabel }}
+    <span *ngIf="requiredAsterisk" class="required-asterisk">*</span>
+  </label>
   <ion-input
     class="native-input"
     [placeholder]="placeholder"

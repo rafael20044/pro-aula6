@@ -1,0 +1,95 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="question-form">
+  
+  <!-- Título -->
+  <div class="form-section">
+    <app-input
+      [label]="'Título de la pregunta *'"
+      [placeholder]="'¿Cuál es tu pregunta?'"
+      [type]="'text'"
+      [control]="titleControl">
+    </app-input>
+    <ion-text *ngIf="titleControl.touched && titleControl.errors?.['required']" class="error-text">
+      El título es obligatorio
+    </ion-text>
+    <ion-text *ngIf="titleControl.touched && titleControl.errors?.['minlength']" class="error-text">
+      El título debe tener al menos 5 caracteres
+    </ion-text>
+  </div>
+
+  <!-- Cuerpo / Descripción -->
+  <div class="form-section">
+    <ion-label class="section-label">Descripción <span class="required-asterisk">*</span></ion-label>
+    <ion-textarea
+      class="body-textarea"
+      formControlName="body"
+      placeholder="Describe tu pregunta en detalle..."
+      rows="8"
+      [counter]="true"
+      maxlength="2000">
+    </ion-textarea>
+    <ion-text *ngIf="bodyControl.touched && bodyControl.errors?.['required']" class="error-text">
+      La descripción es obligatoria
+    </ion-text>
+    <ion-text *ngIf="bodyControl.touched && bodyControl.errors?.['minlength']" class="error-text">
+      La descripción debe tener al menos 20 caracteres
+    </ion-text>
+  </div>
+
+  <!-- Imágenes (opcional) -->
+  <div class="form-section">
+    <ion-label class="section-label">Imágenes (opcional)</ion-label>
+    
+    <div class="images-container" *ngIf="imagesPreviews.length > 0">
+      <div class="image-preview" *ngFor="let preview of imagesPreviews; let i = index">
+        <img [src]="preview" alt="Preview" />
+        <button type="button" class="remove-image-btn" (click)="removeImage(i)" title="Eliminar imagen" aria-label="Eliminar imagen">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <app-button
+      class="add-images-btn"
+      [text]="imagesPreviews.length > 0 ? 'Añadir más imágenes' : 'Añadir imágenes'"
+      [icon]="'images'"
+      [type]="'button'"
+      [action]="triggerImageInput.bind(this)"
+      variant="outline">
+    </app-button>
+
+    <input
+      #imageInput
+      type="file"
+      accept="image/*"
+      multiple
+      (change)="onImagesSelected($event)"
+      class="hidden-input"
+      title="Seleccionar imágenes"
+      aria-label="Seleccionar imágenes para la pregunta"
+    />
+  </div>
+
+  <!-- Tags (obligatorias) -->
+  <div class="form-section">
+    <app-tag-picker
+      [min]="1"
+      [max]="2"
+      [(selected)]="selectedTags"
+      (selectedChange)="onTagsChange($event)">
+    </app-tag-picker>
+    <ion-text *ngIf="tagsControl.touched && (!selectedTags || !selectedTags.length)" class="error-text">
+      Debes seleccionar al menos una etiqueta
+    </ion-text>
+  </div>
+
+  <!-- Botón de envío -->
+  <div class="form-actions">
+    <app-button
+      [text]="'Publicar Pregunta'"
+      [type]="'submit'"
+      variant="filled"
+      [expand]="'block'">
+    </app-button>
+  </div>
+
+</form>

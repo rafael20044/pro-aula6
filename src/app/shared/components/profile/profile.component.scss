@@ -89,8 +89,9 @@ $border: #2d3748;
     border-radius: 14px;
 
     ion-label {
-      color: $text-secondary;
-      font-size: 15px;
+      color: $text-primary;
+      font-size: 16px;
+      font-weight: 600;
     }
 
     ion-input {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -8,11 +9,16 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-   showLogo = true;
-    onTabChange(event: any) {
+  showLogo = true;
+
+  constructor(private router: Router) {}
+
+  onTabChange(event: any) {
     const selectedTab = event.tab;
     this.showLogo = selectedTab === 'home';
+  }
 
-
-}
+  goToCreateQuestion() {
+    this.router.navigate(['/user/create-question']);
+  }
 }

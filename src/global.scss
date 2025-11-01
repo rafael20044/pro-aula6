@@ -35,3 +35,16 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 // @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Shared helpers */
+.required-asterisk {
+	color: #ef4444; /* error red */
+	margin-left: 4px;
+	font-weight: 700;
+}
+
+.form-label {
+	color: #ffffff;
+	font-size: 16px;
+	font-weight: 600;
+}

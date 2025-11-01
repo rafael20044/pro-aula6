@@ -1,0 +1,71 @@
+<div class="tag-field">
+  <label class="field-label">Categorías <span class="required-asterisk">*</span></label>
+
+  <div class="selected-row" *ngIf="selected?.length">
+    <ion-chip *ngFor="let tag of selected" color="primary" class="chip-selected">
+      <ion-label>{{ tag }}</ion-label>
+      <ion-icon name="close" (click)="remove(tag)"></ion-icon>
+    </ion-chip>
+  </div>
+
+  <div class="main-row">
+    <ion-chip *ngFor="let tag of mainTags"
+              [outline]="!selected.includes(tag)"
+              [color]="selected.includes(tag) ? 'primary' : 'medium'"
+              [disabled]="!selected.includes(tag) && selected.length >= max"
+              (click)="toggle(tag)">
+      <ion-label>{{ tag }}</ion-label>
+    </ion-chip>
+
+    <ion-button size="small" fill="outline" class="more-btn" (click)="open()">
+      <ion-icon name="add" slot="start"></ion-icon>
+      Agregar/Buscar
+    </ion-button>
+  </div>
+</div>
+
+<ion-modal [isOpen]="isOpen" (didDismiss)="close()" [initialBreakpoint]="0.5" [breakpoints]="[0.45,0.75,1]">
+  <ng-template>
+    <ion-header translucent>
+      <ion-toolbar>
+        <ion-title>Seleccionar categorías</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="close()">Listo</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+        <ion-searchbar [(ngModel)]="search" placeholder="Buscar o crear categoría"></ion-searchbar>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <div class="modal-section" *ngIf="selected?.length">
+        <div class="section-title">Seleccionadas ({{selected.length}}/{{max}})</div>
+        <div class="chips">
+          <ion-chip *ngFor="let tag of selected" color="primary" class="chip-selected">
+            <ion-label>{{ tag }}</ion-label>
+            <ion-icon name="close" (click)="remove(tag)"></ion-icon>
+          </ion-chip>
+        </div>
+      </div>
+
+      <div class="modal-section" *ngIf="canCreate()">
+        <ion-button expand="block" (click)="createTagFromSearch()">
+          Crear "{{ search.trim() }}"
+        </ion-button>
+      </div>
+
+      <div class="modal-section">
+        <div class="section-title">Todas</div>
+        <div class="chips">
+          <ion-chip *ngFor="let tag of filtered"
+                    [outline]="true"
+                    [disabled]="selected.length >= max"
+                    (click)="toggle(tag)">
+            <ion-label>{{ tag }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

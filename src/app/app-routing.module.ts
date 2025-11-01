@@ -32,6 +32,23 @@ const routes: Routes = [
     // canActivate: [AuthGuard]
   },
 
+  // User area routes
+  {
+    path: 'user',
+    children: [
+      {
+        path: 'home',
+        loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule),
+        // canActivate: [AuthGuard]
+      },
+      {
+        path: 'create-question',
+        loadChildren: () => import('./pages/user/create-question/create-question.module').then(m => m.CreateQuestionPageModule),
+        // canActivate: [AuthGuard]
+      }
+    ]
+  },
+
   // Área Admin (privado) - lazy load del FEATURE admin
   {
     path: 'admin',
