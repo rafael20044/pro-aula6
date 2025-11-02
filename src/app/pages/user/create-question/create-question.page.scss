@@ -1,16 +1,11 @@
-ion-content {
-  --background: #0f1419;
-}
+ion-content { --background: var(--ion-background-color); }
 
 ion-toolbar {
-  --background: #1a1f2e;
-  --color: #ffffff;
+  --background: var(--bg-card);
+  --color: var(--text-primary);
+  --border-color: var(--border);
 }
 
-ion-title {
-  font-weight: 600;
-}
+ion-title { font-weight: 600; }
 
-ion-button {
-  --color: #4a90e2;
-}
+ion-button { --color: var(--primary); }

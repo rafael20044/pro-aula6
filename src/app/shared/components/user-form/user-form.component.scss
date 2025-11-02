@@ -1,18 +1,16 @@
 // Importar variables compartidas
-$primary: #4a90e2;
-$primary-dark: #357abd;
-$primary-light: #6ba3e8;
-$accent: #64748b;
-$bg-dark: #0f1419;
-$bg-card: #1a1f2e;
-$bg-card-elevated: #252d3d;
-$text-primary: #ffffff;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #2d3748;
-$border-light: #3d4758;
-$success: #10b981;
-$error: #ef4444;
+/* Use CSS variables for theming */
+$primary: var(--primary);
+$primary-dark: var(--primary-dark);
+$primary-light: var(--primary-light);
+$accent: var(--accent);
+$bg-card-elevated: var(--bg-card-elevated);
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-muted: var(--text-muted);
+$border: var(--border);
+$success: var(--success);
+$error: var(--error);
 
 .user-form {
   display: flex;
@@ -82,7 +80,7 @@ $error: #ef4444;
   .input-label {
     font-size: 15px;
     font-weight: 600;
-    color: $text-secondary;
+    color: var(--label-color);
     margin: 0;
     padding-left: 4px;
   }
@@ -108,7 +106,7 @@ $error: #ef4444;
 
     &.ion-focused {
       --border-color: #{$primary};
-      --background: #{lighten($bg-card-elevated, 2%)};
+      --background: var(--bg-card-elevated-hover);
     }
 
     &.ion-invalid.ion-touched {
@@ -223,6 +221,10 @@ $error: #ef4444;
   }
 }
 
+@media (min-width: 900px) {
+  .user-form { max-width: 920px; margin: 0 auto; }
+}
+
 .image-section {
 	margin-bottom: 1.5rem;
   width: 100%;
@@ -236,11 +238,11 @@ $error: #ef4444;
 	margin-bottom: 0.5rem;
 	font-weight: 600;
   font-size: 16px;
-  color: $text-primary;
+  color: var(--label-color);
   padding-left: 4px;
 
   .required-asterisk {
-    color: $error;
+    color: var(--error);
     margin-left: 2px;
   }
 }

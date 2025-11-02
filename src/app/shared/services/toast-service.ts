@@ -6,6 +6,8 @@ import { ToastController } from '@ionic/angular';
 })
 export class ToastService {
 
+  private active?: HTMLIonToastElement;
+
   constructor(private readonly toast:ToastController){}
 
   async show(
@@ -14,13 +16,26 @@ export class ToastService {
       position:PositionType = 'bottom', 
       color:ColorType = 'success'
     ){
+    // Dismiss previous toast to avoid stacking
+    await this.active?.dismiss();
+
     const toast = await this.toast.create({
       message: message,
       duration: duration,
       position: position,
       color: color,
     });
+    this.active = toast;
     await toast.present();
+  }
+
+  async showError(message: string, duration: number = 2200, position: PositionType = 'bottom') {
+    await this.show(message, duration, position, 'danger');
+  }
+
+  async dismiss() {
+    await this.active?.dismiss();
+    this.active = undefined;
   }
 }
 

@@ -7,28 +7,36 @@
 	.input-label {
 		font-size: 16px;
 		font-weight: 600;
-		color: #ffffff; /* labels must be white */
+		color: var(--label-color);
 		padding-left: 4px;
 	}
 
 	.required-asterisk {
-		color: #ef4444; /* error red */
+		color: var(--ion-color-danger); /* error red */
 		margin-left: 4px;
 		font-weight: 700;
 	}
 
 	.native-input {
-		--background: #252d3d; /* bg-card-elevated */
-		--color: #ffffff;
-		--placeholder-color: #64748b;
+		--background: var(--bg-card-elevated);
+		--color: var(--text-primary);
+		--placeholder-color: var(--input-placeholder);
 		--padding-start: 16px;
 		--padding-end: 16px;
 		--border-radius: 12px;
-		--border-color: #2d3748;
+		--border-color: var(--input-border);
 		min-height: 52px;
 		font-size: 15px;
 		border-radius: 12px;
 		width: 100%;
+
+		/* Fallback in case border vars are ignored */
+		border: 1px solid var(--input-border);
+		transition: border-color 0.2s ease;
+
+		&:focus-within {
+			border-color: var(--input-border-focus);
+		}
 	}
 }
 

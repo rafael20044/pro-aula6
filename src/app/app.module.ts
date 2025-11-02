@@ -8,10 +8,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
 import { RouteReuseStrategy } from '@angular/router';
 import { AdminModule } from './pages/admin/admin.module';
+import { SharedModule } from './shared/shared-module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, CoreModule, AdminModule,],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, CoreModule, AdminModule, SharedModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

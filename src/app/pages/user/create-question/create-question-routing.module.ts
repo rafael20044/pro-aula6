@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CreateQuestionPage } from './create-question.page';
+
+
+export class CreateQuestionPage {}
 
 const routes: Routes = [
   {

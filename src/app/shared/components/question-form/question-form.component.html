@@ -35,39 +35,7 @@
     </ion-text>
   </div>
 
-  <!-- Imágenes (opcional) -->
-  <div class="form-section">
-    <ion-label class="section-label">Imágenes (opcional)</ion-label>
-    
-    <div class="images-container" *ngIf="imagesPreviews.length > 0">
-      <div class="image-preview" *ngFor="let preview of imagesPreviews; let i = index">
-        <img [src]="preview" alt="Preview" />
-        <button type="button" class="remove-image-btn" (click)="removeImage(i)" title="Eliminar imagen" aria-label="Eliminar imagen">
-          <ion-icon name="close"></ion-icon>
-        </button>
-      </div>
-    </div>
-
-    <app-button
-      class="add-images-btn"
-      [text]="imagesPreviews.length > 0 ? 'Añadir más imágenes' : 'Añadir imágenes'"
-      [icon]="'images'"
-      [type]="'button'"
-      [action]="triggerImageInput.bind(this)"
-      variant="outline">
-    </app-button>
-
-    <input
-      #imageInput
-      type="file"
-      accept="image/*"
-      multiple
-      (change)="onImagesSelected($event)"
-      class="hidden-input"
-      title="Seleccionar imágenes"
-      aria-label="Seleccionar imágenes para la pregunta"
-    />
-  </div>
+ 
 
   <!-- Tags (obligatorias) -->
   <div class="form-section">
@@ -82,6 +50,32 @@
     </ion-text>
   </div>
 
+ <!-- Imágenes (opcional) -->
+  <div class="form-section">
+    <ion-label class="section-label">Imágenes (opcional)</ion-label>
+
+    <div class="images-container" *ngIf="imagesPreviews.length > 0">
+      <div class="image-preview" *ngFor="let preview of imagesPreviews; let i = index">
+        <img [src]="preview" alt="Preview" />
+        <button type="button" class="remove-image-btn" (click)="removeImage(i)" title="Eliminar imagen" aria-label="Eliminar imagen">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <ion-button
+      class="add-images-btn"
+      expand="block"
+      fill="outline"
+      (click)="triggerGallery()"
+      [disabled]="imagesPreviews.length >= maxImages">
+      <ion-icon name="image" slot="start"></ion-icon>
+      {{ imagesPreviews.length > 0 ? 'Añadir otra imagen' : 'Añadir imagen' }}
+    </ion-button>
+
+    <ion-note color="medium" class="images-note">{{imagesPreviews.length}}/{{maxImages}} imágenes</ion-note>
+  </div>
+  
   <!-- Botón de envío -->
   <div class="form-actions">
     <app-button

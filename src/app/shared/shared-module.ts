@@ -11,6 +11,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import { ProfileComponent } from './components/profile/profile.component';
 import { QuestionFormComponent } from './components/question-form/question-form.component';
 import { TagPickerComponent } from './components/tag-picker/tag-picker.component';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 
 
 
@@ -25,6 +26,7 @@ import { TagPickerComponent } from './components/tag-picker/tag-picker.component
     ProfileComponent,
     QuestionFormComponent,
     TagPickerComponent,
+    ThemeToggleComponent,
   ],
   providers: [],
   imports: [
@@ -43,6 +45,7 @@ import { TagPickerComponent } from './components/tag-picker/tag-picker.component
     ProfileComponent,
     QuestionFormComponent,
     TagPickerComponent,
+    ThemeToggleComponent,
   ],
 })
 export class SharedModule { }

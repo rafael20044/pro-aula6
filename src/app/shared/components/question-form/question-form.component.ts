@@ -1,5 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FilePickerService } from 'src/app/core/services/file-picker-service';
+import { IImage } from 'src/app/interfaces/iimage';
 
 @Component({
   selector: 'app-question-form',
@@ -9,14 +11,14 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 })
 export class QuestionFormComponent implements OnInit {
   @Output() questionSubmit = new EventEmitter<any>();
-  @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
 
   form: FormGroup;
-  selectedImages: File[] = [];
   imagesPreviews: string[] = [];
+  pickedImages: IImage[] = [];
   selectedTags: string[] = [];
+  readonly maxImages = 3;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private filePicker: FilePickerService) {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       body: ['', [Validators.required, Validators.minLength(20)]],
@@ -38,38 +40,22 @@ export class QuestionFormComponent implements OnInit {
     return this.form.get('tags') as FormControl;
   }
 
-  triggerImageInput() {
-    this.imageInput.nativeElement.click();
-  }
+  // Legacy input methods removed to avoid native file control
 
-  onImagesSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      const files = Array.from(input.files);
-      
-      // Limitar a 5 imágenes máximo
-      if (this.selectedImages.length + files.length > 5) {
-        alert('Máximo 5 imágenes permitidas');
-        return;
+  // Open gallery via FilePickerService, append up to 5 images
+  async triggerGallery() {
+    if (this.pickedImages.length >= this.maxImages) return;
+    const img = await this.filePicker.pickImage();
+    if (img) {
+      if (this.pickedImages.length < this.maxImages) {
+        this.pickedImages.push(img);
+        if (img.previewUrl) this.imagesPreviews.push(img.previewUrl);
       }
-
-      files.forEach(file => {
-        if (file.type.startsWith('image/')) {
-          this.selectedImages.push(file);
-          
-          // Crear preview
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            this.imagesPreviews.push(e.target?.result as string);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
     }
   }
 
   removeImage(index: number) {
-    this.selectedImages.splice(index, 1);
+    this.pickedImages.splice(index, 1);
     this.imagesPreviews.splice(index, 1);
   }
 
@@ -93,7 +79,7 @@ export class QuestionFormComponent implements OnInit {
         title: this.titleControl.value,
         body: this.bodyControl.value,
         tags: this.selectedTags,
-        images: this.selectedImages
+        images: this.pickedImages
       };
       this.questionSubmit.emit(formData);
     } else {

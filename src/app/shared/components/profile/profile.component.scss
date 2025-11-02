@@ -1,24 +1,17 @@
-/* Paleta */
-$primary: #4a90e2;
-$primary-dark: #357abd;
-$primary-light: #6ba3e8;
-$bg-dark: #0f1419;
-$bg-card: #1a1f2e;
-$text-primary: #ffffff;
-$text-secondary: #94a3b8;
-$border: #2d3748;
+/* Use theme variables */
+$primary: var(--primary);
+$primary-dark: var(--primary-dark);
+$primary-light: var(--primary-light);
+$bg-card: var(--bg-card);
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$border: var(--border);
 
 
-.profile-content {
-  --background: #{$bg-dark};
-}
+.profile-content { --background: var(--ion-background-color); }
 
 
-.profile-content::part(scroll) {
-  overflow: hidden;
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: auto;
-}
+.profile-content::part(scroll) { overflow: hidden; overscroll-behavior: none; }
 
 
 .page {
@@ -85,12 +78,13 @@ $border: #2d3748;
     --border-radius: 14px;
     --padding-start: 12px;
     --color: #{$text-primary};
-    border: 1px solid $border;
+    border: 1px solid #{$border};
     border-radius: 14px;
 
     ion-label {
-      color: $text-primary;
+      color: var(--label-color);
       font-size: 16px;
+      font-weight: 600;
       font-weight: 600;
     }
 
