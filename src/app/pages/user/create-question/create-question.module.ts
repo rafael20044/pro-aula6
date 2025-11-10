@@ -13,8 +13,8 @@ import { SharedModule } from 'src/app/shared/shared-module';
     ReactiveFormsModule,
     IonicModule,
     CreateQuestionPageRoutingModule,
-    SharedModule
+    SharedModule,
   ],
-  declarations: [CreateQuestionPage]
+  declarations: [CreateQuestionPage],
 })
 export class CreateQuestionPageModule {}
