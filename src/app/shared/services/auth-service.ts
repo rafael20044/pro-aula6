@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { ToastService } from './toast-service';
+import { Const } from 'src/app/const/const';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +31,13 @@ export class AuthService {
 
   async signOut(){
     await Supabase.auth.signOut();
+  }
+
+  async isAdmin(uid:string){
+    const {data, error} = await Supabase.from(Const.TB_USER).select('rol').eq('uid', uid).single();
+    if (error) {
+      return false;
+    }
+    return data.rol == 'ADMIN';
   }
 }

@@ -36,17 +36,17 @@ async submit() {
 
   const { email, password } = this.form.value;
   const uid = await this.auth.loginWithEmailAndPassword(email || '', password || '');
-  if (!uid) return; // si falló login, no seguimos
+  if (!uid){
+    this.toat.show('Error al autenticar', 150, 'bottom', 'danger');
+    return;
+  }
 
   // MOCK de rol local (luego reemplazas por consulta real)
-  const role = (email || '').toLowerCase().includes('admin') ? 'admin' : 'user';
+  const role = await this.auth.isAdmin(uid);
 
-  // guarda sesión
   this.local.set(Const.USER_UID, uid);
-  localStorage.setItem('USER_UID', uid);
-  localStorage.setItem('USER_ROLE', role);
 
-  this.router.navigate([ role === 'admin' ? '/admin/home' : '/home' ]);
+  this.router.navigate([ role ? '/admin/home' : '/home' ]);
 }
 
 }
