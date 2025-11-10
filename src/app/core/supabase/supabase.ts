@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { environment } from 'src/environments/environment.prod'
 
 const supabaseUrl = environment.SUPABASE_URL
@@ -16,7 +16,7 @@ function getClient() {
 			},
 		});
 	}
-	return g.__supabaseClient;
+	return g.__supabaseClient as SupabaseClient;
 }
 
 export const Supabase = getClient();
