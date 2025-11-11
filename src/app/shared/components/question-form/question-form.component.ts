@@ -2,6 +2,12 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { FilePickerService } from 'src/app/core/services/file-picker-service';
 import { IImage } from 'src/app/interfaces/iimage';
+import { ToastService } from '../../services/toast-service';
+import { LocalStorageService } from '../../services/local-storage-service';
+import { QuestionService } from '../../services/question-service';
+import { IQuestioCreate } from 'src/app/interfaces/iquestioncreate';
+import { Const } from 'src/app/const/const';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-question-form',
@@ -18,7 +24,14 @@ export class QuestionFormComponent implements OnInit {
   selectedTags: string[] = [];
   readonly maxImages = 3;
 
-  constructor(private fb: FormBuilder, private filePicker: FilePickerService) {
+  constructor(
+      private fb: FormBuilder, 
+      private filePicker: FilePickerService, 
+      private toast:ToastService,
+      private local:LocalStorageService,
+      private question:QuestionService,
+      private route:Router
+    ) {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       body: ['', [Validators.required, Validators.minLength(20)]],
@@ -73,20 +86,21 @@ export class QuestionFormComponent implements OnInit {
     }
   }
 
-  submit() {
-    if (this.form.valid) {
-      const formData = {
-        title: this.titleControl.value,
-        body: this.bodyControl.value,
-        tags: this.selectedTags,
-        images: this.pickedImages
-      };
-      this.questionSubmit.emit(formData);
-    } else {
-      // Marcar todos como touched para mostrar errores
-      Object.keys(this.form.controls).forEach(key => {
-        this.form.get(key)?.markAsTouched();
-      });
+  async submit() {
+    if (!this.form.valid) {
+      this.toast.show('Complete los campos obligatorio', 1500, 'bottom', 'warning');
+      return;
+    }
+    const id = this.local.get(Const.USER_ID) as number;
+    const question:IQuestioCreate = {
+      user_id: id,
+      body: this.form.value.body,
+      title: this.form.value.title,
+    }
+    const questionId = await this.question.createQuestion(question, this.form.value.tags, this.pickedImages);
+    if (questionId) {
+      this.toast.show('pregunta creada con exito');
+      this.route.navigate(['/home']);
     }
   }
 

@@ -165,7 +165,9 @@ export class UserFormComponent implements OnInit {
     }
     const isCreate = await this.user.createUser(user);
     if (isCreate) {
+      const id = await this.user.findIdByUid(uid || '');
       this.local.set(Const.USER_UID, uid);
+      this.local.set(Const.USER_ID, id);
       this.router.navigate(['/home']);
       return;
     }

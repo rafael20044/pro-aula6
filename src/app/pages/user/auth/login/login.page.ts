@@ -5,6 +5,7 @@ import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
 import { ToastService } from 'src/app/shared/services/toast-service';
+import { UserService } from 'src/app/shared/services/user-service';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,7 @@ export class LoginPage {
     private readonly auth:AuthService,
     private readonly local:LocalStorageService,
     private readonly router:Router,
+    private readonly user:UserService
   ) {}
 
 async submit() {
@@ -43,8 +45,10 @@ async submit() {
 
   // MOCK de rol local (luego reemplazas por consulta real)
   const role = await this.auth.isAdmin(uid);
+  const id = await this.user.findIdByUid(uid);
 
   this.local.set(Const.USER_UID, uid);
+  this.local.set(Const.USER_ID, id);
 
   this.router.navigate([ role ? '/admin/home' : '/home' ]);
 }

@@ -29,4 +29,13 @@ export class UserService {
     }
     return data.length;
   }
+
+  async findIdByUid(uid:string){
+    const {data, error} = await Supabase.from(Const.TB_USER).select('id').eq('uid', uid).single();
+    if (error) {
+      console.log(error);
+      return;
+    }
+    return data.id as number;
+  }
 }
