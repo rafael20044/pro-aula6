@@ -12,6 +12,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { QuestionFormComponent } from './components/question-form/question-form.component';
 import { TagPickerComponent } from './components/tag-picker/tag-picker.component';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
+import { HeaderComponent } from './components/header/header.component';
 
 
 
@@ -26,7 +27,6 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
     ProfileComponent,
     QuestionFormComponent,
     TagPickerComponent,
-    ThemeToggleComponent,
   ],
   providers: [],
   imports: [
@@ -34,6 +34,8 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
+    HeaderComponent,
+    ThemeToggleComponent,
   ],
   exports: [
     InputComponent,
@@ -46,6 +48,7 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
     QuestionFormComponent,
     TagPickerComponent,
     ThemeToggleComponent,
+    HeaderComponent,
   ],
 })
 export class SharedModule { }

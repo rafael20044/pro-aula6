@@ -1,8 +1,4 @@
-<ion-header *ngIf="showLogo">
-  <div class="logo-wrapper">
-    <img src="assets/icon/logo.png" alt="Logo" class="logo" />
-  </div>
-</ion-header>
+<app-header></app-header>
 
 <ion-tabs (ionTabsWillChange)="onTabChange($event)">
   <ion-tab tab="home">
@@ -52,7 +48,6 @@
   </ion-tab-bar>
 </ion-tabs>
 
-<!-- Botón flotante FAB para crear pregunta -->
 <ion-fab vertical="bottom" horizontal="end" slot="fixed">
   <ion-fab-button (click)="goToCreateQuestion()">
     <ion-icon name="add"></ion-icon>

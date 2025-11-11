@@ -39,8 +39,27 @@
   }
 }
 
-// Ajuste del FAB para que no tape el tab bar
 ion-fab {
-  margin-bottom: 70px; // Sube el FAB por encima del tab bar
+  margin-bottom: 70px; 
+}
+
+/* Theme-aware tab bar */
+ion-tab-bar {
+  --background: var(--bg-card-elevated);
+  --color: var(--label-color);
+  --color-selected: var(--ion-color-primary);
+  /* keep default border/shadow subtle; color will be inherited from theme tokens */
+  --border: 0;
+  height: 56px;
+}
+
+ion-tab-button {
+  color: var(--label-color);
+}
+
+/* Ensure selected/tab active shows primary color */
+ion-tab-bar ::slotted(ion-tab-button.ion-selected),
+ion-tab-bar ::slotted(ion-tab-button.tab-selected) {
+  color: var(--ion-color-primary);
 }
 
