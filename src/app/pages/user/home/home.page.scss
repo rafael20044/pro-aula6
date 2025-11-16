@@ -55,11 +55,36 @@ ion-tab-bar {
 
 ion-tab-button {
   color: var(--label-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Ensure selected/tab active shows primary color */
 ion-tab-bar ::slotted(ion-tab-button.ion-selected),
 ion-tab-bar ::slotted(ion-tab-button.tab-selected) {
   color: var(--ion-color-primary);
+}
+
+/* Avatar en tab profile */
+.tab-avatar {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 4px;
+}
+
+.tab-initials-avatar {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--ion-color-primary);
+  color: #fff;
 }
 

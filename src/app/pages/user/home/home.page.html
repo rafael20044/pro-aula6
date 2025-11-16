@@ -1,4 +1,4 @@
-<app-header></app-header>
+<app-header *ngIf="showLogo"></app-header>
 
 <ion-tabs (ionTabsWillChange)="onTabChange($event)">
   <ion-tab tab="home">
@@ -42,7 +42,14 @@
     </ion-tab-button>
 
     <ion-tab-button tab="profile">
-      <ion-icon name="person-outline"></ion-icon>
+      <ng-container *ngIf="userAvatarUrl; else initialsAvatar">
+        <ion-avatar class="tab-avatar">
+          <img [src]="userAvatarUrl" alt="Avatar" />
+        </ion-avatar>
+      </ng-container>
+      <ng-template #initialsAvatar>
+        <div class="tab-initials-avatar" aria-label="Avatar con iniciales">{{ userInitials }}</div>
+      </ng-template>
       Perfil
     </ion-tab-button>
   </ion-tab-bar>

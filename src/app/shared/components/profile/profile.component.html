@@ -1,34 +1,41 @@
 
 <ion-content [fullscreen]="true" class="profile-content" [scrollY]="false">
   <div class="page">
-    <div class="profile-card">
-      <div class="avatar-section">
-        <img src="assets/icon/logo.png" alt="Foto de perfil" class="avatar" />
-        <ion-button fill="clear" class="change-photo-btn">
-          Cambiar foto
-        </ion-button>
+    <div class="profile-header">
+      <div class="cover"></div>
+      <div class="avatar-wrapper">
+        <ng-container *ngIf="avatarUrl; else initialsBig">
+          <img [src]="avatarUrl" alt="Foto de perfil" class="avatar" />
+        </ng-container>
+        <ng-template #initialsBig>
+          <div class="avatar-initials">{{ initials }}</div>
+        </ng-template>
+      </div>
+      <ion-button size="small" fill="clear" class="edit-profile-btn">
+        <ion-icon name="create-outline" slot="start" aria-hidden="true"></ion-icon>
+        <span>Editar perfil</span>
+      </ion-button>
+    </div>
+
+    <div class="profile-main">
+      <div class="identity">
+        <h2 class="full-name">{{ fullName }}</h2>
+        <div class="username">{{ username }}</div>
       </div>
 
-      <form class="profile-form">
-        <ion-item class="input-item">
-          <ion-label position="stacked">Nombre completo</ion-label>
-          <ion-input placeholder="Tu nombre completo"></ion-input>
-        </ion-item>
+      <div class="bio" *ngIf="location || birthdate">
+        <span *ngIf="location">{{ location }}</span>
+        <span *ngIf="birthdate"> • {{ birthdate }}</span>
+      </div>
 
-        <ion-item class="input-item">
-          <ion-label position="stacked">Correo electrónico</ion-label>
-          <ion-input placeholder="tu@correo.com" type="email"></ion-input>
-        </ion-item>
+      <div class="meta">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <span>{{ joinedDate }}</span>
+      </div>
 
-        <ion-item class="input-item">
-          <ion-label position="stacked">Contraseña</ion-label>
-          <ion-input placeholder="" type="password"></ion-input>
-        </ion-item>
+      <div class="profile-separator"></div>
 
-        <ion-button expand="block" class="save-btn">
-          Guardar cambios
-        </ion-button>
-      </form>
+      <div class="questions-placeholder">Tus preguntas aparecerán aquí.</div>
     </div>
   </div>
 </ion-content>

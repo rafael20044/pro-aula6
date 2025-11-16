@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
-import { UserService } from 'src/app/shared/services/user-service';
+import { Supabase } from 'src/app/core/supabase/supabase';
+import { Const } from 'src/app/const/const';
 
 @Component({
   selector: 'app-home',
@@ -12,11 +12,14 @@ import { UserService } from 'src/app/shared/services/user-service';
 export class HomePage implements OnInit{
 
   showLogo = true;
+  userAvatarUrl: string | null = null;
+  userInitials: string = '';
+  private sessionUserId: string | null = null;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    
+    this.loadUserProfile();
   }
 
   onTabChange(event: any) {
@@ -26,5 +29,33 @@ export class HomePage implements OnInit{
 
   goToCreateQuestion() {
     this.router.navigate(['/user/create-question']);
+  }
+
+  private async loadUserProfile() {
+    const { data: { user } } = await Supabase.auth.getUser();
+    if (!user) return;
+    this.sessionUserId = user.id;
+
+    // Buscar datos del usuario en la tabla de usuarios
+    const { data, error } = await Supabase
+      .from(Const.TB_USER)
+      .select('name, last_name, photo')
+      .eq('uid', user.id)
+      .single();
+
+    if (error) {
+      console.warn('No se pudo cargar perfil', error);
+      return;
+    }
+
+    this.userAvatarUrl = data?.photo || null;
+    this.userInitials = this.buildInitials(data?.name, data?.last_name);
+  }
+
+  private buildInitials(name?: string, last?: string): string {
+    const first = (name || '').trim().split(/\s+/)[0] || '';
+    const lastPart = (last || '').trim().split(/\s+/)[0] || '';
+    const initials = `${first.charAt(0)}${lastPart.charAt(0)}`.toUpperCase();
+    return initials || 'U';
   }
 }
