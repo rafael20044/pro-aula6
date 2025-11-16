@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth-guard';
+import { welcomeGuard } from './core/guards/welcome-guard';
+import { LoggedGuard } from './core/guards/logged-guard';
 
 const routes: Routes = [
   // Bienvenida (pública)
@@ -16,7 +18,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'login',
-        loadChildren: () => import('./pages/user/auth/login/login.module').then(m => m.LoginPageModule)
+        loadChildren: () => import('./pages/user/auth/login/login.module').then(m => m.LoginPageModule),
+        // canActivate: [LoggedGuard]
       },
       {
         path: 'register',

@@ -4,7 +4,7 @@ import { AuthStateService } from '../auth/auth-state';
 import { Supabase } from '../supabase/supabase';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
+export class LoggedGuard implements CanActivate {
   constructor(private state: AuthStateService, private router: Router) {}
 
   async canActivate(): Promise<boolean> {
@@ -17,10 +17,10 @@ export class AuthGuard implements CanActivate {
     const session = data.session;
 
     if (!session) {
-      this.router.navigate(['/auth/login']);
       return false;
     }
 
+    this.router.navigate(['/auth/login']);
     return true;
   }
 }
