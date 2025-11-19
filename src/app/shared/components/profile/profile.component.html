@@ -1,41 +1,46 @@
 
-<ion-content [fullscreen]="true" class="profile-content" [scrollY]="false">
+<ion-content [fullscreen]="true" class="profile-content">
   <div class="page">
-    <div class="profile-header">
-      <div class="cover"></div>
-      <div class="avatar-wrapper">
-        <ng-container *ngIf="avatarUrl; else initialsBig">
-          <img [src]="avatarUrl" alt="Foto de perfil" class="avatar" />
-        </ng-container>
-        <ng-template #initialsBig>
-          <div class="avatar-initials">{{ initials }}</div>
-        </ng-template>
-      </div>
-      <ion-button size="small" fill="clear" class="edit-profile-btn">
-        <ion-icon name="create-outline" slot="start" aria-hidden="true"></ion-icon>
-        <span>Editar perfil</span>
-      </ion-button>
-    </div>
-
-    <div class="profile-main">
-      <div class="identity">
-        <h2 class="full-name">{{ fullName }}</h2>
-        <div class="username">{{ username }}</div>
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <ng-container *ngIf="avatarUrl; else initialsBig">
+            <img [src]="avatarUrl" alt="Foto de perfil" class="avatar" />
+          </ng-container>
+          <ng-template #initialsBig>
+            <div class="avatar-initials">{{ initials }}</div>
+          </ng-template>
+        </div>
+        <div class="header-controls">
+          <ion-button size="small" fill="clear" class="edit-profile-btn">
+            <ion-icon name="create-outline" slot="start" aria-hidden="true"></ion-icon>
+            <span>Editar perfil</span>
+          </ion-button>
+        </div>
       </div>
 
-      <div class="bio" *ngIf="location || birthdate">
-        <span *ngIf="location">{{ location }}</span>
-        <span *ngIf="birthdate"> • {{ birthdate }}</span>
+      <div class="profile-main">
+        <div class="identity-row">
+          <div class="identity">
+            <h2 class="full-name">{{ fullName }}</h2>
+            <div class="username">{{ username }}</div>
+          </div>
+        </div>
+
+        <div class="bio" *ngIf="location || birthdate">
+          <span *ngIf="location">{{ location }}</span>
+          <span *ngIf="birthdate"> • {{ birthdate }}</span>
+        </div>
+
+        <div class="meta">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{ joinedDate }}</span>
+        </div>
+
+        <div class="profile-separator"></div>
+
+        <div class="questions-placeholder">Tus preguntas aparecerán aquí.</div>
       </div>
-
-      <div class="meta">
-        <ion-icon name="calendar-outline"></ion-icon>
-        <span>{{ joinedDate }}</span>
-      </div>
-
-      <div class="profile-separator"></div>
-
-      <div class="questions-placeholder">Tus preguntas aparecerán aquí.</div>
     </div>
   </div>
 </ion-content>

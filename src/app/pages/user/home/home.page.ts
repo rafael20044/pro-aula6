@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
+import { StorageService } from 'src/app/shared/services/storage-service';
+import { AuthService } from 'src/app/shared/services/auth-service';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,7 @@ export class HomePage implements OnInit{
   userInitials: string = '';
   private sessionUserId: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private readonly storageService: StorageService, private readonly auth: AuthService) {}
 
   ngOnInit(): void {
     this.loadUserProfile();
@@ -32,7 +34,8 @@ export class HomePage implements OnInit{
   }
 
   private async loadUserProfile() {
-    const { data: { user } } = await Supabase.auth.getUser();
+    await this.auth.ensureReady();
+    const user = this.auth.getUser();
     if (!user) return;
     this.sessionUserId = user.id;
 
@@ -48,7 +51,19 @@ export class HomePage implements OnInit{
       return;
     }
 
-    this.userAvatarUrl = data?.photo || null;
+    const raw = data?.photo || null;
+    if (raw && typeof raw === 'string' && raw.startsWith('http')) {
+      this.userAvatarUrl = raw;
+    } else if (raw) {
+      try {
+        const signed = await this.storageService.getSignUrl(Const.BUCKET, raw);
+        this.userAvatarUrl = signed?.url || null;
+      } catch {
+        this.userAvatarUrl = null;
+      }
+    } else {
+      this.userAvatarUrl = null;
+    }
     this.userInitials = this.buildInitials(data?.name, data?.last_name);
   }
 

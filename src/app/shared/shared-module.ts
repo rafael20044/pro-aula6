@@ -11,6 +11,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import { ProfileComponent } from './components/profile/profile.component';
 import { QuestionFormComponent } from './components/question-form/question-form.component';
 import { TagPickerComponent } from './components/tag-picker/tag-picker.component';
+import { QuestionCardComponent } from './components/question-card/question-card.component';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 import { HeaderComponent } from './components/header/header.component';
 
@@ -27,6 +28,7 @@ import { HeaderComponent } from './components/header/header.component';
     ProfileComponent,
     QuestionFormComponent,
     TagPickerComponent,
+    QuestionCardComponent,
   ],
   providers: [],
   imports: [
@@ -47,6 +49,7 @@ import { HeaderComponent } from './components/header/header.component';
     ProfileComponent,
     QuestionFormComponent,
     TagPickerComponent,
+    QuestionCardComponent,
     ThemeToggleComponent,
     HeaderComponent,
   ],

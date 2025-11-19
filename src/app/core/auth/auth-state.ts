@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Supabase } from 'src/app/core/supabase/supabase';
+import { AuthService } from 'src/app/shared/services/auth-service';
 import { BehaviorSubject } from 'rxjs';
 
 export type UserRole = 'admin' | 'user';
@@ -25,23 +26,24 @@ export class AuthStateService {
     return this._state$.value.role;
   }
 
-  constructor() {
+  constructor(private readonly authService: AuthService) {
     this.bootstrap();
     Supabase.auth.onAuthStateChange(() => this.bootstrap());
   }
 
   private async bootstrap() {
-    const { data } = await Supabase.auth.getUser();
-    const uid = data.user?.id ?? null;
-    const email = data.user?.email ?? null;
+    await this.authService.ensureReady();
+    const u = this.authService.getUser();
+    const uid = u?.id ?? null;
+    const email = u?.email ?? null;
 
     let role: UserRole | null = null;
     if (uid) {
-      const { data: u, error } = await Supabase.from('users')
+      const { data: userRow, error } = await Supabase.from('users')
         .select('rol')
         .eq('uid', uid)
         .maybeSingle();
-      const role = (u?.rol ?? null) as UserRole | null;
+      role = (userRow?.rol ?? null) as UserRole | null;
     }
     this._state$.next({ uid, role, email });
   }

@@ -2,27 +2,27 @@
 
 <ion-tabs (ionTabsWillChange)="onTabChange($event)">
   <ion-tab tab="home">
-    <div id="home-page">
+    <ion-content id="home-page" fullscreen>
       <app-home-c></app-home-c>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab tab="search">
-    <div id="search-page">
+    <ion-content id="search-page" fullscreen>
       <app-search></app-search>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab tab="notifications">
-    <div id="notification-page">
+    <ion-content id="notification-page" fullscreen>
       <app-notification></app-notification>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab tab="profile">
-    <div id="profile-page">
+    <ion-content id="profile-page" fullscreen>
       <app-profile></app-profile>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab-bar slot="bottom">

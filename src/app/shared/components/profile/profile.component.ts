@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
+import { AuthService } from 'src/app/shared/services/auth-service';
+import { StorageService } from 'src/app/shared/services/storage-service';
 
 @Component({
   selector: 'app-profile',
@@ -18,10 +20,11 @@ export class ProfileComponent  implements OnInit {
   location?: string; // opcional por ahora
   birthdate?: string; // opcional por ahora
 
-  constructor() { }
+  constructor(private readonly storageService: StorageService, private readonly auth: AuthService) { }
 
   async ngOnInit() {
-    const { data: { user } } = await Supabase.auth.getUser();
+    await this.auth.ensureReady();
+    const user = this.auth.getUser();
     if (!user) return;
     const { data, error } = await Supabase
       .from(Const.TB_USER)
@@ -29,7 +32,20 @@ export class ProfileComponent  implements OnInit {
       .eq('uid', user.id)
       .single();
     if (error) return;
-    this.avatarUrl = data?.photo || null;
+    // Resolve photo: may be stored as a signed URL already or as a storage path
+    const raw = data?.photo || null;
+    if (raw && typeof raw === 'string' && raw.startsWith('http')) {
+      this.avatarUrl = raw;
+    } else if (raw) {
+      try {
+        const signed = await this.storageService.getSignUrl(Const.BUCKET, raw);
+        this.avatarUrl = signed?.url || null;
+      } catch {
+        this.avatarUrl = null;
+      }
+    } else {
+      this.avatarUrl = null;
+    }
     const name = (data?.name || '').trim();
     const last = (data?.last_name || '').trim();
     this.fullName = [name, last].filter(Boolean).join(' ');

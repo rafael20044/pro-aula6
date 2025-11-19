@@ -1,0 +1,14 @@
+<div class="home-feed">
+	<div *ngIf="loading">Cargando preguntas...</div>
+	<div *ngIf="!loading && errorMsg" class="error">{{ errorMsg }}</div>
+	<ng-container *ngIf="!loading && feed.length === 0 && !errorMsg">
+		<div class="empty">No hay preguntas para mostrar.</div>
+	</ng-container>
+
+	<ng-container *ngIf="!loading">
+		<ng-container *ngFor="let item of feed">
+			<app-question-card [question]="item.q" [handle]="item.handle"></app-question-card>
+		</ng-container>
+	</ng-container>
+</div>
+
