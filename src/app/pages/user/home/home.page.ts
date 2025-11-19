@@ -33,6 +33,16 @@ export class HomePage implements OnInit{
     this.router.navigate(['/user/create-question']);
   }
 
+  async signOut() {
+    try {
+      await this.auth.signOut();
+      // navigate to login
+      this.router.navigate(['/auth/login']);
+    } catch (err) {
+      console.error('Error signing out', err);
+    }
+  }
+
   private async loadUserProfile() {
     await this.auth.ensureReady();
     const user = this.auth.getUser();

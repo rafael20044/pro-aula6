@@ -43,4 +43,11 @@
       </div>
     </div>
   </div>
+  
+  <!-- Logout FAB shown only on profile page -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="profile-logout-fab">
+    <ion-fab-button (click)="confirmSignOut()" title="Cerrar sesión">
+      <ion-icon name="log-out-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

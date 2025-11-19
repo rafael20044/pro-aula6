@@ -3,6 +3,8 @@ import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
 import { StorageService } from 'src/app/shared/services/storage-service';
+import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +22,12 @@ export class ProfileComponent  implements OnInit {
   location?: string; // opcional por ahora
   birthdate?: string; // opcional por ahora
 
-  constructor(private readonly storageService: StorageService, private readonly auth: AuthService) { }
+  constructor(
+    private readonly storageService: StorageService,
+    private readonly auth: AuthService,
+    private readonly alertCtrl: AlertController,
+    private readonly router: Router
+  ) { }
 
   async ngOnInit() {
     await this.auth.ensureReady();
@@ -53,6 +60,29 @@ export class ProfileComponent  implements OnInit {
     this.email = data?.email || '';
     this.username = this.buildUsername(this.email);
     this.joinedDate = this.formatJoinedDate(data?.created_at);
+  }
+
+  async confirmSignOut() {
+    const alert = await this.alertCtrl.create({
+      header: 'Cerrar sesión',
+      message: '¿Estás seguro que deseas cerrar la sesión?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Sí, cerrar',
+          handler: async () => {
+            try {
+              await this.auth.signOut();
+              // navigate to auth/login
+              await this.router.navigate(['/auth/login']);
+            } catch (err) {
+              console.error('Error al cerrar sesión', err);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   private buildInitials(name?: string, last?: string) {

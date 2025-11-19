@@ -58,6 +58,19 @@
   padding: 4px 8px;
 }
 
+/* Style for the logout FAB placed inside profile page */
+.profile-logout-fab ion-fab-button {
+  --background: var(--ion-color-danger, #ff3b30);
+  color: #fff;
+}
+
+
+.profile-logout-fab {
+  position: absolute;
+  right: 13px;
+  bottom: 90px;
+}
+
 /* Avatar a la izquierda sin romper el layout */
 /* Avatar sin borde, sólo círculo relleno o imagen */
 .profile-avatar {
