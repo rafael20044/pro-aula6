@@ -5,6 +5,7 @@ import { IImage } from 'src/app/interfaces/iimage';
 import { IQuestionDetails } from 'src/app/interfaces/iquestiondetail';
 import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
 import { StorageService } from './storage-service';
+import { IQuestionBytitle } from 'src/app/interfaces/iquestionbytitle';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,16 @@ export class QuestionService {
       return null;
     }
     return data as IQuestionDetails;
+  }
+
+
+  async findByTitle(title:string){
+    const {data, error} = await Supabase.rpc('search_questions_by_title', {search_text: title});
+    if (error) {
+      console.log(error);
+      return [];
+    }
+    return data as IQuestionBytitle[]
   }
 
   async createQuestion(question: any, tags: [], images: IImage[]) {

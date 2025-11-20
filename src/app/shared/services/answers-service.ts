@@ -9,12 +9,12 @@ export class AnswersService {
   
   constructor(){}
 
-  async createAnswer(data:any){
-    const {error} = await Supabase.from(Const.TB_ANSWERS).insert(data);
+  async createAnswer(data2:any){
+    const {data, error} = await Supabase.from(Const.TB_ANSWERS).insert(data2).select('id').single();
     if (error) {
       console.log(error);
-      return false;
+      return null;
     }
-    return true;
+    return data.id;
   }
 }

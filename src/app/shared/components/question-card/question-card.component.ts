@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
   standalone: false,
 })
 export class QuestionCardComponent implements OnInit {
-  @Input() question!: IQuestionDetails | IQuestionHome;
+  @Input() question!: IQuestionHome;
   @Input() handle?: string; // username before @ from author's email
 
   likeCount = 0;
@@ -102,7 +102,7 @@ export class QuestionCardComponent implements OnInit {
   }
 
   getAnswerCount(): number {
-    return (this.question as any).answer_count ?? (this.question as any).comment_count ?? 0;
+    return this.question.comment_count;
   }
 
   getLikeCount(): number {

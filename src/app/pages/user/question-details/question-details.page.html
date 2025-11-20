@@ -68,32 +68,64 @@
 
 
   <!-- Respuestas -->
-  <ion-list *ngIf="questionDetails.answers.length > 0">
-    <ion-list-header>
-      <ion-label>Respuestas ({{ questionDetails.answer_count }})</ion-label>
-    </ion-list-header>
+<!-- Respuestas -->
+<ion-list *ngIf="questionDetails.answers.length > 0">
+  <ion-list-header>
+    <ion-label>Respuestas ({{ questionDetails.answer_count }})</ion-label>
+  </ion-list-header>
 
-    <ion-item *ngFor="let answer of questionDetails.answers">
-      <ion-label>
-        <h2>{{ answer.user_name }}</h2>
+  <ion-item *ngFor="let answer of questionDetails.answers">
+    <ion-label>
+      <h2>{{ answer.user_name }}</h2>
+
+      <!-- Si está en modo edición -->
+      <ng-container *ngIf="editingAnswerId === answer.answer_id; else showBody">
+        <app-input
+          label="Editar respuesta"
+        ></app-input>
+        <app-button
+          text="Guardar"
+          expand="full"
+          variant="filled"
+          class="ion-margin-top"
+        ></app-button>
+        <app-button
+          text="Cancelar"
+          expand="full"
+          variant="flat"
+          class="ion-margin-top"
+        ></app-button>
+      </ng-container>
+
+      <ng-template #showBody>
         <p>{{ answer.body }}</p>
-        <small>
-          👍 {{ answer.like_count }} | 👎 {{ answer.dislike_count }}
-        </small>
 
-        <!-- Replies -->
-        <ion-list *ngIf="answer.replies.length > 0">
-          <ion-item *ngFor="let reply of answer.replies">
-            <ion-label>
-              <h3>{{ reply.user_name }}</h3>
-              <p>{{ reply.body }}</p>
-              <small>👍 {{ reply.like_count }} | 👎 {{ reply.dislike_count }}</small>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+        <!-- Mostrar botón de editar solo si es del usuario actual -->
+        <app-button
+          *ngIf="answer.user_id === useId"
+          expand="inset"
+          variant="flat"
+        ></app-button>
+      </ng-template>
+
+      <small>
+        👍 {{ answer.like_count }} | 👎 {{ answer.dislike_count }}
+      </small>
+
+      <!-- Replies -->
+      <ion-list *ngIf="answer.replies.length > 0">
+        <ion-item *ngFor="let reply of answer.replies">
+          <ion-label>
+            <h3>{{ reply.user_name }}</h3>
+            <p>{{ reply.body }}</p>
+            <small>👍 {{ reply.like_count }} | 👎 {{ reply.dislike_count }}</small>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-label>
+  </ion-item>
+</ion-list>
+
 </ion-content>
 
 <ng-template #loadingTpl>

@@ -1,3 +1,42 @@
-<p>
-  search works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Búsqueda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-content>
+      <app-input
+        label="Buscar preguntas"
+        placeholder="Escribe tu búsqueda..."
+        [control]="searchControl"
+      ></app-input>
+
+      <app-button
+        text="Buscar"
+        expand="full"
+        variant="filled"
+        class="ion-margin-top"
+        (click)="search()"
+      ></app-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="results.length > 0">
+    <ion-list-header>
+      <ion-label>Resultados ({{ results.length }})</ion-label>
+    </ion-list-header>
+
+    <ion-item *ngFor="let question of results" (click)="goToQuestion(question.question_id)">
+      <ion-label>
+        <h2>{{ question.title }}</h2>
+        <p>{{ question.body | slice:0:100 }}...</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="results.length === 0" class="ion-text-center ion-padding">
+    <p>No se encontraron resultados</p>
+  </ion-card>
+</ion-content>

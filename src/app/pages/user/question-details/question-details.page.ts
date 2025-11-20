@@ -22,6 +22,7 @@ export class QuestionDetailsPage implements OnInit {
   loading = true;
   commentControl = new FormControl('');
   useId: number = 0;
+  editingAnswerId: number = 0;
 
   constructor(
     private readonly active: ActivatedRoute,
@@ -50,8 +51,8 @@ export class QuestionDetailsPage implements OnInit {
       user_id: this.useId,
       question_id: this.questionDetails?.question_id || 0,
     }
-    const isCreate = await this.answers.createAnswer(data);
-    if (!isCreate) {
+    const id = await this.answers.createAnswer(data);
+    if (!id) {
       this.toas.showError('Error al crear la respuesta');
       return;
     }
