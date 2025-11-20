@@ -20,19 +20,20 @@
   </ion-card-header>
 
   <ion-card-content>
-    <div class="title">{{ question.title }}</div>
-    <div class="body">{{ question.body }}</div>
-
-    <!-- Render question images if present -->
-    <div class="images" *ngIf="imageUrls.length">
-      <img *ngFor="let src of imageUrls" [src]="src" alt="question image" />
+    <div (click)="goToDetaiss()">
+      <div class="title">{{ question.title }}</div>
+      <div class="body">{{ question.body }}</div>
+  
+      <!-- Render question images if present -->
+      <div class="images" *ngIf="imageUrls.length">
+        <img *ngFor="let src of imageUrls" [src]="src" alt="question image" />
+      </div>
+      <div class="tags">
+        <ion-chip *ngFor="let t of question.tags; trackBy: trackTag">
+          <ion-label>{{ t }}</ion-label>
+        </ion-chip>
+      </div>
     </div>
-    <div class="tags">
-      <ion-chip *ngFor="let t of question.tags; trackBy: trackTag">
-        <ion-label>{{ t }}</ion-label>
-      </ion-chip>
-    </div>
-
     <div class="footer">
       <ion-button fill="clear" size="small" (click)="onLike()">
         <ion-icon name="thumbs-up-outline"></ion-icon>

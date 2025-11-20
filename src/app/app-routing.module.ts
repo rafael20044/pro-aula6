@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth-guard';
-import { welcomeGuard } from './core/guards/welcome-guard';
+import { WelcomeGuard} from './core/guards/welcome-guard';
 import { LoggedGuard } from './core/guards/logged-guard';
 
 const routes: Routes = [
@@ -58,12 +58,17 @@ const routes: Routes = [
     loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
     // canActivate: [AuthGuard]
   },
-
+  
+  {
+    path: 'question-details/:id',
+    loadChildren: () => import('./pages/user/question-details/question-details.module').then( m => m.QuestionDetailsPageModule)
+  },
   // Default: a login
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
   // Fallback
-  { path: '**', redirectTo: 'auth/login' }
+  { path: '**', redirectTo: 'auth/login' },
+
 ];
 
 @NgModule({

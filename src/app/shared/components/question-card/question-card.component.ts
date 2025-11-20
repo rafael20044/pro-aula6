@@ -231,4 +231,8 @@ export class QuestionCardComponent implements OnInit {
     console.log('Navigate to question detail:', questionId);
     // this.router.navigate(['/question', questionId]);
   }
+
+  goToDetaiss(){
+    this.router.navigate([`/question-details/${this.question.question_id}`]);
+  }
 }

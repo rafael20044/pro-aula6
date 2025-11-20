@@ -23,13 +23,13 @@ export class QuestionService {
   }
 
   async getQuestionDetails(questionId: number): Promise<IQuestionDetails | null> {
-    const { data, error } = await Supabase.rpc('get_question_details', { question_id_param: questionId });
+    const { data, error } = await Supabase.rpc('get_question_details', { question_id_param: questionId }).single();
 
     if (error) {
       console.error('Error al obtener la pregunta:', error);
       return null;
     }
-    return data && data.length > 0 ? data[0] as IQuestionDetails : null;
+    return data as IQuestionDetails;
   }
 
   async createQuestion(question: any, tags: [], images: IImage[]) {

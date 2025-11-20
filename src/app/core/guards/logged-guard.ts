@@ -11,8 +11,8 @@ export class LoggedGuard implements CanActivate {
   async canActivate(): Promise<boolean> {
     await this.auth.ensureReady();
     const session = this.auth.getSession();
-    if (!session) {
-      this.router.navigate(['/auth/login']);
+    if (session) {
+      this.router.navigate(['/home']);
       return false;
     }
     return true;
