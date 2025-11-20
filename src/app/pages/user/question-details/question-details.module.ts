@@ -8,6 +8,7 @@ import { QuestionDetailsPageRoutingModule } from './question-details-routing.mod
 
 import { QuestionDetailsPage } from './question-details.page';
 import { CoreModule } from 'src/app/core/core.module';
+import { SharedModule } from 'src/app/shared/shared-module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import { CoreModule } from 'src/app/core/core.module';
     FormsModule,
     IonicModule,
     QuestionDetailsPageRoutingModule,
-    CoreModule,
+    SharedModule,
   ],
   declarations: [QuestionDetailsPage]
 })

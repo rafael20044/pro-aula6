@@ -46,6 +46,27 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Formulario simple para agregar comentario -->
+<!-- Formulario simple para agregar comentario -->
+<ion-card class="ion-margin-top">
+  <ion-card-content>
+    <app-input
+      label="Escribe tu respuesta"
+      placeholder="Escribe algo..."
+      [control]="commentControl"
+    ></app-input>
+
+    <app-button
+      text="Publicar"
+      (click)="addComent()"
+      expand="full"
+      variant="filled"
+      class="ion-margin-top"
+    ></app-button>
+  </ion-card-content>
+</ion-card>
+
+
   <!-- Respuestas -->
   <ion-list *ngIf="questionDetails.answers.length > 0">
     <ion-list-header>
@@ -53,9 +74,6 @@
     </ion-list-header>
 
     <ion-item *ngFor="let answer of questionDetails.answers">
-      <ion-avatar slot="start" *ngIf="answer.photo">
-        <img [src]="answer.photo">
-      </ion-avatar>
       <ion-label>
         <h2>{{ answer.user_name }}</h2>
         <p>{{ answer.body }}</p>
@@ -66,9 +84,6 @@
         <!-- Replies -->
         <ion-list *ngIf="answer.replies.length > 0">
           <ion-item *ngFor="let reply of answer.replies">
-            <ion-avatar slot="start" *ngIf="reply.photo">
-              <img [src]="reply.photo">
-            </ion-avatar>
             <ion-label>
               <h3>{{ reply.user_name }}</h3>
               <p>{{ reply.body }}</p>
