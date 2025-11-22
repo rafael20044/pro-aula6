@@ -1,0 +1,152 @@
+.tag-field {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.field-label {
+	font-weight: 600;
+	color: var(--label-color);
+	font-size: 16px;
+}
+
+.required-asterisk {
+	color: var(--ion-color-danger);
+	margin-left: 4px;
+	font-weight: 700;
+}
+
+.selected-row,
+.main-row,
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.chip-selected {
+	--background: var(--ion-color-primary);
+	--color: #fff;
+}
+
+.more-btn {
+	--border-radius: 16px;
+}
+
+.section-title {
+	font-weight: 600;
+	opacity: 0.95;
+	margin-bottom: 8px;
+	color: var(--label-color);
+}
+
+.modal-section {
+	margin-bottom: 14px;
+}
+
+ion-modal {
+	--border-radius: 16px 16px 0 0;
+}
+
+/* Modal header and searchbar should adapt to theme */
+ion-modal ion-header,
+ion-modal ion-toolbar {
+	background: var(--bg-card-elevated);
+	color: var(--label-color);
+}
+
+ion-modal ion-toolbar ion-title,
+ion-modal ion-toolbar ion-button,
+ion-modal ion-toolbar ion-buttons {
+	color: var(--label-color);
+}
+
+ion-modal ion-searchbar {
+	--background: var(--bg-card-elevated-hover);
+	--placeholder-color: rgba(127,140,160,0.6);
+	--color: var(--label-color);
+	--icon-color: var(--ion-color-medium);
+}
+
+/* Chips inside modal: ensure outline and label are visible in dark mode */
+.chips ion-chip {
+	--background: transparent;
+	--border-color: var(--input-border);
+	color: var(--label-color);
+}
+
+.chips ion-chip[outline] {
+	--background: transparent;
+	--border-color: var(--input-border);
+	color: var(--label-color);
+}
+
+/* Selected chips keep primary background */
+.chips ion-chip.chip-selected {
+	--background: var(--ion-color-primary);
+	--color: #fff;
+}
+
+/* Create button style */
+.modal-section ion-button[expand="block"] {
+	--background: var(--ion-color-primary);
+	--color: #fff;
+	border-radius: 10px;
+}
+
+/* Small tweak for very dark backgrounds: make sure separators and text are visible */
+.modal-section .section-title + .chips {
+	margin-bottom: 6px;
+}
+
+/* Accessibility: reduce opacity of disabled chips but keep border visible */
+.chips ion-chip[disabled] {
+	opacity: 0.6;
+	--border-color: rgba(127,140,160,0.25);
+}
+
+/* Eliminar la franja gris/translúcida en el header del modal y usar variables de tema */
+
+/* Modal header: white background in light theme, transparent in dark theme */
+ion-modal ion-header[translucent],
+ion-modal ion-header {
+	/* default: light theme header */
+	--background: #ffffff;
+	background: var(--tag-modal-header-bg, #ffffff);
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
+	box-shadow: none;
+}
+
+ion-modal ion-toolbar {
+	--background: var(--tag-modal-header-bg, #ffffff);
+	background: var(--tag-modal-header-bg, #ffffff);
+	color: var(--label-color);
+	border-bottom: 1px solid var(--input-border);
+}
+
+ion-modal ion-toolbar ion-title {
+	color: var(--label-color);
+	font-weight: 700;
+	text-align: center;
+}
+
+/* Dark mode override: make header transparent and remove the separator */
+@media (prefers-color-scheme: dark) {
+	ion-modal ion-header[translucent], ion-modal ion-header {
+		--tag-modal-header-bg: transparent;
+		background: transparent;
+	}
+	ion-modal ion-toolbar {
+		background: transparent;
+		border-bottom: none;
+	}
+}
+
+/* Searchbar contraste */
+ion-modal ion-searchbar {
+	--background: var(--bg-card-elevated-hover);
+	--placeholder-color: rgba(127,140,160,0.5);
+	--color: var(--label-color);
+	--icon-color: var(--ion-color-medium);
+}

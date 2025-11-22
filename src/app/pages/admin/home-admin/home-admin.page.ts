@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Supabase } from 'src/app/core/supabase/supabase';
+import { TicketService } from 'src/app/shared/services/ticket-service';
+import { UserService } from 'src/app/shared/services/user-service';
 
 type Metric = { label: string; value: number | string };
 type QuickAction = { label: string; icon: string; link: string };
@@ -11,6 +13,9 @@ type QuickAction = { label: string; icon: string; link: string };
   standalone: false
 })
 export class HomeAdminPage implements OnInit {
+
+  constructor(private readonly ticket:TicketService, private readonly user:UserService){}
+
   loading = false;
 
 
@@ -56,15 +61,7 @@ export class HomeAdminPage implements OnInit {
   }
 
   private async countUsers(): Promise<number> {
-    const { count, error } = await Supabase
-      .from('users')
-      .select('*', { count: 'exact', head: true });
-
-    if (error) {
-      console.error('countUsers', error.message);
-      return 0;
-    }
-    return count ?? 0;
+    return this.user.countAllUser();
   }
 
   private async countActiveToday(): Promise<number> {
@@ -84,14 +81,6 @@ export class HomeAdminPage implements OnInit {
   }
 
   private async countReports(): Promise<number> {
-    const { count, error } = await Supabase
-      .from('pqrs')
-      .select('*', { count: 'exact', head: true });
-
-    if (error) {
-      console.error('countReports', error.message);
-      return 0;
-    }
-    return count ?? 0;
+    return this.ticket.countAllTickets();
   }
 }

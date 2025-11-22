@@ -1,0 +1,11 @@
+ion-content { --background: var(--ion-background-color); }
+
+ion-toolbar {
+  --background: var(--bg-card);
+  --color: var(--text-primary);
+  --border-color: var(--border);
+}
+
+ion-title { font-weight: 600; }
+
+ion-button { --color: var(--primary); }

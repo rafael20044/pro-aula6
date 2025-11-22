@@ -1,0 +1,31 @@
+.app-header {
+  ion-toolbar {
+    --background: var(--bg-card-elevated);
+    --color: var(--text-primary);
+    padding: 6px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .logo-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+
+  .header-title {
+    font-weight: 700;
+    color: var(--label-color);
+    text-align: center;
+  }
+}

@@ -5,10 +5,14 @@ import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
 import { ToastService } from 'src/app/shared/services/toast-service';
+<<<<<<< HEAD
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { AuthStateService } from 'src/app/core/auth/auth-state';
 
 
+=======
+import { UserService } from 'src/app/shared/services/user-service';
+>>>>>>> 01dff7b36dbe6340d8ddf77e7639d7589772f79d
 
 @Component({
   selector: 'app-login',
@@ -27,12 +31,20 @@ export class LoginPage {
   loading = false;
 
   constructor(
+<<<<<<< HEAD
     private readonly toat: ToastService,
     private readonly auth: AuthService,
     private readonly local: LocalStorageService,
     private readonly router: Router,
     private readonly state: AuthStateService,
     private readonly ngZone: NgZone,
+=======
+    private readonly toat:ToastService, 
+    private readonly auth:AuthService,
+    private readonly local:LocalStorageService,
+    private readonly router:Router,
+    private readonly user:UserService
+>>>>>>> 01dff7b36dbe6340d8ddf77e7639d7589772f79d
   ) {}
 
   async submit() {
@@ -41,6 +53,7 @@ export class LoginPage {
     return;
   }
 
+<<<<<<< HEAD
   this.loading = true;
   const email = String(this.form.value.email || '');
   const password = String(this.form.value.password || '');
@@ -108,5 +121,22 @@ export class LoginPage {
   } finally {
     this.loading = false;
   }
+=======
+  const { email, password } = this.form.value;
+  const uid = await this.auth.loginWithEmailAndPassword(email || '', password || '');
+  if (!uid){
+    this.toat.show('Error al autenticar', 150, 'bottom', 'danger');
+    return;
+  }
+
+  // MOCK de rol local (luego reemplazas por consulta real)
+  const role = await this.auth.isAdmin(uid);
+  const id = await this.user.findIdByUid(uid);
+
+  this.local.set(Const.USER_UID, uid);
+  this.local.set(Const.USER_ID, id);
+
+  this.router.navigate([ role ? '/admin/home' : '/home' ]);
+>>>>>>> 01dff7b36dbe6340d8ddf77e7639d7589772f79d
 }
 }

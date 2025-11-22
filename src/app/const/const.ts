@@ -1,5 +1,6 @@
 export enum Const{
     USER_UID = 'user_uid',
+    USER_ID = 'user_id',
     BUCKET = 'img',
     TB_USER = 'users',
     TB_TICKETS = 'tickets',
@@ -8,4 +9,6 @@ export enum Const{
     TB_REACTIONS = 'reactions',
     TB_QUESTIONS = 'questions',
     TB_ANSWERS = 'answers',
+    TB_IMAGES = 'images',
+    SHOW_WELCOME = 'show_welcome',
 }

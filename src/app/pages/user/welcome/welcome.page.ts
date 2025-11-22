@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { Const } from 'src/app/const/const';
+import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
 
 @Component({
   selector: 'app-welcome',
@@ -7,6 +10,9 @@ import { Component } from '@angular/core';
   standalone:false,
 })
 export class WelcomePage {
+
+  constructor(private readonly router:Router, private readonly local:LocalStorageService){}
+
   rules = [
     {
       title: 'Sé divertido',
@@ -29,4 +35,9 @@ export class WelcomePage {
       icon: 'assets/icon/sinceridad.png'
     }
   ];
+
+  goToLogin(){
+    this.local.set(Const.SHOW_WELCOME, false);
+    this.router.navigate(['/auth/login']);
+  }
 }

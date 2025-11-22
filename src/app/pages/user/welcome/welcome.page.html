@@ -7,7 +7,6 @@
     <h1 class="title">Questopia</h1>
     <p class="subtitle">Crea y contesta al mundo</p>
 
-   
     <div class="rules">
       <div class="rule-card" *ngFor="let rule of rules; let i = index" [@fadeIn]="i">
         <img [src]="rule.icon" [alt]="rule.title" class="rule-icon" />
@@ -19,7 +18,7 @@
     </div>
 
 
-    <ion-button expand="block" class="login-btn" routerLink="/auth/login" >
+    <ion-button expand="block" class="login-btn" (click)="goToLogin()" >
       Ir al login
     </ion-button>
 

@@ -1,21 +1,19 @@
-// Paleta de colores moderna y elegante basada en el logo
-$primary: #4a90e2;
-$primary-dark: #357abd;
-$primary-light: #6ba3e8;
-$accent: #64748b;
-$bg-dark: #0f1419;
-$bg-card: #1a1f2e;
-$bg-card-elevated: #252d3d;
-$text-primary: #ffffff;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #2d3748;
-$border-light: #3d4758;
-$success: #10b981;
-$error: #ef4444;
+/* Use theme tokens so the page reacts to light/dark */
+$primary: var(--primary);
+$primary-dark: var(--primary-dark);
+$primary-light: var(--primary-light);
+$accent: var(--accent);
+$bg-card: var(--bg-card);
+$bg-card-elevated: var(--bg-card-elevated);
+$bg-card-elevated-hover: var(--bg-card-elevated-hover);
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-muted: var(--text-muted);
+$border: var(--border);
+$error: var(--error);
 
 .auth-content {
-  --background: #{$bg-dark};
+  --background: var(--ion-background-color);
   height: 100vh;
   display: flex;
   align-items: center;
@@ -83,14 +81,14 @@ $error: #ef4444;
   .title {
     font-size: 32px;
     font-weight: 700;
-    color: $text-primary;
+  color: var(--label-color);
     margin: 0 0 10px 0;
     letter-spacing: -0.5px;
   }
 
   .subtitle {
     font-size: 16px;
-    color: $text-secondary;
+  color: $text-secondary;
     margin: 0;
     font-weight: 400;
   }
@@ -106,13 +104,7 @@ $error: #ef4444;
     flex-direction: column;
     gap: 10px;
 
-    .input-label {
-      font-size: 15px;
-      font-weight: 600;
-      color: $text-secondary;
-      margin: 0;
-      padding-left: 4px;
-    }
+    /* labels are rendered inside app-input; keep spacing rules only if needed */
 
     .custom-input {
       --background: #{$bg-card-elevated};
@@ -135,7 +127,7 @@ $error: #ef4444;
 
       &.ion-focused {
         --border-color: #{$primary};
-        --background: #{lighten($bg-card-elevated, 2%)};
+        --background: #{$bg-card-elevated-hover};
       }
 
       &.ion-invalid.ion-touched {
@@ -145,9 +137,9 @@ $error: #ef4444;
   }
 
   .submit-btn {
-    --background: #{$primary};
-    --background-hover: #{$primary-light};
-    --background-activated: #{$primary-dark};
+  --background: #{$primary};
+  --background-hover: #{$primary-light};
+  --background-activated: #{$primary-dark};
     --color: #ffffff;
     --border-radius: 14px;
     --box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);

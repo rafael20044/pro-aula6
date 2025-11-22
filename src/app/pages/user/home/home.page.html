@@ -1,53 +1,62 @@
-<ion-header *ngIf="showLogo">
-  <div class="logo-wrapper">
-    <img src="assets/icon/logo.png" alt="Logo" class="logo" />
-  </div>
-</ion-header>
+<app-header *ngIf="showLogo"></app-header>
 
 <ion-tabs (ionTabsWillChange)="onTabChange($event)">
   <ion-tab tab="home">
-    <div id="home-page">
+    <ion-content id="home-page" fullscreen>
       <app-home-c></app-home-c>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab tab="search">
-    <div id="search-page">
+    <ion-content id="search-page" fullscreen>
       <app-search></app-search>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab tab="notifications">
-    <div id="notification-page">
+    <ion-content id="notification-page" fullscreen>
       <app-notification></app-notification>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab tab="profile">
-    <div id="profile-page">
+    <ion-content id="profile-page" fullscreen>
       <app-profile></app-profile>
-    </div>
+    </ion-content>
   </ion-tab>
 
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="home">
       <ion-icon name="home-outline"></ion-icon>
-      Home
+      Inicio
     </ion-tab-button>
 
     <ion-tab-button tab="search">
       <ion-icon name="search-outline"></ion-icon>
-      Search
+      Buscar
     </ion-tab-button>
 
     <ion-tab-button tab="notifications">
       <ion-icon name="notifications-outline"></ion-icon>
-      Notifications
+      Notificaciones
     </ion-tab-button>
 
     <ion-tab-button tab="profile">
-      <ion-icon name="person-outline"></ion-icon>
-      Profile
+      <ng-container *ngIf="userAvatarUrl; else initialsAvatar">
+        <ion-avatar class="tab-avatar">
+          <img [src]="userAvatarUrl" alt="Avatar" />
+        </ion-avatar>
+      </ng-container>
+      <ng-template #initialsAvatar>
+        <div class="tab-initials-avatar" aria-label="Avatar con iniciales">{{ userInitials }}</div>
+      </ng-template>
+      Perfil
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="goToCreateQuestion()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

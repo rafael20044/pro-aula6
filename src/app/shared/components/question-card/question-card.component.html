@@ -1,0 +1,52 @@
+<ion-card class="question-card">
+  <ion-card-header>
+    <div class="card-top">
+      <div class="avatar-small">
+        <ng-container *ngIf="avatarUrl; else initialsSmall">
+          <img [src]="avatarUrl" alt="avatar" />
+        </ng-container>
+        <ng-template #initialsSmall>
+          <div class="initials">{{ (question.full_name || '').slice(0,2).toUpperCase() }}</div>
+        </ng-template>
+      </div>
+
+      <div class="meta">
+        <div class="name">{{ question.full_name }}</div>
+        <div class="sub">{{ handle ? ('@' + handle) : ('@' + question.user_id) }}</div>
+      </div>
+
+      <div class="spacer"></div>
+    </div>
+  </ion-card-header>
+
+  <ion-card-content>
+    <div (click)="goToDetaiss()">
+      <div class="title">{{ question.title }}</div>
+      <div class="body">{{ question.body }}</div>
+  
+      <!-- Render question images if present -->
+      <div class="images" *ngIf="imageUrls.length">
+        <img *ngFor="let src of imageUrls" [src]="src" alt="question image" />
+      </div>
+      <div class="tags">
+        <ion-chip *ngFor="let t of question.tags; trackBy: trackTag">
+          <ion-label>{{ t }}</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+    <div class="footer">
+      <ion-button fill="clear" size="small" (click)="onLike()">
+        <ion-icon name="thumbs-up-outline"></ion-icon>
+        <span>{{ getLikeCount() }}</span>
+      </ion-button>
+      <ion-button fill="clear" size="small" (click)="onDislike()">
+        <ion-icon name="thumbs-down-outline"></ion-icon>
+        <span>{{ getDislikeCount() }}</span>
+      </ion-button>
+      <ion-button fill="clear" size="small" (click)="onComment()">
+        <ion-icon name="chatbubble-outline"></ion-icon>
+        <span>{{ getAnswerCount() }}</span>
+      </ion-button>
+    </div>
+  </ion-card-content>
+</ion-card>

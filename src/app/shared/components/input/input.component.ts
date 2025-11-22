@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./input.component.scss'],
   standalone: false,
 })
-export class InputComponent  implements OnInit {
+export class InputComponent  implements OnInit, OnChanges {
 
   @Input() label:string = 'label';
   @Input() placeholder:string = 'placeholder';
@@ -15,11 +15,26 @@ export class InputComponent  implements OnInit {
   @Input() control = new FormControl();
 
   isPassword = false;
+  displayLabel = '';
+  requiredAsterisk = false;
 
   constructor() {}
 
   ngOnInit() {
     this.isPassword = this.type === 'password';
+    this.parseLabel();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['label']) {
+      this.parseLabel();
+    }
+  }
+
+  private parseLabel() {
+    const raw = this.label ?? '';
+    this.requiredAsterisk = /\*/.test(raw);
+    this.displayLabel = raw.replace(/\s*\*/g, '').trim();
   }
 
 }

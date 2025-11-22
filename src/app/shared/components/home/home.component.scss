@@ -1,0 +1,30 @@
+/* Space under header so the first card is not flush to top.
+   Reduced vertical gap so cards are closer but still separated. */
+.home-feed {
+  padding-top: 16px; /* lower so first card sits a bit below header */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* slightly tighter spacing between cards */
+  padding-bottom: 40px;
+}
+
+.home-feed app-question-card {
+  margin: 0 12px;
+}
+
+/* Small offset for the very first card so it doesn't stick to header */
+.home-feed > app-question-card:first-child {
+  margin-top: 12px;
+}
+
+.error {
+  color: var(--ion-color-danger);
+  padding: 16px;
+  text-align: center;
+}
+
+.empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--ion-color-medium);
+}

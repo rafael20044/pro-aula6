@@ -35,3 +35,101 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 // @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* THEME: Light (default) and Dark (toggle with [data-theme="dark"]) */
+:root {
+	/* Ionic palette */
+	--ion-color-primary: #2563eb;
+	--ion-color-primary-rgb: 37, 99, 235;
+	--ion-color-primary-contrast: #ffffff;
+	--ion-color-primary-contrast-rgb: 255, 255, 255;
+	--ion-color-primary-shade: #1f51c3;
+	--ion-color-primary-tint: #3b82f6;
+
+	--ion-color-success: #10b981;
+	--ion-color-warning: #f59e0b;
+	--ion-color-danger: #ef4444;
+
+	--ion-background-color: #f8fafc; /* page bg */
+	--ion-text-color: #0f172a;
+
+	/* App-level tokens */
+	--primary: var(--ion-color-primary);
+	--primary-dark: #1f51c3;
+	--primary-light: #3b82f6;
+	--accent: #475569;
+	--bg-app: #f1f5f9;
+	--bg-card: #ffffff;
+	--bg-card-elevated: #ffffff;
+	--bg-card-elevated-hover: #f8fafc;
+	--text-primary: #0f172a; /* slate-900 */
+	--text-secondary: #334155; /* slate-700 */
+	--text-muted: #64748b; /* slate-500 */
+	--border: #e2e8f0; /* slate-200 */
+	--border-light: #e5e7eb;
+	--success: var(--ion-color-success);
+	--error: var(--ion-color-danger);
+	--label-color: #0f172a; /* labels dark for light theme */
+
+	/* Inputs */
+	--input-border: #d1d5db; /* gray-300 for better visibility */
+	--input-border-focus: var(--ion-color-primary);
+	--input-placeholder: #6b7280; /* gray-500 */
+}
+
+[data-theme="dark"] {
+	--ion-color-primary: #4a90e2;
+	--ion-color-primary-rgb: 74, 144, 226;
+	--ion-color-primary-contrast: #ffffff;
+	--ion-color-primary-contrast-rgb: 255, 255, 255;
+	--ion-color-primary-shade: #357abd;
+	--ion-color-primary-tint: #6ba3e8;
+
+	--ion-color-success: #10b981;
+	--ion-color-warning: #f59e0b;
+	--ion-color-danger: #ef4444;
+
+	--ion-background-color: #0f1419;
+	--ion-text-color: #ffffff;
+
+	--primary: #4a90e2;
+	--primary-dark: #357abd;
+	--primary-light: #6ba3e8;
+	--accent: #64748b;
+	--bg-app: #0f1419;
+	--bg-card: #1a1f2e;
+	--bg-card-elevated: #252d3d;
+	--bg-card-elevated-hover: #2a3447;
+	--text-primary: #ffffff;
+	--text-secondary: #94a3b8;
+	--text-muted: #64748b;
+	--border: #2d3748;
+	--border-light: #3d4758;
+	--success: #10b981;
+	--error: #ef4444;
+	--label-color: #ffffff; /* labels white in dark theme */
+
+	/* Inputs */
+	--input-border: #3b4456; /* subtle but visible */
+	--input-border-focus: var(--ion-color-primary);
+	--input-placeholder: #94a3b8; /* muted slate for dark */
+}
+
+/* Shared helpers */
+.required-asterisk {
+	color: var(--ion-color-danger);
+	margin-left: 4px;
+	font-weight: 700;
+}
+
+.form-label {
+	color: var(--label-color);
+	font-size: 16px;
+	font-weight: 600;
+}
+
+/* Base page background/text to follow theme */
+ion-content, body, html {
+	background: var(--ion-background-color);
+	color: var(--ion-text-color);
+}
