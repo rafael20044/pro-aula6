@@ -8,7 +8,7 @@
     <p class="subtitle">Crea y contesta al mundo</p>
 
     <div class="rules">
-      <div class="rule-card" *ngFor="let rule of rules; let i = index" [@fadeIn]="i">
+      <div class="rule-card" *ngFor="let rule of rules; let i = index">
         <img [src]="rule.icon" [alt]="rule.title" class="rule-icon" />
         <div class="rule-text">
           <h3>{{ rule.title }}</h3>

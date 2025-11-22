@@ -37,7 +37,12 @@ export class WelcomePage {
   ];
 
   goToLogin(){
-    this.local.set(Const.SHOW_WELCOME, false);
-    this.router.navigate(['/auth/login']);
+    console.debug('WelcomePage: goToLogin called, rulesCount=', this.rules?.length);
+    try{
+      this.local.set(Const.SHOW_WELCOME, false);
+    }catch(err){
+      
+    }
+    this.router.navigate(['/auth/login']).catch(e => console.error('Navigation error', e));
   }
 }
