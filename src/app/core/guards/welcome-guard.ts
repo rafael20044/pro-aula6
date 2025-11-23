@@ -12,7 +12,8 @@ export class WelcomeGuard implements CanActivate {
   async canActivate(): Promise<boolean> {
     const showWelcome = this.local.get(Const.SHOW_WELCOME);
     if (showWelcome) {
-      this.router.navigate(['/welcome']);
+      // If the app should show welcome flow, redirect to onboarding first.
+      this.router.navigate(['/onboarding']);
       return false;
     }
     return true;
