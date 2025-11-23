@@ -36,10 +36,10 @@
 
       <!-- Likes / Dislikes -->
       <div class="ion-padding-top">
-        <ion-button fill="clear" color="success">
+        <ion-button fill="clear" color="success" (click)="reaction('question_id', 'LIKE')">
           👍 {{ questionDetails.like_count }}
         </ion-button>
-        <ion-button fill="clear" color="danger">
+        <ion-button fill="clear" color="danger" (click)="reaction('question_id', 'DISLIKE')">
           👎 {{ questionDetails.dislike_count }}
         </ion-button>
       </div>

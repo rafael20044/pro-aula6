@@ -78,5 +78,5 @@ export class ReactionService {
   }
 }
 
-type TargetType = 'question_id' | 'answer_id';
-type ReactionType = 'LIKE' | 'DISLIKE';
+export type TargetType = 'question_id' | 'answer_id';
+export type ReactionType = 'LIKE' | 'DISLIKE';

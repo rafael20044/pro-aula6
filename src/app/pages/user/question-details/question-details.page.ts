@@ -7,6 +7,7 @@ import { IQuestionDetails } from 'src/app/interfaces/iquestiondetail';
 import { AnswersService } from 'src/app/shared/services/answers-service';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
 import { QuestionService } from 'src/app/shared/services/question-service';
+import { ReactionService, ReactionType, TargetType } from 'src/app/shared/services/reaction-service';
 import { ToastService } from 'src/app/shared/services/toast-service';
 
 @Component({
@@ -29,7 +30,8 @@ export class QuestionDetailsPage implements OnInit {
     private readonly question: QuestionService,
     private readonly toas:ToastService,
     private readonly answers:AnswersService,
-    private readonly local:LocalStorageService
+    private readonly local:LocalStorageService,
+    private readonly reactionS:ReactionService
   ) { }
 
   async ngOnInit() {
@@ -56,7 +58,18 @@ export class QuestionDetailsPage implements OnInit {
       this.toas.showError('Error al crear la respuesta');
       return;
     }
+    this.commentControl.reset();
+    await this.loadData();
     this.toas.show('Respuesta publicada');
+  }
+
+  async reaction(target:TargetType, type:ReactionType){
+    if (target === 'question_id') {
+      const id = this.questionDetails?.question_id || 0;
+      await this.reactionS.reaction(this.useId, id, target, type);
+      this.loadData();
+      return;
+    }
   }
 
   private async loadData() {
