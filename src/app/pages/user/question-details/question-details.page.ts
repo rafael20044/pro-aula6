@@ -7,6 +7,7 @@ import { IQuestionDetails } from 'src/app/interfaces/iquestiondetail';
 import { AnswersService } from 'src/app/shared/services/answers-service';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
 import { QuestionService } from 'src/app/shared/services/question-service';
+import { ReactionService, ReactionType, TargetType } from 'src/app/shared/services/reaction-service';
 import { ToastService } from 'src/app/shared/services/toast-service';
 import { StorageService } from 'src/app/shared/services/storage-service';
 import { AuthService } from 'src/app/shared/services/auth-service';
@@ -37,7 +38,7 @@ export class QuestionDetailsPage implements OnInit {
     private readonly answers:AnswersService,
     private readonly local:LocalStorageService,
     private readonly storageService: StorageService,
-    private readonly auth: AuthService
+    private readonly reactionService: ReactionService
   ) { }
 
   async ngOnInit() {
@@ -64,7 +65,18 @@ export class QuestionDetailsPage implements OnInit {
       this.toas.showError('Error al crear la respuesta');
       return;
     }
+    this.commentControl.reset();
+    await this.loadData();
     this.toas.show('Respuesta publicada');
+  }
+
+  async reaction(target:TargetType, type:ReactionType){
+    if (target === 'question_id') {
+      const id = this.questionDetails?.question_id || 0;
+      await this.reactionService.reaction(this.useId, id, target, type);
+      this.loadData();
+      return;
+    }
   }
 
   private async loadData() {
