@@ -1,0 +1,51 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Tickets</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="reports-container">
+
+    <div *ngIf="loading" class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando tickets...</p>
+    </div>
+
+    <div *ngIf="!loading && tickets.length === 0" class="empty-state">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      <p>No hay tickets pendientes.</p>
+    </div>
+
+    <ion-list *ngIf="!loading && tickets.length > 0">
+      <ion-card *ngFor="let ticket of tickets" class="ticket-card">
+        <ion-card-header>
+          <ion-card-subtitle>Ticket #{{ ticket.id }}</ion-card-subtitle>
+          <ion-card-title>
+            <span *ngIf="ticket.question_id">Reporte de Pregunta</span>
+            <span *ngIf="ticket.answers_id">Reporte de Respuesta</span>
+            <span *ngIf="ticket.user_report_id">Reporte de Usuario</span>
+            <span *ngIf="!ticket.question_id && !ticket.answers_id && !ticket.user_report_id">Reporte General</span>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="description">{{ ticket.body }}</p>
+          <div class="meta">
+            <span class="date">{{ ticket.created_at | date:'medium' }}</span>
+            <span class="user" *ngIf="ticket.name_user_id">Por: {{ ticket.name_user_id }}</span>
+          </div>
+
+          <div class="actions">
+            <ion-button fill="outline" size="small" color="success" (click)="resolveTicket(ticket)">
+              <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+              Resolver
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+  </div>
+</ion-content>

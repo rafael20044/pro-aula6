@@ -1,7 +1,7 @@
 <ion-content class="admin-content">
   <div class="admin-container">
     <div class="admin-card">
-    
+
       <div class="brand">
         <div class="logo-wrapper">
           <img src="assets/icon/logo.png" alt="Logo" class="logo" />
@@ -17,14 +17,11 @@
         </div>
       </section>
 
-     
+
       <section class="actions">
         <h2 class="section-title">Acciones rápidas</h2>
         <div class="actions__grid">
-          <button type="button"
-                  class="action-tile"
-                  *ngFor="let a of quickActions"
-                  [routerLink]="a.link">
+          <button type="button" class="action-tile" *ngFor="let a of quickActions" [routerLink]="a.link">
             <ion-icon class="action-tile__icon" [name]="a.icon"></ion-icon>
             <span class="action-tile__label">{{ a.label }}</span>
             <ion-icon class="action-tile__chev" name="chevron-forward"></ion-icon>
@@ -32,7 +29,7 @@
         </div>
       </section>
 
-  
+
       <section class="summary">
         <h2 class="section-title">Resumen</h2>
         <ion-card class="glass">

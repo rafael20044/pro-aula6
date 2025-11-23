@@ -12,7 +12,7 @@ import { IQuestionBytitle } from 'src/app/interfaces/iquestionbytitle';
 })
 export class QuestionService {
 
-  constructor(private readonly storageService:StorageService) { }
+  constructor(private readonly storageService: StorageService) { }
 
   async findAllQuestions() {
     const { data, error } = await Supabase.rpc('get_all_questions');
@@ -34,8 +34,8 @@ export class QuestionService {
   }
 
 
-  async findByTitle(title:string){
-    const {data, error} = await Supabase.rpc('search_questions_by_title', {search_text: title});
+  async findByTitle(title: string) {
+    const { data, error } = await Supabase.rpc('search_questions_by_title', { search_text: title });
     if (error) {
       console.log(error);
       return [];
@@ -126,6 +126,19 @@ export class QuestionService {
 
     console.log('Pregunta creada correctamente con ID:', questionId);
     return questionId;
+  }
+
+  async deleteQuestion(id: number): Promise<boolean> {
+    const { error } = await Supabase
+      .from(Const.TB_QUESTIONS)
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting question:', error);
+      return false;
+    }
+    return true;
   }
 }
 

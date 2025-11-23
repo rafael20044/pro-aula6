@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Const } from 'src/app/const/const';
@@ -14,13 +14,14 @@ import { UserService } from 'src/app/shared/services/user-service';
   standalone: false,
 })
 export class LoginPage {
-
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   passwordControl = new FormControl('', [Validators.required]);
   form = new FormGroup({
     email: this.emailControl,
     password: this.passwordControl,
   });
+
+  loading = false;
 
   constructor(
     private readonly toat:ToastService, 
@@ -30,7 +31,7 @@ export class LoginPage {
     private readonly user:UserService
   ) {}
 
-async submit() {
+  async submit() {
   if (!this.form.valid) {
     this.toat.show('Rellene los campos correctamente', 1500, 'bottom', 'warning');
     return;
@@ -52,5 +53,4 @@ async submit() {
 
   this.router.navigate([ role ? '/admin/home' : '/home' ]);
 }
-
 }

@@ -1,0 +1,37 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Etiquetas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createTag()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="tags-container">
+
+    <div *ngIf="loading" class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando etiquetas...</p>
+    </div>
+
+    <div *ngIf="!loading && tags.length === 0" class="empty-state">
+      <ion-icon name="pricetags-outline"></ion-icon>
+      <p>No hay etiquetas creadas.</p>
+    </div>
+
+    <ion-list *ngIf="!loading && tags.length > 0">
+      <ion-item *ngFor="let tag of tags">
+        <ion-label>{{ tag.name }}</ion-label>
+        <ion-button fill="clear" slot="end" color="danger" (click)="deleteTag(tag)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

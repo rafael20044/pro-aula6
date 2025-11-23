@@ -51,9 +51,20 @@ export class TagService {
         if (Array.isArray(again) && again.length > 0) {
           return again[0] as TagDto;
         }
-      } catch {}
+      } catch { }
       return null;
     }
     return data as TagDto;
+  }
+  async delete(id: number): Promise<boolean> {
+    const { error } = await (Supabase.from('tags') as any)
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('delete tag error', error);
+      return false;
+    }
+    return true;
   }
 }

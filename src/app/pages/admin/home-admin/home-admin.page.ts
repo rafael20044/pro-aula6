@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Supabase } from 'src/app/core/supabase/supabase';
-import { TicketService } from 'src/app/shared/services/ticket-service';
-import { UserService } from 'src/app/shared/services/user-service';
+import { AdminService } from 'src/app/shared/services/admin-service';
 
 type Metric = { label: string; value: number | string };
 type QuickAction = { label: string; icon: string; link: string };
@@ -14,25 +12,29 @@ type QuickAction = { label: string; icon: string; link: string };
 })
 export class HomeAdminPage implements OnInit {
 
-  constructor(private readonly ticket:TicketService, private readonly user:UserService){}
-
   loading = false;
 
-
   metrics: Metric[] = [
-    { label: 'Usuarios',    value: '—' },
+    { label: 'Usuarios', value: '—' },
     { label: 'Activos hoy', value: '—' },
-    { label: 'Reportes',    value: '—' }
+    { label: 'Tickets', value: '—' }
   ];
 
   quickActions: QuickAction[] = [
-    { label: 'Ver usuarios', icon: 'people',             link: '/admin/users' },
-    { label: 'Reportes',     icon: 'document-text',      link: '/admin/reports' },
-    { label: 'Roles',        icon: 'shield-checkmark',   link: '/admin/settings' },
+    { label: 'Ver usuarios', icon: 'people', link: '/admin/users' },
+    { label: 'Tickets', icon: 'document-text', link: '/admin/reports' },
+    { label: 'Etiquetas', icon: 'pricetags', link: '/admin/tags' },
+    { label: 'Preguntas', icon: 'chatbubbles', link: '/admin/questions' },
   ];
 
-  async ngOnInit() {
-    await this.loadMetrics();
+  constructor(private adminService: AdminService) { }
+
+  ngOnInit() {
+    this.loadMetrics();
+  }
+
+  ionViewWillEnter() {
+    this.loadMetrics();
   }
 
   async refresh() {
@@ -42,45 +44,17 @@ export class HomeAdminPage implements OnInit {
   private async loadMetrics() {
     this.loading = true;
     try {
-      const [users, activeToday, reports] = await Promise.all([
-        this.countUsers(),
-        this.countActiveToday(),
-        this.countReports()
-      ]);
+      const stats = await this.adminService.getDashboardStats();
 
       this.metrics = [
-        { label: 'Usuarios',    value: users },
-        { label: 'Activos hoy', value: activeToday },
-        { label: 'Reportes',    value: reports },
+        { label: 'Usuarios', value: stats.users },
+        { label: 'Activos hoy', value: stats.activeToday },
+        { label: 'Tickets', value: stats.reports },
       ];
     } catch (e) {
       console.error('Error cargando métricas', e);
     } finally {
       this.loading = false;
     }
-  }
-
-  private async countUsers(): Promise<number> {
-    return this.user.countAllUser();
-  }
-
-  private async countActiveToday(): Promise<number> {
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-
-    const { count, error } = await Supabase
-      .from('users')
-      .select('*', { count: 'exact', head: true })
-      .gte('updated_at', start.toISOString());
-
-    if (error) {
-      console.error('countActiveToday', error.message);
-      return 0;
-    }
-    return count ?? 0;
-  }
-
-  private async countReports(): Promise<number> {
-    return this.ticket.countAllTickets();
   }
 }
