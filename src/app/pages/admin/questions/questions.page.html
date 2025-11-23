@@ -1,0 +1,48 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Preguntas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="questions-container">
+
+    <div *ngIf="loading" class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando preguntas...</p>
+    </div>
+
+    <div *ngIf="!loading && questions.length === 0" class="empty-state">
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+      <p>No hay preguntas publicadas.</p>
+    </div>
+
+    <ion-list *ngIf="!loading && questions.length > 0">
+      <ion-item-sliding *ngFor="let q of questions">
+        <ion-item lines="full" detail="false">
+          <ion-label>
+            <h2>{{ q.title }}</h2>
+            <p>{{ q.body | slice:0:50 }}{{ q.body.length > 50 ? '...' : '' }}</p>
+            <ion-note color="medium" class="meta-info">
+              <small>Por: {{ q.full_name }}</small> •
+              <small>{{ q.like_count }} 👍</small>
+            </ion-note>
+          </ion-label>
+
+          <ion-button fill="clear" slot="end" color="danger" (click)="deleteQuestion(q)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="deleteQuestion(q)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+</ion-content>

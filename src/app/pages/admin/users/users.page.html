@@ -1,0 +1,60 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Usuarios</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Buscar por nombre o email" (ionInput)="filterUsers($event)"
+      [debounce]="250"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="users-container">
+
+    <div *ngIf="loading" class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando usuarios...</p>
+    </div>
+
+    <div *ngIf="!loading && filteredUsers.length === 0" class="empty-state">
+      <ion-icon name="people-outline"></ion-icon>
+      <p>No se encontraron usuarios.</p>
+    </div>
+
+    <ion-list *ngIf="!loading && filteredUsers.length > 0">
+      <ion-item-sliding *ngFor="let user of filteredUsers">
+        <ion-item lines="full" detail="false">
+          <ion-avatar slot="start">
+            <img [src]="user.photo || 'assets/icon/avatar_default.png'" alt="Avatar" />
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ user.full_name || 'Sin nombre' }}</h2>
+            <p>{{ user.email }}</p>
+            <ion-badge [color]="user.is_banned ? 'danger' : 'success'" class="status-badge">
+              {{ user.is_banned ? 'Baneado' : 'Activo' }}
+            </ion-badge>
+          </ion-label>
+
+          <ion-buttons slot="end">
+            <ion-button (click)="editUser(user)" color="primary">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button (click)="toggleBan(user)" [color]="user.is_banned ? 'success' : 'danger'"
+              title="{{ user.is_banned ? 'Desbanear' : 'Banear (Bloquear acceso)' }}">
+              <ion-icon slot="icon-only" [name]="user.is_banned ? 'checkmark-circle' : 'ban'"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option [color]="user.is_banned ? 'success' : 'danger'" (click)="toggleBan(user)">
+            <ion-icon slot="icon-only" [name]="user.is_banned ? 'lock-open' : 'ban'"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+</ion-content>
