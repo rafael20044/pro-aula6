@@ -39,7 +39,29 @@
 
         <div class="profile-separator"></div>
 
-        <div class="questions-placeholder">Tus preguntas aparecerán aquí.</div>
+        <!-- User Questions Section -->
+        <div class="user-questions-section">
+          <h3 class="section-title">Tus preguntas</h3>
+          
+          <!-- Loading state -->
+          <div class="loading-container" *ngIf="loadingQuestions">
+            <ion-spinner name="crescent"></ion-spinner>
+          </div>
+          
+          <!-- Questions list -->
+          <div class="questions-list" *ngIf="!loadingQuestions && userQuestions.length > 0">
+            <app-question-card 
+              *ngFor="let item of userQuestions; trackBy: trackQuestion" 
+              [question]="item.q"
+              [handle]="item.handle">
+            </app-question-card>
+          </div>
+          
+          <!-- Empty state -->
+          <div class="questions-placeholder" *ngIf="!loadingQuestions && userQuestions.length === 0">
+            Tus preguntas aparecerán aquí.
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -136,14 +136,44 @@
   background: linear-gradient(to right, transparent, var(--input-border) 15%, var(--input-border) 85%, transparent);
 }
 
-/* Caja de “Tus preguntas aparecerán aquí” debe respetar el contenedor */
+/* User questions section */
+.user-questions-section {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--ion-text-color, #000);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+  
+  ion-spinner {
+    color: var(--ion-color-primary);
+  }
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Caja de "Tus preguntas aparecerán aquí" para estado vacío */
 .questions-placeholder {
-  padding: 14px;
-  border: 1px solid var(--input-border);
-  border-radius: 14px;
+  padding: 24px 16px;
+  border: 1px dashed var(--ion-color-step-300, #d1d5db);
+  border-radius: 12px;
   font-size: 14px;
-  color: var(--label-color);
-  background: var(--bg-card-elevated);
+  color: var(--ion-color-medium, #8e8e93);
+  background: var(--ion-color-step-50, #fafafa);
+  text-align: center;
   width: 100%;
   box-sizing: border-box;
 }

@@ -1,78 +1,87 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Detalles de la pregunta</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pregunta</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" *ngIf="questionDetails; else loadingTpl">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ questionDetails.title }}</ion-card-title>
-      <ion-card-subtitle>
-        <ion-avatar *ngIf="questionDetails.photo">
-          <img [src]="questionDetails.photo">
-        </ion-avatar>
-        {{ questionDetails.full_name }}
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p>{{ questionDetails.body }}</p>
+  <!-- Card principal de la pregunta -->
+  <ion-card class="question-detail-card">
+    <ion-card-content class="detail-content">
+      <!-- Header: avatar + nombre + username -->
+      <div class="detail-header">
+        <div class="avatar">
+          <ng-container *ngIf="avatarUrl; else initials">
+            <img [src]="avatarUrl" alt="avatar">
+          </ng-container>
+          <ng-template #initials>
+            <div class="avatar-initials">{{ (questionDetails.full_name || '').slice(0,2).toUpperCase() }}</div>
+          </ng-template>
+        </div>
+        <div class="user-info">
+          <span class="name">{{ questionDetails.full_name }}</span>
+        </div>
+      </div>
 
-      <!-- Imágenes de la pregunta usando ion-grid -->
-      <ion-grid *ngIf="questionDetails.images.length > 0">
-        <ion-row>
-          <ion-col size="6" size-md="4" *ngFor="let img of questionDetails.images">
-            <ion-card>
-              <img [src]="img.url" [alt]="img.path">
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <!-- Contenido -->
+      <h2 class="detail-title">{{ questionDetails.title }}</h2>
+      <p class="detail-body">{{ questionDetails.body }}</p>
+
+      <!-- Imágenes -->
+      <div class="detail-images" *ngIf="imageUrls.length > 0">
+        <img *ngFor="let url of imageUrls" [src]="url" alt="question image">
+      </div>
 
       <!-- Tags -->
-      <ion-chip *ngFor="let tag of questionDetails.tags">
-        <ion-label>{{ tag }}</ion-label>
-      </ion-chip>
+      <div class="detail-tags" *ngIf="questionDetails.tags?.length">
+        <span class="tag" *ngFor="let tag of questionDetails.tags">{{ tag }}</span>
+      </div>
 
-      <!-- Likes / Dislikes -->
-      <div class="ion-padding-top">
-        <ion-button fill="clear" color="success">
-          👍 {{ questionDetails.like_count }}
-        </ion-button>
-        <ion-button fill="clear" color="danger">
-          👎 {{ questionDetails.dislike_count }}
-        </ion-button>
+      <!-- Botones de interacción -->
+      <div class="detail-actions">
+        <button class="action-btn">
+          <ion-icon name="thumbs-up-outline"></ion-icon>
+          <span>{{ questionDetails.like_count }}</span>
+        </button>
+        <button class="action-btn">
+          <ion-icon name="thumbs-down-outline"></ion-icon>
+          <span>{{ questionDetails.dislike_count }}</span>
+        </button>
+        <button class="action-btn">
+          <ion-icon name="chatbubble-outline"></ion-icon>
+          <span>{{ questionDetails.answer_count }}</span>
+        </button>
       </div>
     </ion-card-content>
   </ion-card>
 
-  <!-- Formulario simple para agregar comentario -->
-<!-- Formulario simple para agregar comentario -->
-<ion-card class="ion-margin-top">
-  <ion-card-content>
-    <app-input
-      label="Escribe tu respuesta"
-      placeholder="Escribe algo..."
-      [control]="commentControl"
-    ></app-input>
+  <!-- Sección de respuesta separada -->
+  <ion-card class="response-card">
+    <ion-card-content>
+      <h3 class="section-title">Escribe tu respuesta</h3>
+      <app-input
+        label=""
+        placeholder="Comparte tu opinión..."
+        [control]="commentControl"
+      ></app-input>
 
-    <app-button
-      text="Publicar"
-      (click)="addComent()"
-      expand="full"
-      variant="filled"
-      class="ion-margin-top"
-    ></app-button>
-  </ion-card-content>
-</ion-card>
+      <app-button
+        text="Publicar"
+        (click)="addComent()"
+        expand="full"
+        variant="filled"
+        class="ion-margin-top"
+      ></app-button>
+    </ion-card-content>
+  </ion-card>
 
-
-  <!-- Respuestas -->
-<!-- Respuestas -->
-<ion-list *ngIf="questionDetails.answers.length > 0">
-  <ion-list-header>
-    <ion-label>Respuestas ({{ questionDetails.answer_count }})</ion-label>
-  </ion-list-header>
+  <!-- Lista de respuestas -->
+  <div class="answers-section" *ngIf="questionDetails.answers.length > 0">
+    <h3 class="section-title">Respuestas ({{ questionDetails.answer_count }})</h3>
+    <ion-list class="answers-list">
 
   <ion-item *ngFor="let answer of questionDetails.answers">
     <ion-label>
@@ -123,8 +132,9 @@
         </ion-item>
       </ion-list>
     </ion-label>
-  </ion-item>
-</ion-list>
+    </ion-item>
+  </ion-list>
+  </div>
 
 </ion-content>
 
