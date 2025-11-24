@@ -36,6 +36,8 @@ export class ProfileComponent  implements OnInit {
   ) { }
 
   async ngOnInit() {
+    
+
     await this.auth.ensureReady();
     const user = this.auth.getUser();
     if (!user) return;

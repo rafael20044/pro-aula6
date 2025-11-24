@@ -43,6 +43,16 @@ export class QuestionService {
     return data as IQuestionBytitle[]
   }
 
+
+  async findByIdUser(id:number){
+    const {data, error} = await Supabase.rpc('get_questions_by_user', {p_user_id: id});
+    if (error) {
+      console.log(error);
+      return [];
+    }
+    return data as IQuestionHome[];
+  }
+
   async createQuestion(question: any, tags: [], images: IImage[]) {
     const { data: questionData, error: questionError } = await Supabase
       .from(Const.TB_QUESTIONS)

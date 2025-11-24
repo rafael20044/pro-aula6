@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Const } from 'src/app/const/const';
 import { Supabase } from 'src/app/core/supabase/supabase';
+import { IUserProfile } from 'src/app/interfaces/iuserprofile';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +38,17 @@ export class UserService {
       return;
     }
     return data.id as number;
+  }
+
+  async getUser(id:number){
+    const {data, error} = 
+      await Supabase.from(Const.TB_USER).select('id, name, last_name, email, photo, created_at').
+      eq('id', id).single();
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+    return data as IUserProfile;
   }
 }
