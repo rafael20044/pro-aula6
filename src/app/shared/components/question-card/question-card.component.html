@@ -27,7 +27,7 @@
       </div>
       
       <!-- Tags estilo pill -->
-      <div class="tags" *ngIf="question.tags?.length">
+      <div class="tags" *ngIf="question.tags.length">
         <span class="tag" *ngFor="let t of question.tags; trackBy: trackTag">{{ t }}</span>
       </div>
     </div>

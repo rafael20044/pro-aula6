@@ -1,12 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IQuestionDetails } from 'src/app/interfaces/iquestiondetail';
 import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
-import { ReactionService } from 'src/app/shared/services/reaction-service';
+import { ReactionService, ReactionType, TargetType } from 'src/app/shared/services/reaction-service';
 import { UserService } from 'src/app/shared/services/user-service';
 import { StorageService } from 'src/app/shared/services/storage-service';
 import { Const } from 'src/app/const/const';
 import { AuthService } from '../../services/auth-service';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../services/local-storage-service';
 
 @Component({
   selector: 'app-question-card',
@@ -17,6 +18,7 @@ import { Router } from '@angular/router';
 export class QuestionCardComponent implements OnInit {
   @Input() question!: IQuestionHome;
   @Input() handle?: string; // username before @ from author's email
+  @Output() emiter = new EventEmitter<boolean>();
 
   likeCount = 0;
   dislikeCount = 0;
@@ -24,14 +26,17 @@ export class QuestionCardComponent implements OnInit {
   sending = false;
   avatarUrl: string | null = null;
   imageUrls: string[] = [];
+  userID = 0;
 
   constructor(
     private readonly reactionService: ReactionService,
     private readonly userService: UserService,
     private readonly router: Router,
     private readonly auth: AuthService,
-    private readonly storageService: StorageService
-  ) {}
+    private readonly storageService: StorageService,
+    private readonly local:LocalStorageService,
+    private readonly reactionS:ReactionService,
+  ) { }
 
   ngOnInit() {
     this.likeCount = this.getLikeCount();
@@ -39,6 +44,7 @@ export class QuestionCardComponent implements OnInit {
     // resolve avatar and question images to usable URLs
     this.resolveAvatar();
     this.resolveImages();
+    this.userID = parseInt(this.local.get(Const.USER_ID) || '0');
   }
 
   trackTag(index: number, tag: string) { return tag + index; }
@@ -221,6 +227,15 @@ export class QuestionCardComponent implements OnInit {
     }
   }
 
+  async reaction(target: TargetType, type: ReactionType) {
+    if (target === 'question_id') {
+      const id = this.question?.question_id || 0;
+      await this.reactionService.reaction(this.userID, id, target, type);
+      this.emiter.emit(true);
+      return;
+    }
+  }
+
   onComment() {
     const questionId = (this.question as any).question_id;
     if (!questionId) {
@@ -232,7 +247,7 @@ export class QuestionCardComponent implements OnInit {
     // this.router.navigate(['/question', questionId]);
   }
 
-  goToDetaiss(){
+  goToDetaiss() {
     this.router.navigate([`/question-details/${this.question.question_id}`]);
   }
 }

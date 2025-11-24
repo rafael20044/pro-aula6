@@ -1,20 +1,17 @@
-import { Inject, inject, Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthStateService } from '../auth/auth-state';
-import { Supabase } from '../supabase/supabase';
-import { AuthService } from 'src/app/shared/services/auth-service';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { Const } from 'src/app/const/const';
+import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
 
-@Injectable({ providedIn: 'root' })
-export class LoggedGuard implements CanActivate {
-  constructor(private state: AuthStateService, private router: Router, private readonly auth: AuthService) {}
+export const loggedGuard: CanActivateFn = (route, state) => {
 
-  async canActivate(): Promise<boolean> {
-    await this.auth.ensureReady();
-    const session = this.auth.getSession();
-    if (session) {
-      this.router.navigate(['/home']);
-      return false;
-    }
-    return true;
+  const local: LocalStorageService = inject(LocalStorageService);
+  const router: Router = inject(Router);
+  const uid = local.get(Const.USER_UID);
+
+  if (uid) {
+    router.navigate(['/home']);
+    return false;
   }
-}
+  return true;
+};

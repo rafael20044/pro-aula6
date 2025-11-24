@@ -86,4 +86,9 @@ export class HomeComponent  implements OnInit {
     }
   }
 
+  async loadData(){
+    console.log("Hola")
+    await this.ngOnInit();
+  }
+
 }

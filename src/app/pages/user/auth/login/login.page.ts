@@ -50,6 +50,7 @@ export class LoginPage {
 
   this.local.set(Const.USER_UID, uid);
   this.local.set(Const.USER_ID, id);
+  this.local.set(Const.IS_ADMIN, role);
 
   this.router.navigate([ role ? '/admin/home' : '/home' ]);
 }

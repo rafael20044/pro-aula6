@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './core/guards/auth-guard';
-import { WelcomeGuard} from './core/guards/welcome-guard';
-import { LoggedGuard } from './core/guards/logged-guard';
+import { welcomeGuard } from './core/guards/welcome-guard';
+import { authGuard } from './core/guards/auth-guard';
+import { loggedGuard } from './core/guards/logged-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 const routes: Routes = [
   // Bienvenida (pública)
@@ -19,7 +20,7 @@ const routes: Routes = [
       {
         path: 'login',
         loadChildren: () => import('./pages/user/auth/login/login.module').then(m => m.LoginPageModule),
-        // canActivate: [LoggedGuard]
+        canActivate: [welcomeGuard, loggedGuard]
       },
       {
         path: 'register',
@@ -32,7 +33,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule),
-    // canActivate: [AuthGuard]
+    canActivate: [authGuard, roleGuard]
   },
 
   // User area routes
@@ -42,7 +43,7 @@ const routes: Routes = [
       {
         path: 'home',
         loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule),
-        // canActivate: [AuthGuard]
+        canActivate: [authGuard]
       },
       {
         path: 'create-question',

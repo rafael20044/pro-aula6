@@ -4,6 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { FilePickerService } from './services/file-picker-service';
 import { LocalStorageService } from '../shared/services/local-storage-service';
 import { Const } from '../const/const';
+import { StatusBarService } from './services/status-bar-service';
 
 
 
@@ -14,16 +15,21 @@ import { Const } from '../const/const';
   ]
 })
 export class CoreModule implements OnInit{ 
-  constructor(private readonly file:FilePickerService, private readonly local:LocalStorageService){
+  constructor(
+    private readonly file:FilePickerService, 
+    private readonly local:LocalStorageService,
+    private readonly status:StatusBarService,
+  ){
     this.ngOnInit();
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (Capacitor.isNativePlatform()) {
-      this.file.permission();
+      await this.file.permission();
+      await this.status.statusBar();
     }
     const showWelcome = this.local.get(Const.SHOW_WELCOME);
-    if (!showWelcome) {
+    if (showWelcome === null) {
       this.local.set(Const.SHOW_WELCOME, true);
     }
   }

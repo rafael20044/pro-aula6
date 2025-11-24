@@ -43,6 +43,6 @@ export class WelcomePage {
     }catch(err){
       
     }
-    this.router.navigate(['/auth/login']).catch(e => console.error('Navigation error', e));
+    this.router.navigate(['/auth/login']);
   }
 }
