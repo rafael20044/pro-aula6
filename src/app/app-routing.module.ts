@@ -64,6 +64,14 @@ const routes: Routes = [
     path: 'question-details/:id',
     loadChildren: () => import('./pages/user/question-details/question-details.module').then( m => m.QuestionDetailsPageModule)
   },
+
+  // Edit profile
+  {
+    path: 'edit-profile',
+    redirectTo: 'user/home',
+    pathMatch: 'full'
+  },
+
   // Default: a login
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 

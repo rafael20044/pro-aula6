@@ -12,7 +12,7 @@
   <ion-card class="question-detail-card">
     <ion-card-content class="detail-content">
       <!-- Header: avatar + nombre + username -->
-      <div class="detail-header">
+      <div class="detail-header" (click)="goToUserProfile()">
         <div class="avatar">
           <ng-container *ngIf="avatarUrl; else initials">
             <img [src]="avatarUrl" alt="avatar">

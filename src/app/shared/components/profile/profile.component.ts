@@ -66,6 +66,10 @@ export class ProfileComponent  implements OnInit {
     return item.q.question_id;
   }
 
+  editProfile() {
+    this.router.navigate(['/edit-profile']);
+  }
+
   async confirmSignOut() {
     const alert = await this.alertCtrl.create({
       header: 'Cerrar sesión',

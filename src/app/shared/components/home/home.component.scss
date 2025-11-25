@@ -1,6 +1,6 @@
 /* Modern feed layout con márgenes reducidos */
 .home-feed {
-  padding-top: 8px;
+  padding-top: 76px; /* Altura del header (60px) + espacio extra (16px) */
   display: flex;
   flex-direction: column;
   gap: 8px;

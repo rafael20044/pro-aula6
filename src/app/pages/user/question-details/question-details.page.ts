@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Const } from 'src/app/const/const';
 import { IAnswersCreate } from 'src/app/interfaces/ianswerscreate';
 import { IQuestionDetails } from 'src/app/interfaces/iquestiondetail';
@@ -36,6 +36,7 @@ export class QuestionDetailsPage implements OnInit {
 
   constructor(
     private readonly active: ActivatedRoute,
+    private readonly router: Router,
     private readonly question: QuestionService,
     private readonly toas: ToastService,
     private readonly answers: AnswersService,
@@ -74,8 +75,8 @@ export class QuestionDetailsPage implements OnInit {
     const noti: INotificarion = {
       user_id: this.questionDetails?.user_id || 0,
       question_id: this.questionDetails?.question_id || 0,
-      title: 'Un usuario a respondido tu pregunta',
-      body: `${this.fullName} a respondido lo siguiente:" ${this.commentControl.value} "`
+      title: 'Un usuario ha respondido tu pregunta',
+      body: `${this.fullName} ha respondido lo siguiente:" ${this.commentControl.value} "`
     }
     this.commentControl.reset();
     await this.notification.createNotification(noti);
@@ -90,7 +91,7 @@ export class QuestionDetailsPage implements OnInit {
       const noti: INotificarion = {
         user_id: this.questionDetails?.user_id || 0,
         question_id: this.questionDetails?.question_id || 0,
-        title: 'Un usuario a reacionadop tu pregunta',
+        title: 'Un usuario ha reacionado tu pregunta',
         body: `${this.fullName} dio un ${type}`
       }
       await this.notification.createNotification(noti);
@@ -169,5 +170,12 @@ export class QuestionDetailsPage implements OnInit {
     }
 
     this.imageUrls = resolved;
+  }
+
+  goToUserProfile() {
+    const userId = this.questionDetails?.user_id;
+    if (userId) {
+      this.router.navigate([`/profile/${userId}`]);
+    }
   }
 }

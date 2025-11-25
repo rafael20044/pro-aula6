@@ -1,0 +1,10 @@
+// Padding top para evitar sobreposición con el header fijo
+ion-content {
+  --padding-top: 76px;
+}
+
+.notification-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px 16px;
+}

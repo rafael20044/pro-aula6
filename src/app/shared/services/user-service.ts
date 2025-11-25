@@ -76,7 +76,7 @@ export class UserService {
   /**
    * Obtiene un usuario por ID con su foto 
    * @param id - ID del usuario
-   * @returns Usuario con la 
+   * @returns Usuario con la foto
    */
   async getUserWithPhoto(id: number): Promise<(IUserProfile & { photoUrl: string | null }) | undefined> {
     const user = await this.getUser(id);
@@ -120,5 +120,48 @@ export class UserService {
     });
 
     return result;
+  }
+
+  /**
+   * Obtiene un usuario por UID con todos sus campos
+   * @param uid - UID del usuario de autenticación
+   * @returns Usuario completo
+   */
+  async getUserByUid(uid: string) {
+    const { data, error } = await Supabase
+      .from(Const.TB_USER)
+      .select('id, name, name2, last_name, last_name2, email, photo, path, created_at')
+      .eq('uid', uid)
+      .single();
+
+    if (error) {
+      console.error('Error fetching user by uid:', error);
+      return null;
+    }
+
+    return data;
+  }
+
+  /**
+   * Actualiza el perfil de un usuario
+   * @param userId - ID del usuario
+   * @param updates - Campos a actualizar
+   * @returns true si se actualizó correctamente
+   */
+  async updateUserProfile(userId: number, updates: any): Promise<boolean> {
+    const { error } = await Supabase
+      .from(Const.TB_USER)
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error updating user profile:', error);
+      return false;
+    }
+
+    return true;
   }
 }
