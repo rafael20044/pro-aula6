@@ -138,7 +138,7 @@ export class EditProfilePage implements OnInit {
         }
       }
 
-      const success = await this.userService.updateUserProfile(this.currentUserId, updates);
+      const success = await this.userService.updateUser(updates, this.currentUserId);
       
       if (!success) {
         throw new Error('Failed to update profile');

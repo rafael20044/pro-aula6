@@ -3,6 +3,7 @@ import { Const } from 'src/app/const/const';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { IUserProfile } from 'src/app/interfaces/iuserprofile';
 import { PhotoService } from './photo-service';
+import { IUserUpdate } from 'src/app/interfaces/iuserupdate';
 
 @Injectable({
   providedIn: 'root'
@@ -122,6 +123,11 @@ export class UserService {
     return result;
   }
 
+  async updateUser(user:IUserUpdate, id:number){
+    const {error} = await Supabase.from(Const.TB_USER).update(user).eq('id', id);
+    return (error) ? false : true;
+  }
+
   /**
    * Obtiene un usuario por UID con todos sus campos
    * @param uid - UID del usuario de autenticación
@@ -140,28 +146,5 @@ export class UserService {
     }
 
     return data;
-  }
-
-  /**
-   * Actualiza el perfil de un usuario
-   * @param userId - ID del usuario
-   * @param updates - Campos a actualizar
-   * @returns true si se actualizó correctamente
-   */
-  async updateUserProfile(userId: number, updates: any): Promise<boolean> {
-    const { error } = await Supabase
-      .from(Const.TB_USER)
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', userId);
-
-    if (error) {
-      console.error('Error updating user profile:', error);
-      return false;
-    }
-
-    return true;
   }
 }
