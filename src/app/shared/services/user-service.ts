@@ -35,7 +35,7 @@ export class UserService {
     const {data, error} = await Supabase.from(Const.TB_USER).select('id').eq('uid', uid).single();
     if (error) {
       console.log(error);
-      return;
+      return null;
     }
     return data.id as number;
   }
@@ -50,5 +50,14 @@ export class UserService {
       return;
     }
     return data as IUserProfile;
+  }
+
+  async removeUser(uid:string){
+    const {error} = await Supabase.auth.admin.deleteUser(uid);
+    if (error) {
+      console.log(error);
+      return false;
+    }
+    return true;
   }
 }
