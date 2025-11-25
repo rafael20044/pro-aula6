@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
+import { NotificationService } from 'src/app/shared/services/notification-service';
 import { ToastService } from 'src/app/shared/services/toast-service';
 import { UserService } from 'src/app/shared/services/user-service';
 
@@ -28,7 +29,8 @@ export class LoginPage {
     private readonly auth:AuthService,
     private readonly local:LocalStorageService,
     private readonly router:Router,
-    private readonly user:UserService
+    private readonly user:UserService,
+    private readonly notification:NotificationService  
   ) {}
 
   async submit() {
@@ -51,7 +53,7 @@ export class LoginPage {
   this.local.set(Const.USER_UID, uid);
   this.local.set(Const.USER_ID, id);
   this.local.set(Const.IS_ADMIN, role);
-
+  this.notification.initListener();
   this.router.navigate([ role ? '/admin/home' : '/home' ]);
 }
 }
