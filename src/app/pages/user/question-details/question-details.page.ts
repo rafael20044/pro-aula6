@@ -53,6 +53,21 @@ export class QuestionDetailsPage implements OnInit {
     await this.loadData();
     this.useId = parseInt(this.local.get(Const.USER_ID) || '0');
     this.fullName = await this.user.getFullName(this.useId) || '';
+    
+    // Auto-resize textarea
+    this.commentControl.valueChanges.subscribe(() => {
+      this.autoResizeTextarea();
+    });
+  }
+
+  private autoResizeTextarea() {
+    setTimeout(() => {
+      const textarea = document.querySelector('.response-textarea') as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+      }
+    }, 0);
   }
 
 
@@ -84,26 +99,47 @@ export class QuestionDetailsPage implements OnInit {
     this.toas.show('Respuesta publicada');
   }
 
-  async reaction(target: TargetType, type: ReactionType) {
-    if (target === 'question_id') {
-      const id = this.questionDetails?.question_id || 0;
-      await this.reactionService.reaction(this.useId, id, target, type);
-      const noti: INotificarion = {
-        user_id: this.questionDetails?.user_id || 0,
-        question_id: this.questionDetails?.question_id || 0,
-        title: 'Un usuario ha reacionado tu pregunta',
-        body: `${this.fullName} dio un ${type}`
-      }
-      await this.notification.createNotification(noti);
-      this.loadData();
-      return;
+  async reactionQuestion(type: ReactionType) {
+    const id = this.questionDetails?.question_id || 0;
+    await this.reactionService.reaction(this.useId, id, 'question_id', type);
+    const noti: INotificarion = {
+      user_id: this.questionDetails?.user_id || 0,
+      question_id: this.questionDetails?.question_id || 0,
+      title: 'Un usuario ha reaccionado a tu respuesta',
+      body: `${this.fullName} dio ${type === 'LIKE' ? 'like 👍' : 'dislike 👎'}`
     }
+    await this.notification.createNotification(noti);
+    await this.loadData();
+  }
+
+  async reactionAnswer(answerId: number, answerUserId: number, type: ReactionType) {
+    await this.reactionService.reaction(this.useId, answerId, 'answer_id', type);
+    const noti: INotificarion = {
+      user_id: answerUserId,
+      question_id: this.questionDetails?.question_id || 0,
+      title: 'Un usuario ha reaccionado a tu respuesta',
+      body: `${this.fullName} dio ${type === 'LIKE' ? 'like 👍' : 'dislike 👎'} a tu respuesta`
+    }
+    await this.notification.createNotification(noti);
+    await this.loadData();
   }
 
   private async loadData() {
     try {
       this.loading = true;
       const data = await this.question.getQuestionDetails(this.id);
+      
+      // Eliminar respuestas duplicadas usando Set por answer_id
+      if (data?.answers) {
+        const uniqueAnswersMap = new Map();
+        data.answers.forEach(answer => {
+          if (!uniqueAnswersMap.has(answer.answer_id)) {
+            uniqueAnswersMap.set(answer.answer_id, answer);
+          }
+        });
+        data.answers = Array.from(uniqueAnswersMap.values());
+      }
+      
       this.questionDetails = data;
 
       // Resolve avatar and images URLs

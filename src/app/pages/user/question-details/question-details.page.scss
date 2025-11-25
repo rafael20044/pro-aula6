@@ -1,45 +1,55 @@
-// Modern question details page
+// ============================================
+// MODERN QUESTION DETAILS PAGE
+// ============================================
+
 ion-content {
-  --padding-start: 8px;
-  --padding-end: 8px;
-  --padding-top: 8px;
+  --background: var(--ion-background-color);
 }
 
-// Card principal de la pregunta
-.question-detail-card {
-  border-radius: 12px;
-  margin: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.12);
+.details-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 76px 16px 24px;
 }
 
-.detail-content {
-  padding: 16px !important;
+// ============================================
+// QUESTION CARD
+// ============================================
+.question-card {
+  background: var(--ion-card-background);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
-// Header compacto
-.detail-header {
+.question-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 20px;
   cursor: pointer;
   transition: opacity 0.2s ease;
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.7;
   }
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  background: var(--ion-color-primary, #3b82f6);
+  background: linear-gradient(135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary));
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.3);
   
   img {
     width: 100%;
@@ -49,9 +59,9 @@ ion-content {
 }
 
 .avatar-initials {
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
   text-transform: uppercase;
 }
 
@@ -60,158 +70,376 @@ ion-content {
   flex-direction: column;
 }
 
-.user-info .name {
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--ion-text-color, #000);
+.user-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ion-text-color);
 }
 
-// Contenido de la pregunta
-.detail-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0 0 10px 0;
-  color: var(--ion-text-color, #000);
+.question-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--ion-text-color);
   line-height: 1.3;
 }
 
-.detail-body {
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--ion-color-step-600, #666);
-  margin: 0 0 12px 0;
+.question-body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ion-color-step-600);
+  margin: 0 0 20px 0;
+  white-space: pre-wrap;
 }
 
-// Imágenes
-.detail-images {
+// Images
+.question-images {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 12px 0;
+  gap: 12px;
+  margin: 20px 0;
   
   img {
     width: 100%;
-    border-radius: 10px;
+    border-radius: 12px;
     object-fit: cover;
-    max-height: 300px;
+    max-height: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 }
 
 // Tags
-.detail-tags {
+.question-tags {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin: 12px 0;
+  margin: 20px 0;
 }
 
 .tag {
-  display: inline-block;
-  padding: 5px 14px;
-  border-radius: 16px;
-  background: #E8EEF5;
-  color: #444;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg,
+    rgba(var(--ion-color-primary-rgb), 0.1),
+    rgba(var(--ion-color-secondary-rgb), 0.1));
+  color: var(--ion-color-primary);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
+  border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
 }
 
-// Botones de interacción
-.detail-actions {
+// Reactions
+.reactions {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  padding-top: 12px;
-  margin-top: 8px;
-  border-top: 1px solid var(--ion-color-step-150, #e5e5e5);
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ion-color-step-150);
 }
 
-.action-btn {
+.reaction-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 8px 14px;
+  gap: 8px;
+  padding: 10px 20px;
   background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: var(--ion-color-medium, #8e8e93);
-  font-size: 14px;
-  font-weight: 500;
+  border: 2px solid var(--ion-color-step-200);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-  
+  transition: all 0.3s ease;
+  color: var(--ion-text-color);
+
   ion-icon {
     font-size: 20px;
   }
-  
-  &:hover {
-    background: var(--ion-color-step-100, #f5f5f5);
-    color: var(--ion-color-primary, #3b82f6);
+
+  &.like:hover {
+    background: rgba(var(--ion-color-success-rgb), 0.1);
+    border-color: var(--ion-color-success);
+    color: var(--ion-color-success);
+    transform: translateY(-2px);
+  }
+
+  &.dislike:hover {
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    border-color: var(--ion-color-danger);
+    color: var(--ion-color-danger);
+    transform: translateY(-2px);
   }
 }
 
-// Card de respuesta
-.response-card {
-  border-radius: 12px;
-  margin: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.12);
-  
-  ion-card-content {
-    padding: 16px !important;
-  }
+// ============================================
+// RESPONSE SECTION
+// ============================================
+.response-section {
+  background: var(--ion-card-background);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--ion-text-color);
+}
+
+.textarea-container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.response-textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 400px;
+  padding: 14px 16px;
+  border: 2px solid var(--ion-color-step-200);
+  border-radius: 12px;
   font-size: 15px;
-  font-weight: 600;
-  margin: 0 0 12px 0;
-  color: var(--ion-text-color, #000);
+  line-height: 1.5;
+  color: var(--ion-text-color);
+  background: var(--ion-background-color);
+  resize: none;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  &::placeholder {
+    color: var(--ion-color-medium);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--ion-color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+
+  &:hover {
+    border-color: var(--ion-color-step-300);
+  }
 }
 
-// Sección de respuestas
+.char-counter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  font-weight: 500;
+
+  .near-limit {
+    color: var(--ion-color-warning);
+    font-weight: 600;
+  }
+
+  .max-chars {
+    color: var(--ion-color-step-500);
+  }
+}
+
+// ============================================
+// ANSWERS SECTION
+// ============================================
 .answers-section {
-  margin: 16px 8px;
+  margin-bottom: 40px;
+
+  > .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: var(--ion-text-color);
+  }
 }
 
-.answers-list {
+.answer-card {
+  background: var(--ion-card-background);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 1px solid var(--ion-color-step-150);
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.answer-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.answer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,
+    rgba(var(--ion-color-primary-rgb), 0.8),
+    rgba(var(--ion-color-secondary-rgb), 0.8));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-initials-small {
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.answer-user-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ion-text-color);
+}
+
+.answer-body {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ion-color-step-600);
+  margin: 0 0 16px 0;
+  white-space: pre-wrap;
+}
+
+.answer-reactions {
+  display: flex;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ion-color-step-100);
+}
+
+.reaction-btn-small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
   background: transparent;
-  padding: 0;
-  margin-top: 8px;
-  
-  ion-item {
-    --background: var(--ion-background-color, #ffffff);
-    --padding-start: 16px;
-    --padding-end: 16px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.12);
+  border: 1.5px solid var(--ion-color-step-200);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--ion-text-color);
+
+  ion-icon {
+    font-size: 18px;
   }
-  
-  ion-label {
-    margin: 12px 0;
-    
-    h2 {
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 6px;
-      color: var(--ion-text-color, #000);
-    }
-    
-    p {
-      font-size: 14px;
-      line-height: 1.4;
-      color: var(--ion-color-step-600, #666);
-      margin: 6px 0;
-    }
-    
-    small {
-      font-size: 12px;
-      color: var(--ion-color-medium, #8e8e93);
-    }
+
+  &.like:hover {
+    background: rgba(var(--ion-color-success-rgb), 0.1);
+    border-color: var(--ion-color-success);
+    color: var(--ion-color-success);
+  }
+
+  &.dislike:hover {
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    border-color: var(--ion-color-danger);
+    color: var(--ion-color-danger);
   }
 }
 
-// Loading spinner
+// ============================================
+// LOADING STATE
+// ============================================
 ion-spinner {
   display: block;
-  margin: 40px auto;
+  margin: 80px auto;
+  --color: var(--ion-color-primary);
+}
+
+// ============================================
+// RESPONSIVE DESIGN
+// ============================================
+
+@media (max-width: 768px) {
+  .details-container {
+    padding: 68px 12px 20px;
+  }
+
+  .question-card,
+  .response-section {
+    padding: 20px;
+  }
+
+  .question-title {
+    font-size: 22px;
+  }
+
+  .question-body {
+    font-size: 15px;
+  }
+
+  .answer-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .details-container {
+    padding: 64px 8px 16px;
+  }
+
+  .question-card,
+  .response-section {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .question-title {
+    font-size: 20px;
+  }
+
+  .question-body,
+  .answer-body {
+    font-size: 14px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .reactions {
+    gap: 8px;
+  }
+
+  .reaction-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+
+  .answer-card {
+    padding: 14px;
+  }
+
+  .answer-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .reaction-btn-small {
+    padding: 5px 12px;
+    font-size: 12px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
 }
