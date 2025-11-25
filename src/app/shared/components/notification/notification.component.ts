@@ -3,6 +3,7 @@ import { INotificarion } from 'src/app/interfaces/inotification';
 import { NotificationService } from '../../services/notification-service';
 import { LocalStorageService } from '../../services/local-storage-service';
 import { Const } from 'src/app/const/const';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-notification',
@@ -18,14 +19,16 @@ export class NotificationComponent  implements OnInit {
   constructor(
     private readonly notification:NotificationService,
     private readonly local:LocalStorageService,
+    private readonly router:Router
   ) { }
 
   ngOnInit() {
     this.load();
   }
 
-  openNotification(n:number){
-    console.log("holll")
+  async openNotification(id:number, question_id:number){
+    await this.notification.markAsRead(id);
+    this.router.navigate([`question-details/${question_id}`]);
   }
 
   private async load(){

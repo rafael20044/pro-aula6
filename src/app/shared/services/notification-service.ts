@@ -11,24 +11,37 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class NotificationService {
 
-  private channel:any;
+  private channel: any;
   private notifications$ = new BehaviorSubject<INotificarion[]>([]);
 
-  constructor(private readonly toast:ToastService, private readonly local:LocalStorageService){}
+  constructor(private readonly toast: ToastService, private readonly local: LocalStorageService) { }
 
-  async createNotification(noti:any){
-    const {error} = await Supabase.from(Const.TB_NOTIFICATION).insert(noti);
+  async createNotification(noti: any) {
+    const { error } = await Supabase.from(Const.TB_NOTIFICATION).insert(noti);
     if (error) {
       console.log(error);
       return;
     }
   }
 
-  async getNotificationByIdUser(id:number){
-    const {data, error} = 
+
+  async markAsRead(id: number) {
+    const { error } = await Supabase
+      .from(Const.TB_NOTIFICATION)
+      .update({ is_read: true })
+      .eq('id', id);
+
+    if (error) {
+      console.log(error);
+    }
+  }
+
+
+  async getNotificationByIdUser(id: number) {
+    const { data, error } =
       await Supabase.from(Const.TB_NOTIFICATION)
-      .select('*').eq('user_id', id)
-      .order("created_at", { ascending: false });
+        .select('*').eq('user_id', id)
+        .order("created_at", { ascending: false });
 
     if (error) {
       console.log(error);
@@ -37,7 +50,7 @@ export class NotificationService {
     return data as INotificarion[];
   }
 
-initListener() {
+  initListener() {
     const userId = this.local.get(Const.USER_ID);
     if (!userId) return;
 
@@ -76,5 +89,5 @@ initListener() {
 
     this.notifications$.next(data || []);
   }
-  
+
 }

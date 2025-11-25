@@ -28,7 +28,8 @@ export class QuestionDetailsPage implements OnInit {
   commentControl = new FormControl('');
   useId: number = 0;
   editingAnswerId: number = 0;
-  
+  private fullName: string = '';
+
   // Resolved URLs
   avatarUrl: string | null = null;
   imageUrls: string[] = [];
@@ -36,13 +37,13 @@ export class QuestionDetailsPage implements OnInit {
   constructor(
     private readonly active: ActivatedRoute,
     private readonly question: QuestionService,
-    private readonly toas:ToastService,
-    private readonly answers:AnswersService,
-    private readonly local:LocalStorageService,
+    private readonly toas: ToastService,
+    private readonly answers: AnswersService,
+    private readonly local: LocalStorageService,
     private readonly storageService: StorageService,
     private readonly reactionService: ReactionService,
-    private readonly notification:NotificationService,
-    private readonly user:UserService
+    private readonly notification: NotificationService,
+    private readonly user: UserService
   ) { }
 
   async ngOnInit() {
@@ -50,16 +51,17 @@ export class QuestionDetailsPage implements OnInit {
     this.id = parseInt(idParam, 10);
     await this.loadData();
     this.useId = parseInt(this.local.get(Const.USER_ID) || '0');
+    this.fullName = await this.user.getFullName(this.useId) || '';
   }
 
 
-  async addComent(){
+  async addComent() {
     const text = this.commentControl.value;
     if (!text) {
       this.toas.showError('Llene el campo');
       return;
     }
-    const data:IAnswersCreate = {
+    const data: IAnswersCreate = {
       body: text,
       user_id: this.useId,
       question_id: this.questionDetails?.question_id || 0,
@@ -69,12 +71,11 @@ export class QuestionDetailsPage implements OnInit {
       this.toas.showError('Error al crear la respuesta');
       return;
     }
-    const fullName = await this.user.getFullName(this.useId);
-    const noti:INotificarion = {
+    const noti: INotificarion = {
       user_id: this.questionDetails?.user_id || 0,
       question_id: this.questionDetails?.question_id || 0,
       title: 'Un usuario a respondido tu pregunta',
-      body: `${fullName} a respondido lo siguiente:" ${this.commentControl.value} "`
+      body: `${this.fullName} a respondido lo siguiente:" ${this.commentControl.value} "`
     }
     this.commentControl.reset();
     await this.notification.createNotification(noti);
@@ -82,10 +83,17 @@ export class QuestionDetailsPage implements OnInit {
     this.toas.show('Respuesta publicada');
   }
 
-  async reaction(target:TargetType, type:ReactionType){
+  async reaction(target: TargetType, type: ReactionType) {
     if (target === 'question_id') {
       const id = this.questionDetails?.question_id || 0;
       await this.reactionService.reaction(this.useId, id, target, type);
+      const noti: INotificarion = {
+        user_id: this.questionDetails?.user_id || 0,
+        question_id: this.questionDetails?.question_id || 0,
+        title: 'Un usuario a reacionadop tu pregunta',
+        body: `${this.fullName} dio un ${type}`
+      }
+      await this.notification.createNotification(noti);
       this.loadData();
       return;
     }
@@ -96,7 +104,7 @@ export class QuestionDetailsPage implements OnInit {
       this.loading = true;
       const data = await this.question.getQuestionDetails(this.id);
       this.questionDetails = data;
-      
+
       // Resolve avatar and images URLs
       if (data) {
         await this.resolveAvatarUrl();
@@ -116,7 +124,7 @@ export class QuestionDetailsPage implements OnInit {
     }
 
     const photo = this.questionDetails.photo;
-    
+
     if (typeof photo === 'string' && photo.startsWith('http')) {
       this.avatarUrl = photo;
       return;
@@ -159,7 +167,7 @@ export class QuestionDetailsPage implements OnInit {
         console.error('Error resolving image URL:', err);
       }
     }
-    
+
     this.imageUrls = resolved;
   }
 }

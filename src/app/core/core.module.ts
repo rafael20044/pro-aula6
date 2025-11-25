@@ -5,6 +5,7 @@ import { FilePickerService } from './services/file-picker-service';
 import { LocalStorageService } from '../shared/services/local-storage-service';
 import { Const } from '../const/const';
 import { StatusBarService } from './services/status-bar-service';
+import { NotificationService } from '../shared/services/notification-service';
 
 
 
@@ -19,6 +20,7 @@ export class CoreModule implements OnInit{
     private readonly file:FilePickerService, 
     private readonly local:LocalStorageService,
     private readonly status:StatusBarService,
+    private readonly noti:NotificationService
   ){
     this.ngOnInit();
   }
@@ -28,6 +30,7 @@ export class CoreModule implements OnInit{
       await this.file.permission();
       await this.status.statusBar();
     }
+    this.noti.initListener();
     const showWelcome = this.local.get(Const.SHOW_WELCOME);
     if (showWelcome === null) {
       this.local.set(Const.SHOW_WELCOME, true);
