@@ -34,7 +34,7 @@ export class UserService {
     const {data, error} = await Supabase.from(Const.TB_USER).select('id').eq('uid', uid).single();
     if (error) {
       console.log(error);
-      return;
+      return null;
     }
     return data.id as number;
   }
@@ -51,10 +51,19 @@ export class UserService {
     return data as IUserProfile;
   }
 
+  async removeUser(uid:string){
+    const {error} = await Supabase.auth.admin.deleteUser(uid);
+    if (error) {
+      console.log(error);
+      return false;
+    }
+    return true;
+  }
+
   /**
-   * Obtiene un usuario por ID con su foto resuelta
+   * Obtiene un usuario por ID con su foto 
    * @param id - ID del usuario
-   * @returns Usuario con la foto ya resuelta como URL firmada
+   * @returns Usuario con la 
    */
   async getUserWithPhoto(id: number): Promise<(IUserProfile & { photoUrl: string | null }) | undefined> {
     const user = await this.getUser(id);
@@ -65,9 +74,9 @@ export class UserService {
   }
 
   /**
-   * Obtiene múltiples usuarios con sus fotos resueltas
+   * Obtiene múltiples usuarios con sus fotos
    * @param ids - Array de IDs de usuarios
-   * @returns Map de userId -> usuario con foto resuelta
+   * @returns Map de userId -> usuario con foto
    */
   async getUsersWithPhotos(ids: number[]): Promise<Map<number, IUserProfile & { photoUrl: string | null }>> {
     const uniqueIds = Array.from(new Set(ids)).filter(Boolean);
