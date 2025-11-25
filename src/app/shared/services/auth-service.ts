@@ -82,13 +82,16 @@ export class AuthService {
   }
 
   async signOut(){
-    // await Supabase.auth.signOut();
-    // this.session = null;
-    // this.user = null;
-    // this.internalUserId = null;
+    await Supabase.auth.signOut();
+    this.session = null;
+    this.user = null;
+    this.internalUserId = null;
+    
     this.local.remove(Const.USER_UID);
     this.local.remove(Const.USER_ID);
     this.local.remove(Const.IS_ADMIN);
+
+    localStorage.clear();
   }
 
   async isAdmin(uid:string){

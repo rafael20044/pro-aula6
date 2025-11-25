@@ -9,6 +9,13 @@
 		<ng-container *ngFor="let item of feed">
 			<app-question-card [question]="item.q" [handle]="item.handle" (emiter)="loadData()"></app-question-card>
 		</ng-container>
+		
+		<!-- Mensaje de fin del feed -->
+		<div class="end-of-feed" *ngIf="feed.length > 0">
+			<div class="end-icon">✨</div>
+			<h3>Has llegado al final</h3>
+			<p>Eso es todo por hoy</p>
+		</div>
 	</ng-container>
 </div>
 

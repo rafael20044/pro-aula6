@@ -13,9 +13,6 @@
 .cover {
   display: none !important;
 }
-
-/* Botón Editar: alineado a la derecha dentro del contenedor */
-/* Botón editar: estará en la misma fila que el avatar (sin borde extra) */
 .edit-profile-btn {
   padding: 4px 10px;
   height: 32px;
@@ -67,12 +64,11 @@
 
 .profile-logout-fab {
   position: absolute;
-  right: 13px;
+  right: 12px;
   bottom: 90px;
 }
 
 /* Avatar a la izquierda sin romper el layout */
-/* Avatar sin borde, sólo círculo relleno o imagen */
 .profile-avatar {
   width: 80px;
   height: 80px;

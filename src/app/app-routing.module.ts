@@ -68,8 +68,7 @@ const routes: Routes = [
   // Edit profile
   {
     path: 'edit-profile',
-    redirectTo: 'user/home',
-    pathMatch: 'full'
+    loadChildren: () => import('./pages/user/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule)
   },
 
   // Default: a login

@@ -145,7 +145,11 @@ export class EditProfilePage implements OnInit {
       }
 
       await this.toast.show('Perfil actualizado correctamente', 2200, 'bottom', 'success');
-      this.location.back();
+      
+      // Navegar al perfil y forzar recarga
+      await this.router.navigate(['/user/home'], { 
+        queryParams: { tab: 'profile', reload: Date.now() } 
+      });
     } catch (error) {
       console.error('Error updating profile:', error);
       await this.toast.showError('Error al actualizar el perfil');

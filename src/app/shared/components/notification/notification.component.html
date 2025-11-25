@@ -4,46 +4,44 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
+  <div class="notification-container">
 
-  <!-- Si no hay notificaciones -->
-  <ng-container *ngIf="notifications.length === 0">
-    <ion-card>
-      <ion-card-content class="ion-text-center">
-        <ion-icon name="notifications-off-outline" style="font-size: 40px; opacity: 0.5;"></ion-icon>
-        <p>No tienes notificaciones todavía.</p>
-      </ion-card-content>
-    </ion-card>
-  </ng-container>
+    <!-- Si no hay notificaciones -->
+    <div *ngIf="notifications.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <ion-icon name="notifications-off-outline"></ion-icon>
+      </div>
+      <h2>No hay notificaciones</h2>
+      <p>Cuando alguien responda a tus preguntas, recibirás notificaciones aquí.</p>
+    </div>
 
-  <!-- Lista de notificaciones -->
-  <ion-list *ngIf="notifications.length > 0">
-    <ion-item
-      *ngFor="let n of notifications"
-      [class.unread]="!n.is_read"
-      button
-      (click)="openNotification(n.id || 0, n.question_id)"
-    >
-
-      <ion-icon
-        slot="start"
-        name="notifications-outline"
-      ></ion-icon>
-
-      <ion-label>
-        <h2>{{ n.title }}</h2>
-        <p>{{ n.body }}</p>
-        <small>{{ n.created_at | date:'short' }}</small>
-      </ion-label>
-
-      <!-- Punto indicador de no leído -->
+    <!-- Lista de notificaciones -->
+    <div *ngIf="notifications.length > 0" class="notifications-list">
       <div
-        *ngIf="!n.is_read"
-        class="dot"
-        slot="end"
-      ></div>
+        *ngFor="let n of notifications"
+        class="notification-card"
+        [class.unread]="!n.is_read"
+        (click)="openNotification(n.id || 0, n.question_id)"
+      >
+        <div class="notification-icon">
+          <ion-icon [name]="!n.is_read ? 'notifications' : 'notifications-outline'"></ion-icon>
+        </div>
 
-    </ion-item>
-  </ion-list>
+        <div class="notification-content">
+          <h3 class="notification-title">{{ n.title }}</h3>
+          <p class="notification-body">{{ n.body }}</p>
+          <span class="notification-time">{{ n.created_at | date:'short' }}</span>
+        </div>
 
+        <!-- Indicador de no leído -->
+        <div *ngIf="!n.is_read" class="unread-indicator"></div>
+
+        <div class="notification-arrow">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </ion-content>

@@ -13,7 +13,7 @@ import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
   styleUrls: ['./profile.component.scss'],
   standalone: false,
 })
-export class ProfileComponent  implements OnInit {
+export class ProfileComponent implements OnInit {
   avatarUrl: string | null = null;
   initials: string = '';
   fullName: string = '';
@@ -36,16 +36,29 @@ export class ProfileComponent  implements OnInit {
   ) { }
 
   async ngOnInit() {
+    await this.loadProfileData();
+  }
 
+  // Se ejecuta cada vez que la vista va a entrar (incluso al volver de edit-profile)
+  async ionViewWillEnter() {
+    await this.loadProfileData();
+  }
+
+  private async loadProfileData() {
     await this.auth.ensureReady();
     const user = this.auth.getUser();
     if (!user) return;
+    
     const { data, error } = await Supabase
       .from(Const.TB_USER)
       .select('id, name, last_name, email, photo, created_at')
       .eq('uid', user.id)
       .single();
-    if (error) return;
+    
+    if (error) {
+      console.error('Error loading profile:', error);
+      return;
+    }
     
     this.currentUserId = data?.id || null;
     

@@ -110,7 +110,7 @@ export class UserService {
 
     if (!data) return result;
 
-    // Resolver todas las fotos en paralelo
+    // Resolver todas las fotos
     const photos = await this.photoService.resolveMultiplePhotos(data.map(u => u.photo));
 
     data.forEach((user, index) => {

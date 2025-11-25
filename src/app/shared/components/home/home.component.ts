@@ -71,11 +71,15 @@ export class HomeComponent  implements OnInit {
         }
       }
 
-      this.feed = questions.map((q: IQuestionHome) => {
+      // Mapear y aleatorizar preguntas
+      const mappedQuestions = questions.map((q: IQuestionHome) => {
         const email = userMap[q.user_id] || '';
         const handle = email ? email.split('@')[0] : undefined;
         return { q, handle };
       });
+      
+      // Shuffle array para mostrar en orden aleatorio
+      this.feed = this.shuffleArray(mappedQuestions);
 
     } catch (err) {
       console.error('Error loading questions for home feed', err);
@@ -88,6 +92,16 @@ export class HomeComponent  implements OnInit {
 
   async loadData(){
     await this.ngOnInit();
+  }
+
+  // Fisher-Yates shuffle algorithm para aleatorizar array
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }
 
 }
