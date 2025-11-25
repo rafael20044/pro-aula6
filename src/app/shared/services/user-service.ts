@@ -3,6 +3,7 @@ import { Const } from 'src/app/const/const';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { IUserProfile } from 'src/app/interfaces/iuserprofile';
 import { PhotoService } from './photo-service';
+import { IUserUpdate } from 'src/app/interfaces/iuserupdate';
 
 @Injectable({
   providedIn: 'root'
@@ -120,5 +121,10 @@ export class UserService {
     });
 
     return result;
+  }
+
+  async updateUser(user:IUserUpdate, id:number){
+    const {error} = await Supabase.from(Const.TB_USER).update(user).eq('id', id);
+    return (error) ? false : true;
   }
 }
