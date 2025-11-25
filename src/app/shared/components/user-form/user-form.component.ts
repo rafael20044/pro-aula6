@@ -11,6 +11,7 @@ import { IUserCreate } from 'src/app/interfaces/iuser';
 import { Const } from 'src/app/const/const';
 import { FilePickerService } from 'src/app/core/services/file-picker-service';
 import { UserService } from '../../services/user-service';
+import { NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-user-form',
@@ -52,6 +53,7 @@ export class UserFormComponent implements OnInit {
     private readonly router: Router,
     private readonly local: LocalStorageService,
     private readonly storage: StorageService,
+    private readonly notification:NotificationService
   ) { }
 
 
@@ -235,6 +237,7 @@ async submit() {
 
     this.local.set(Const.USER_UID, uid);
     this.local.set(Const.USER_ID, id);
+    this.notification.initListener();
     this.router.navigate(['/home']);
   }
 }

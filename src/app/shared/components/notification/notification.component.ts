@@ -29,8 +29,13 @@ export class NotificationComponent  implements OnInit {
   }
 
   private async load(){
-    this.userId = parseInt(this.local.get(Const.USER_ID) || '0');
-    this.notifications = await this.notification.getNotificationByIdUser(this.userId);
+    await this.notification.loadInitialNotifications();
+    this.notification.getNotifications().subscribe(list =>{
+      this.notifications = list;
+    });
+    this.notification.initListener();
   }
+
+
 
 }
