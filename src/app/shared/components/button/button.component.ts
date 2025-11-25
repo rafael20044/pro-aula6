@@ -30,7 +30,6 @@ export class ButtonComponent  implements OnInit {
   ngOnInit() {}
 
   actionDefault(){
-    // console.log('HIIIIIIIII');
   }
 
 }

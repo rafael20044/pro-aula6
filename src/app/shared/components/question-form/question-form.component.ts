@@ -99,7 +99,7 @@ export class QuestionFormComponent implements OnInit {
     }
     const questionId = await this.question.createQuestion(question, this.form.value.tags, this.pickedImages);
     if (questionId) {
-      this.toast.show('pregunta creada con exito');
+      this.toast.show('¡Pregunta creada con exito!');
       this.route.navigate(['/home']);
     }
   }

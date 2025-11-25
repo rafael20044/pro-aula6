@@ -7,4 +7,3 @@ export interface IUserProfile{
     created_at:string,
 }
 
-//'id, name, last_name, email, photo, created_at'

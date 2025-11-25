@@ -37,7 +37,6 @@ export class WelcomePage {
   ];
 
   goToLogin(){
-    console.debug('WelcomePage: goToLogin called, rulesCount=', this.rules?.length);
     try{
       this.local.set(Const.SHOW_WELCOME, false);
     }catch(err){

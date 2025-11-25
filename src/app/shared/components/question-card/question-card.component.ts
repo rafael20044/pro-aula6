@@ -3,7 +3,7 @@ import { IQuestionDetails } from 'src/app/interfaces/iquestiondetail';
 import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
 import { ReactionService, ReactionType, TargetType } from 'src/app/shared/services/reaction-service';
 import { UserService } from 'src/app/shared/services/user-service';
-import { StorageService } from 'src/app/shared/services/storage-service';
+import { PhotoService } from 'src/app/shared/services/photo-service';
 import { Const } from 'src/app/const/const';
 import { AuthService } from '../../services/auth-service';
 import { Router } from '@angular/router';
@@ -33,7 +33,7 @@ export class QuestionCardComponent implements OnInit {
     private readonly userService: UserService,
     private readonly router: Router,
     private readonly auth: AuthService,
-    private readonly storageService: StorageService,
+    private readonly photoService: PhotoService,
     private readonly local:LocalStorageService,
     private readonly reactionS:ReactionService,
   ) { }
@@ -55,20 +55,8 @@ export class QuestionCardComponent implements OnInit {
   }
 
   private async resolveAvatar() {
-    try {
-      const raw = this.getAvatarSrc();
-      if (!raw) { this.avatarUrl = null; return; }
-      if (typeof raw === 'string' && raw.startsWith('http')) {
-        this.avatarUrl = raw;
-        return;
-      }
-      // assume path inside storage
-      const signed = await this.storageService.getSignUrl(Const.BUCKET, raw);
-      this.avatarUrl = signed?.url || null;
-    } catch (err) {
-      console.warn('Could not resolve avatar URL', err);
-      this.avatarUrl = null;
-    }
+    const raw = this.getAvatarSrc();
+    this.avatarUrl = await this.photoService.resolvePhotoUrl(raw);
   }
 
   getImagesList(): Array<any> {
@@ -81,26 +69,20 @@ export class QuestionCardComponent implements OnInit {
   private async resolveImages() {
     try {
       const items = this.getImagesList();
-      const out: string[] = [];
+      const rawPhotos: (string | null)[] = [];
+
       for (const it of items) {
         if (!it) continue;
         if (typeof it === 'string') {
-          if (it.startsWith('http')) out.push(it);
-          else {
-            const signed = await this.storageService.getSignUrl(Const.BUCKET, it);
-            if (signed?.url) out.push(signed.url);
-          }
+          rawPhotos.push(it);
         } else if (typeof it === 'object') {
           const candidate = (it.url || it.image_url || it.path || it.image) as string | undefined;
-          if (!candidate) continue;
-          if (candidate.startsWith('http')) out.push(candidate);
-          else {
-            const signed = await this.storageService.getSignUrl(Const.BUCKET, candidate);
-            if (signed?.url) out.push(signed.url);
-          }
+          rawPhotos.push(candidate || null);
         }
       }
-      this.imageUrls = out;
+
+      const resolved = await this.photoService.resolveMultiplePhotos(rawPhotos);
+      this.imageUrls = resolved.filter((url): url is string => url !== null);
     } catch (err) {
       console.warn('Could not resolve images', err);
       this.imageUrls = [];
@@ -242,9 +224,6 @@ export class QuestionCardComponent implements OnInit {
       console.warn('No question ID available');
       return;
     }
-    // TODO: Create question detail route/page before navigating
-    console.log('Navigate to question detail:', questionId);
-    // this.router.navigate(['/question', questionId]);
   }
 
   goToDetaiss() {

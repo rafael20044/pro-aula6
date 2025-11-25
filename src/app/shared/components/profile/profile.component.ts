@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
-import { StorageService } from 'src/app/shared/services/storage-service';
+import { PhotoService } from 'src/app/shared/services/photo-service';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
@@ -29,14 +29,13 @@ export class ProfileComponent  implements OnInit {
   currentUserId: number | null = null;
 
   constructor(
-    private readonly storageService: StorageService,
+    private readonly photoService: PhotoService,
     private readonly auth: AuthService,
     private readonly alertCtrl: AlertController,
     private readonly router: Router
   ) { }
 
   async ngOnInit() {
-    
 
     await this.auth.ensureReady();
     const user = this.auth.getUser();
@@ -50,20 +49,8 @@ export class ProfileComponent  implements OnInit {
     
     this.currentUserId = data?.id || null;
     
-    // Resolve photo: may be stored as a signed URL already or as a storage path
-    const raw = data?.photo || null;
-    if (raw && typeof raw === 'string' && raw.startsWith('http')) {
-      this.avatarUrl = raw;
-    } else if (raw) {
-      try {
-        const signed = await this.storageService.getSignUrl(Const.BUCKET, raw);
-        this.avatarUrl = signed?.url || null;
-      } catch {
-        this.avatarUrl = null;
-      }
-    } else {
-      this.avatarUrl = null;
-    }
+    // Resolve photo using PhotoService
+    this.avatarUrl = await this.photoService.resolvePhotoUrl(data?.photo);
     const name = (data?.name || '').trim();
     const last = (data?.last_name || '').trim();
     this.fullName = [name, last].filter(Boolean).join(' ');
@@ -72,13 +59,6 @@ export class ProfileComponent  implements OnInit {
     this.username = this.buildUsername(this.email);
     this.joinedDate = this.formatJoinedDate(data?.created_at);
     
-    console.log('Profile loaded:', { 
-      currentUserId: this.currentUserId, 
-      fullName: this.fullName, 
-      username: this.username 
-    });
-    
-    // Load user questions
     await this.loadUserQuestions();
   }
 
@@ -106,9 +86,7 @@ export class ProfileComponent  implements OnInit {
 
   private async performSignOut() {
     try {
-      console.log('Cerrando sesión...');
       await this.auth.signOut();
-      console.log('Sesión cerrada, navegando a login...');
       await this.router.navigate(['/auth/login']);
     } catch (err) {
       console.error('Error al cerrar sesión:', err);
@@ -144,7 +122,6 @@ export class ProfileComponent  implements OnInit {
     this.loadingQuestions = true;
     try {
       if (!this.currentUserId) {
-        console.log('No currentUserId, skipping questions load');
         this.userQuestions = [];
         return;
       }
@@ -157,9 +134,6 @@ export class ProfileComponent  implements OnInit {
         .select('*')
         .eq('user_id', this.currentUserId)
         .order('created_at', { ascending: false });
-
-      console.log('Questions query result:', { data: questionsData, error: questionsError, count: questionsData?.length });
-
       if (questionsError) {
         console.error('Error loading user questions:', questionsError);
         this.userQuestions = [];
@@ -167,7 +141,6 @@ export class ProfileComponent  implements OnInit {
       }
 
       if (!questionsData || questionsData.length === 0) {
-        console.log('No questions found for this user');
         this.userQuestions = [];
         return;
       }
@@ -240,14 +213,11 @@ export class ProfileComponent  implements OnInit {
       const handle = this.username.replace('@', '');
       this.userQuestions = questions.map(q => ({ q, handle }));
       
-      console.log('User questions loaded:', this.userQuestions.length);
-      
     } catch (err) {
       console.error('Error loading user questions:', err);
       this.userQuestions = [];
     } finally {
       this.loadingQuestions = false;
-      console.log('Loading finished. Questions count:', this.userQuestions.length);
     }
   }
 
