@@ -1,42 +1,65 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Búsqueda</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header *ngIf="showLogo"></app-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card>
-    <ion-card-content>
-      <app-input
-        label="Buscar preguntas"
-        placeholder="Escribe tu búsqueda..."
-        [control]="searchControl"
-      ></app-input>
+  <div class="search-container">
+    <!-- Barra de búsqueda moderna -->
+    <div class="search-bar">
+      <ion-icon name="search-outline" class="search-icon"></ion-icon>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar preguntas..."
+        [formControl]="searchControl"
+        autocomplete="off"
+      />
+      <ion-icon 
+        *ngIf="searchControl.value" 
+        name="close-circle" 
+        class="clear-icon" 
+        (click)="clearSearch()">
+      </ion-icon>
+      <ion-spinner 
+        *ngIf="isSearching" 
+        name="crescent" 
+        class="spinner">
+      </ion-spinner>
+    </div>
 
-      <app-button
-        text="Buscar"
-        expand="full"
-        variant="filled"
-        class="ion-margin-top"
-        (click)="search()"
-      ></app-button>
-    </ion-card-content>
-  </ion-card>
+    <!-- Mensaje de ayuda inicial -->
+    <div *ngIf="!hasSearched && !isSearching" class="empty-state">
+      <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+      <h3>Busca preguntas</h3>
+      <p>Comienza a escribir para buscar preguntas</p>
+    </div>
 
-  <ion-list *ngIf="results.length > 0">
-    <ion-list-header>
-      <ion-label>Resultados ({{ results.length }})</ion-label>
-    </ion-list-header>
+    <!-- Resultados -->
+    <div *ngIf="hasSearched && !isSearching && results.length > 0" class="results-container">
+      <div class="results-header">
+        <span class="results-count">{{ results.length }} resultado{{ results.length !== 1 ? 's' : '' }}</span>
+      </div>
 
-    <ion-item *ngFor="let question of results" (click)="goToQuestion(question.question_id)">
-      <ion-label>
-        <h2>{{ question.title }}</h2>
-        <p>{{ question.body | slice:0:100 }}...</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+      <div class="results-list">
+        <div 
+          *ngFor="let question of results; trackBy: trackByQuestionId" 
+          class="result-card"
+          (click)="goToQuestion(question.question_id)">
+          <h3 class="result-title">{{ question.title }}</h3>
+          <p class="result-body">{{ question.body | slice:0:150 }}{{ question.body.length > 150 ? '...' : '' }}</p>
+          <div class="result-footer">
+            <span class="result-date" *ngIf="question.created_at">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ question.created_at | date:'short' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <ion-card *ngIf="results.length === 0" class="ion-text-center ion-padding">
-    <p>No se encontraron resultados</p>
-  </ion-card>
+    <!-- No hay resultados -->
+    <div *ngIf="hasSearched && !isSearching && results.length === 0" class="empty-state">
+      <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+      <h3>No se encontraron resultados</h3>
+      <p>Intenta con otras palabras clave</p>
+    </div>
+  </div>
 </ion-content>
