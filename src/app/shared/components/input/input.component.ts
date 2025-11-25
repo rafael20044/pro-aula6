@@ -13,6 +13,7 @@ export class InputComponent  implements OnInit, OnChanges {
   @Input() placeholder:string = 'placeholder';
   @Input() type:InputType = 'text';
   @Input() control = new FormControl();
+  @Input() showErrors: boolean = true; // Mostrar mensajes de error
 
   isPassword = false;
   displayLabel = '';
@@ -35,6 +36,31 @@ export class InputComponent  implements OnInit, OnChanges {
     const raw = this.label ?? '';
     this.requiredAsterisk = /\*/.test(raw);
     this.displayLabel = raw.replace(/\s*\*/g, '').trim();
+  }
+
+  getErrorMessage(): string | null {
+    if (!this.control || !this.control.invalid || !this.control.touched) {
+      return null;
+    }
+
+    if (this.control.hasError('required')) {
+      return 'Este campo es requerido';
+    }
+
+    if (this.control.hasError('email')) {
+      return 'Ingrese un correo electrónico válido';
+    }
+
+    if (this.control.hasError('invalidName')) {
+      return 'Solo se permiten letras';
+    }
+
+    if (this.control.hasError('minlength')) {
+      const minLength = this.control.errors?.['minlength']?.requiredLength;
+      return `Mínimo ${minLength} caracteres`;
+    }
+
+    return 'Valor inválido';
   }
 
 }

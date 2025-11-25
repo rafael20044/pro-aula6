@@ -24,10 +24,10 @@ export class UserFormComponent implements OnInit {
   selectedFile: File | null = null;
   file: IImage | null = null;
 
-  nameControl = new FormControl('', [Validators.required]);
-  name2Control = new FormControl('', [Validators.required]);
-  lastNameControl = new FormControl('', [Validators.required]);
-  lastName2Control = new FormControl('', [Validators.required]);
+  nameControl = new FormControl('', [Validators.required, this.nameValidator]);
+  name2Control = new FormControl('', [this.nameValidator]); // Opcional
+  lastNameControl = new FormControl('', [Validators.required, this.nameValidator]);
+  lastName2Control = new FormControl('', [this.nameValidator]); // Opcional
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   passwordControl = new FormControl('', [Validators.required]);
   confirmPasswordControl = new FormControl('', [Validators.required]);
@@ -66,8 +66,29 @@ export class UserFormComponent implements OnInit {
 
   // wrappers so template can bind direct function references
   goToStepTo1 = () => this.goToStep(1);
-  goToStepTo2 = () => this.goToStep(2);
-  goToStepTo3 = () => this.goToStep(3);
+  goToStepTo2 = () => {
+    // Marcar todos los campos del paso 1 como touched para mostrar errores
+    this.nameControl.markAsTouched();
+    this.name2Control.markAsTouched();
+    this.lastNameControl.markAsTouched();
+    this.lastName2Control.markAsTouched();
+    
+    // Solo avanzar si el paso 1 es válido
+    if (this.step1Valid()) {
+      this.goToStep(2);
+    }
+  };
+  goToStepTo3 = () => {
+    // Marcar campos del paso 2 como touched
+    this.emailControl.markAsTouched();
+    this.passwordControl.markAsTouched();
+    this.confirmPasswordControl.markAsTouched();
+    
+    // Solo avanzar si el paso 2 es válido
+    if (this.step2Valid()) {
+      this.goToStep(3);
+    }
+  };
 
   // Validate step 2 fields (email, password and match)
   step2Valid(): boolean {
@@ -80,8 +101,15 @@ export class UserFormComponent implements OnInit {
 
   // Validate step 1 required fields: name, last_name and rol
   step1Valid(): boolean {
-    const { name, lastName } = this.form.value;
-    return !!name && !!lastName;
+    // Verificar que los controles OBLIGATORIOS estén válidos
+    // name2Control y lastName2Control son opcionales, pero si tienen valor deben ser válidos
+    const name2Valid = !this.name2Control.value || this.name2Control.valid;
+    const lastName2Valid = !this.lastName2Control.value || this.lastName2Control.valid;
+    
+    return this.nameControl.valid && 
+           this.lastNameControl.valid &&
+           name2Valid &&
+           lastName2Valid;
   }
 
   // wrapper for submit to pass as action to button
@@ -89,6 +117,25 @@ export class UserFormComponent implements OnInit {
 
   initForm() {
 
+  }
+
+  nameValidator(control: AbstractControl): ValidationErrors | null {
+    // Permitir campos vacíos (para campos opcionales)
+    if (!control.value || control.value.trim() === '') return null;
+    // Regex: solo letras (a-z, A-Z), espacios, y caracteres con acentos/diéresis
+    const namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+    const valid = namePattern.test(control.value);
+    return valid ? null : { invalidName: true };
+  }
+
+  private normalizeText(text: string): string {
+    if (!text) return '';
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+      .trim();
   }
 
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -148,11 +195,13 @@ export class UserFormComponent implements OnInit {
 
   async submit() {
     const { name, name2, lastName, lastName2, email, password } = this.form.value;
+    
+    // Normalizar nombres y apellidos: primera letra mayúscula
     const user: IUserCreate = {
-      name: name || '',
-      name2: name2 || '',
-      last_name: lastName || '',
-      last_name2: lastName2 || '',
+      name: this.normalizeText(name || ''),
+      name2: this.normalizeText(name2 || ''),
+      last_name: this.normalizeText(lastName || ''),
+      last_name2: this.normalizeText(lastName2 || ''),
       email: email || '',
       password: password || '',
     }
