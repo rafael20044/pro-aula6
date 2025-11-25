@@ -1,3 +1,49 @@
-<p>
-  notification works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Notificaciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Si no hay notificaciones -->
+  <ng-container *ngIf="notifications.length === 0">
+    <ion-card>
+      <ion-card-content class="ion-text-center">
+        <ion-icon name="notifications-off-outline" style="font-size: 40px; opacity: 0.5;"></ion-icon>
+        <p>No tienes notificaciones todavía.</p>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <!-- Lista de notificaciones -->
+  <ion-list *ngIf="notifications.length > 0">
+    <ion-item
+      *ngFor="let n of notifications"
+      [class.unread]="!n.is_read"
+      button
+      (click)="openNotification(1)"
+    >
+
+      <ion-icon
+        slot="start"
+        name="notifications-outline"
+      ></ion-icon>
+
+      <ion-label>
+        <h2>{{ n.title }}</h2>
+        <p>{{ n.body }}</p>
+        <small>{{ n.created_at | date:'short' }}</small>
+      </ion-label>
+
+      <!-- Punto indicador de no leído -->
+      <div
+        *ngIf="!n.is_read"
+        class="dot"
+        slot="end"
+      ></div>
+
+    </ion-item>
+  </ion-list>
+
+</ion-content>

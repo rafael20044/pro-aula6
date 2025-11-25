@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { INotificarion } from 'src/app/interfaces/inotification';
+import { NotificationService } from '../../services/notification-service';
+import { LocalStorageService } from '../../services/local-storage-service';
+import { Const } from 'src/app/const/const';
 
 @Component({
   selector: 'app-notification',
@@ -8,8 +12,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotificationComponent  implements OnInit {
 
-  constructor() { }
+  notifications:INotificarion[] = [];
+  userId:number = 0;
 
-  ngOnInit() {}
+  constructor(
+    private readonly notification:NotificationService,
+    private readonly local:LocalStorageService,
+  ) { }
+
+  ngOnInit() {
+    this.load();
+  }
+
+  openNotification(n:number){
+    console.log("holll")
+  }
+
+  private async load(){
+    this.userId = parseInt(this.local.get(Const.USER_ID) || '0');
+    this.notifications = await this.notification.getNotificationByIdUser(this.userId);
+  }
 
 }

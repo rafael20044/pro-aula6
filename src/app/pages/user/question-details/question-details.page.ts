@@ -10,7 +10,9 @@ import { QuestionService } from 'src/app/shared/services/question-service';
 import { ReactionService, ReactionType, TargetType } from 'src/app/shared/services/reaction-service';
 import { ToastService } from 'src/app/shared/services/toast-service';
 import { StorageService } from 'src/app/shared/services/storage-service';
-import { AuthService } from 'src/app/shared/services/auth-service';
+import { NotificationService } from 'src/app/shared/services/notification-service';
+import { INotificarion } from 'src/app/interfaces/inotification';
+import { UserService } from 'src/app/shared/services/user-service';
 
 @Component({
   selector: 'app-question-details',
@@ -38,7 +40,9 @@ export class QuestionDetailsPage implements OnInit {
     private readonly answers:AnswersService,
     private readonly local:LocalStorageService,
     private readonly storageService: StorageService,
-    private readonly reactionService: ReactionService
+    private readonly reactionService: ReactionService,
+    private readonly notification:NotificationService,
+    private readonly user:UserService
   ) { }
 
   async ngOnInit() {
@@ -65,7 +69,15 @@ export class QuestionDetailsPage implements OnInit {
       this.toas.showError('Error al crear la respuesta');
       return;
     }
+    const fullName = await this.user.getFullName(this.useId);
+    const noti:INotificarion = {
+      user_id: this.questionDetails?.user_id || 0,
+      question_id: this.questionDetails?.question_id || 0,
+      title: 'Un usuario a respondido tu pregunta',
+      body: `${fullName} a respondido lo siguiente:" ${this.commentControl.value} "`
+    }
     this.commentControl.reset();
+    await this.notification.createNotification(noti);
     await this.loadData();
     this.toas.show('Respuesta publicada');
   }

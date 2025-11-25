@@ -60,6 +60,19 @@ export class UserService {
     return true;
   }
 
+
+  async getFullName(id:number){
+    const {data, error} = await Supabase.from(Const.TB_USER)
+      .select('name, name2, last_name, last_name2')
+      .eq('id', id)
+      .single();
+    if (error) {
+      console.log(error);
+      return null;
+    }
+    return `${data.name} ${data.name2} ${data.last_name} ${data.last_name2}`;
+  }
+
   /**
    * Obtiene un usuario por ID con su foto 
    * @param id - ID del usuario

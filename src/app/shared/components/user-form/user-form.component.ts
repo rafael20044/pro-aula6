@@ -193,37 +193,50 @@ export class UserFormComponent implements OnInit {
     this.file = null;
   }
 
-  async submit() {
-    const { name, name2, lastName, lastName2, email, password } = this.form.value;
-    
-    // Normalizar nombres y apellidos: primera letra mayúscula
-    const user: IUserCreate = {
-      name: this.normalizeText(name || ''),
-      name2: this.normalizeText(name2 || ''),
-      last_name: this.normalizeText(lastName || ''),
-      last_name2: this.normalizeText(lastName2 || ''),
-      email: email || '',
-      password: password || '',
-    }
-    const uid = await this.auth.registerWithEmailAndPassword(email || '', password || '');
-    user.uid = uid;
-    if (this.file) {
-      const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.data, this.file.mimeType);
-      user.photo = result?.url;
-      user.path = result?.path
-    }
-    const isCreate = await this.user.createUser(user);
-    if (isCreate) {
-      const id = await this.user.findIdByUid(uid || '');
-      if (!id) {
-        await this.user.removeUser(uid || '');
-        this.toast.showError('Error al crear el usuario');
-        return;
-      }
-      this.local.set(Const.USER_UID, uid);
-      this.local.set(Const.USER_ID, id);
-      this.router.navigate(['/home']);
+async submit() {
+  const { name, name2, lastName, lastName2, email, password } = this.form.value;
+
+  const user: IUserCreate = {
+    name: this.normalizeText(name || ''),
+    name2: this.normalizeText(name2 || ''),
+    last_name: this.normalizeText(lastName || ''),
+    last_name2: this.normalizeText(lastName2 || ''),
+    email: email || '',
+    password: password || '',
+  };
+
+  // Registro en Supabase Auth
+  const uid = await this.auth.registerWithEmailAndPassword(email || '', password || '');
+
+  if (!uid) {
+    //this.toast.showError('El correo ya está registrado o ocurrió un error al registrarse.');
+    return;
+  }
+
+  user.uid = uid;
+
+  // Subir foto si existe
+  if (this.file) {
+    const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.data, this.file.mimeType);
+    user.photo = result?.url;
+    user.path = result?.path;
+  }
+
+  // Crear usuario en tabla "users"
+  const isCreate = await this.user.createUser(user);
+
+  if (isCreate) {
+    const id = await this.user.findIdByUid(uid);
+    if (!id) {
+      await this.user.removeUser(uid); // roll back
+      this.toast.showError('Error al crear el usuario');
       return;
     }
+
+    this.local.set(Const.USER_UID, uid);
+    this.local.set(Const.USER_ID, id);
+    this.router.navigate(['/home']);
   }
+}
+
 }
