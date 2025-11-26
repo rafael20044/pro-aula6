@@ -6,13 +6,13 @@ import { loggedGuard } from './core/guards/logged-guard';
 import { roleGuard } from './core/guards/role-guard';
 
 const routes: Routes = [
-  // Bienvenida (pública)
+  // Página de bienvenida 
   {
     path: 'welcome',
     loadChildren: () => import('./pages/user/welcome/welcome.module').then(m => m.WelcomePageModule)
   },
 
-  // Auth (público)
+  // Autenticación (login y formulario de registro)
   {
     path: 'auth',
     children: [
@@ -29,14 +29,14 @@ const routes: Routes = [
     ]
   },
 
-  // Home de usuario (privado)
+  // Home de usuario
   {
     path: 'home',
     loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule),
     canActivate: [authGuard, roleGuard]
   },
 
-  // User area routes
+  // Rutas del usuario
   {
     path: 'user',
     children: [
@@ -48,29 +48,28 @@ const routes: Routes = [
       {
         path: 'create-question',
         loadChildren: () => import('./pages/user/create-question/create-question.module').then(m => m.CreateQuestionPageModule),
-        // canActivate: [AuthGuard]
+        canActivate: [authGuard]
       }
     ]
   },
-
-  // Área Admin (privado) - lazy load del FEATURE admin
-  {
-    path: 'admin',
-    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
-    // canActivate: [AuthGuard]
-  },
-  
-  {
+{
     path: 'question-details/:id',
     loadChildren: () => import('./pages/user/question-details/question-details.module').then( m => m.QuestionDetailsPageModule)
   },
 
-  // Edit profile
+  // Editar perfil
   {
     path: 'edit-profile',
     loadChildren: () => import('./pages/user/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule)
   },
 
+  // Área del administrador
+  {
+    path: 'admin',
+    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
+    canActivate: [authGuard]
+  },
+  
   // Default: a login
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 

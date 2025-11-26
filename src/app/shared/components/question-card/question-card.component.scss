@@ -26,6 +26,34 @@
   margin-bottom: 10px;
 }
 
+.menu-btn {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-medium);
+  }
+
+  &:hover {
+    background: var(--ion-color-step-100);
+  }
+
+  &:active {
+    background: var(--ion-color-step-150);
+  }
+}
+
 .avatar-small {
   width: 36px;
   height: 36px;
@@ -162,5 +190,111 @@
   
   &:active {
     transform: scale(0.95);
+  }
+}
+
+// ============================================
+// CUSTOM REPORT MODALS
+// ============================================
+.report-modal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ion-background-color);
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.modal-header {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--ion-color-step-150);
+  
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ion-text-color);
+  }
+  
+  .modal-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  
+  ion-radio-group {
+    width: 100%;
+  }
+  
+  .radio-item {
+    --padding-start: 20px;
+    --inner-padding-end: 20px;
+    --min-height: 56px;
+    margin-bottom: 4px;
+    
+    ion-radio {
+      margin-right: 16px;
+    }
+    
+    ion-label {
+      font-size: 15px;
+      color: var(--ion-text-color);
+      white-space: normal;
+      line-height: 1.4;
+    }
+    
+    &:hover {
+      --background: var(--ion-color-step-50);
+    }
+  }
+  
+  .details-textarea {
+    margin: 0 20px;
+    border: 2px solid var(--ion-color-step-200);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 15px;
+    background: var(--ion-background-color);
+    
+    &::part(native) {
+      min-height: 140px;
+    }
+  }
+  
+  .char-counter {
+    text-align: right;
+    padding: 8px 20px 0;
+    font-size: 13px;
+    color: var(--ion-color-medium);
+    
+    &.warning {
+      color: var(--ion-color-warning);
+      font-weight: 600;
+    }
+  }
+}
+
+.modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--ion-color-step-150);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  
+  ion-button {
+    --border-radius: 10px;
+    font-weight: 600;
+    text-transform: none;
+    
+    &[fill="clear"] {
+      --color: var(--ion-color-medium);
+    }
   }
 }

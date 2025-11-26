@@ -74,11 +74,6 @@ export class UserService {
     return `${data.name} ${data.name2} ${data.last_name} ${data.last_name2}`;
   }
 
-  /**
-   * Obtiene un usuario por ID con su foto 
-   * @param id - ID del usuario
-   * @returns Usuario con la foto
-   */
   async getUserWithPhoto(id: number): Promise<(IUserProfile & { photoUrl: string | null }) | undefined> {
     const user = await this.getUser(id);
     if (!user) return undefined;
@@ -87,11 +82,7 @@ export class UserService {
     return { ...user, photoUrl };
   }
 
-  /**
-   * Obtiene múltiples usuarios con sus fotos
-   * @param ids - Array de IDs de usuarios
-   * @returns Map de userId -> usuario con foto
-   */
+
   async getUsersWithPhotos(ids: number[]): Promise<Map<number, IUserProfile & { photoUrl: string | null }>> {
     const uniqueIds = Array.from(new Set(ids)).filter(Boolean);
     const result = new Map<number, IUserProfile & { photoUrl: string | null }>();
@@ -110,7 +101,6 @@ export class UserService {
 
     if (!data) return result;
 
-    // Resolver todas las fotos
     const photos = await this.photoService.resolveMultiplePhotos(data.map(u => u.photo));
 
     data.forEach((user, index) => {
@@ -128,11 +118,6 @@ export class UserService {
     return (error) ? false : true;
   }
 
-  /**
-   * Obtiene un usuario por UID con todos sus campos
-   * @param uid - UID del usuario de autenticación
-   * @returns Usuario completo
-   */
   async getUserByUid(uid: string) {
     const { data, error } = await Supabase
       .from(Const.TB_USER)

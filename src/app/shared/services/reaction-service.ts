@@ -36,7 +36,6 @@ export class ReactionService {
 
   private async create(target: string, userId: number, targetId: number, reaction: ReactionType) {
     try {
-      // Insert explícito de ambos campos para evitar NOT NULL conflict si el otro es obligatorio
       const insertData = {
         user_id: userId,
         question_id: target === 'question_id' ? targetId : null,
@@ -51,7 +50,7 @@ export class ReactionService {
         .single();
 
       if (error) {
-        // Detalle específico para NOT NULL constraint en answer_id
+        // Manejar error específico de NOT NULL violation
         if ((error as any).code === '23502') {
           console.error('La columna answer_id tiene NOT NULL y estás insertando reacción sobre una pregunta. Debes permitir NULL o separar tablas.');
         }

@@ -30,7 +30,6 @@ export class QuestionDetailsPage implements OnInit {
   editingAnswerId: number = 0;
   private fullName: string = '';
 
-  // Resolved URLs
   avatarUrl: string | null = null;
   imageUrls: string[] = [];
 
@@ -54,7 +53,6 @@ export class QuestionDetailsPage implements OnInit {
     this.useId = parseInt(this.local.get(Const.USER_ID) || '0');
     this.fullName = await this.user.getFullName(this.useId) || '';
     
-    // Auto-resize textarea
     this.commentControl.valueChanges.subscribe(() => {
       this.autoResizeTextarea();
     });
@@ -129,7 +127,7 @@ export class QuestionDetailsPage implements OnInit {
       this.loading = true;
       const data = await this.question.getQuestionDetails(this.id);
       
-      // Eliminar respuestas duplicadas usando Set por answer_id
+      // Eliminar respuestas duplicadas
       if (data?.answers) {
         const uniqueAnswersMap = new Map();
         data.answers.forEach(answer => {
@@ -142,7 +140,6 @@ export class QuestionDetailsPage implements OnInit {
       
       this.questionDetails = data;
 
-      // Resolve avatar and images URLs
       if (data) {
         await this.resolveAvatarUrl();
         await this.resolveImageUrls();

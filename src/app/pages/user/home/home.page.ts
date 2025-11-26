@@ -36,7 +36,7 @@ export class HomePage implements OnInit{
   async signOut() {
     try {
       await this.auth.signOut();
-      // navigate to login
+      // Redirigir al login
       this.router.navigate(['/auth/login']);
     } catch (err) {
       console.error('Error signing out', err);

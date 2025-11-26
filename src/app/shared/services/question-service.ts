@@ -153,11 +153,6 @@ export class QuestionService {
     return true;
   }
 
-  /**
-   * Obtiene las imágenes de una pregunta con URLs resueltas
-   * @param questionId - ID de la pregunta
-   * @returns Array de URLs firmadas de las imágenes
-   */
   async getQuestionImages(questionId: number): Promise<string[]> {
     const { data, error } = await Supabase
       .from(Const.TB_IMAGES)
@@ -172,11 +167,6 @@ export class QuestionService {
     return this.photoService.resolveImageUrls(data);
   }
 
-  /**
-   * Obtiene las imágenes de múltiples preguntas con URLs resueltas
-   * @param questionIds - Array de IDs de preguntas
-   * @returns Map de questionId -> array de URLs de imágenes
-   */
   async getMultipleQuestionImages(questionIds: number[]): Promise<Map<number, string[]>> {
     const result = new Map<number, string[]>();
     

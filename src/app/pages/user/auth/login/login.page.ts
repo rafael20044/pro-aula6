@@ -46,7 +46,6 @@ export class LoginPage {
     return;
   }
 
-  // MOCK de rol local (luego reemplazas por consulta real)
   const role = await this.auth.isAdmin(uid);
   const id = await this.user.findIdByUid(uid);
 

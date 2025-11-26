@@ -53,9 +53,6 @@ export class QuestionFormComponent implements OnInit {
     return this.form.get('tags') as FormControl;
   }
 
-  // Legacy input methods removed to avoid native file control
-
-  // Open gallery via FilePickerService, append up to 5 images
   async triggerGallery() {
     if (this.pickedImages.length >= this.maxImages) return;
     const img = await this.filePicker.pickImage();
@@ -73,7 +70,7 @@ export class QuestionFormComponent implements OnInit {
   }
 
   onTagsChange(tags: string[]) {
-    // Enforce 1..2 selection at form level as well
+
     this.selectedTags = Array.isArray(tags) ? tags.slice(0, 2) : [];
     this.tagsControl.setValue(this.selectedTags);
     this.tagsControl.markAsTouched();

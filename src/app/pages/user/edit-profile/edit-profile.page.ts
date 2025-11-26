@@ -61,7 +61,6 @@ export class EditProfilePage implements OnInit {
     this.lastName2Control.setValue(data.last_name2 || '');
     this.emailControl.setValue(data.email || '');
 
-    // Load photo
     if (data.photo) {
       if (data.photo.startsWith('http')) {
         this.profilePhoto = data.photo;
@@ -126,7 +125,7 @@ export class EditProfilePage implements OnInit {
         last_name2: this.normalizeText(this.lastName2Control.value || '')
       };
 
-      // Upload new photo if changed
+      // Actualizar foto si se cambió
       if (this.file) {
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.jpg`;
         const folder = `users/${this.currentUserId}`;
@@ -146,7 +145,6 @@ export class EditProfilePage implements OnInit {
 
       await this.toast.show('Perfil actualizado correctamente', 2200, 'bottom', 'success');
       
-      // Navegar al perfil y forzar recarga
       await this.router.navigate(['/user/home'], { 
         queryParams: { tab: 'profile', reload: Date.now() } 
       });

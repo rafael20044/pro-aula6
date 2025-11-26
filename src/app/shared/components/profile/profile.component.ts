@@ -3,6 +3,7 @@ import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
 import { PhotoService } from 'src/app/shared/services/photo-service';
+import { QuestionService } from 'src/app/shared/services/question-service';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
@@ -30,6 +31,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private readonly photoService: PhotoService,
+    private readonly questionService: QuestionService,
     private readonly auth: AuthService,
     private readonly alertCtrl: AlertController,
     private readonly router: Router
@@ -162,12 +164,9 @@ export class ProfileComponent implements OnInit {
         return;
       }
 
-      // Get images for these questions
+      // Get images for these questions using QuestionService
       const questionIds = questionsData.map(q => q.id);
-      const { data: imagesData } = await Supabase
-        .from(Const.TB_IMAGES)
-        .select('question_id, image_url, path')
-        .in('question_id', questionIds);
+      const imagesMap = await this.questionService.getMultipleQuestionImages(questionIds);
 
       // Get tags for these questions
       const { data: tagsData } = await Supabase
@@ -178,37 +177,24 @@ export class ProfileComponent implements OnInit {
       // Get reactions for these questions
       const { data: reactionsData } = await Supabase
         .from(Const.TB_REACTIONS)
-        .select('question_id, type')
+        .select('question_id, tipo')
         .in('question_id', questionIds)
         .is('answer_id', null);
 
-      console.log('Additional data:', { 
-        images: imagesData?.length, 
-        tags: tagsData?.length, 
-        reactions: reactionsData?.length 
-      });
-
-      // Transform data to IQuestionHome format
       const questions: IQuestionHome[] = questionsData.map((q: any) => {
-        // Get images for this question
-        const questionImages = (imagesData || [])
-          .filter((img: any) => img.question_id === q.id)
-          .map((img: any) => ({
-            image_url: img.image_url,
-            path: img.path
-          }));
+        const imageUrls = imagesMap.get(q.id) || [];
+        const questionImages = imageUrls.map(url => ({ image_url: url, path: url }));
 
-        // Get tags for this question
         const questionTags = (tagsData || [])
           .filter((tq: any) => tq.question_id === q.id)
           .map((tq: any) => tq.tags?.name)
           .filter(Boolean);
 
-        // Count reactions for this question
+        // Contar reacciones
         const questionReactions = (reactionsData || [])
           .filter((r: any) => r.question_id === q.id);
-        const likeCount = questionReactions.filter((r: any) => r.type === 'like').length;
-        const dislikeCount = questionReactions.filter((r: any) => r.type === 'dislike').length;
+        const likeCount = questionReactions.filter((r: any) => r.tipo === 'LIKE').length;
+        const dislikeCount = questionReactions.filter((r: any) => r.tipo === 'DISLIKE').length;
 
         return {
           question_id: q.id,
@@ -226,7 +212,7 @@ export class ProfileComponent implements OnInit {
         };
       });
 
-      // Build handle from email
+      // hacer intento de username desde email
       const handle = this.username.replace('@', '');
       this.userQuestions = questions.map(q => ({ q, handle }));
       

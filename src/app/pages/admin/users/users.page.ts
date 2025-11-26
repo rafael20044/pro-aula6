@@ -21,7 +21,6 @@ export class UsersPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Initial load handled by ionViewWillEnter
   }
 
   ionViewWillEnter() {
@@ -95,7 +94,6 @@ export class UsersPage implements OnInit {
           placeholder: 'Nombre completo',
           value: user.full_name
         },
-        // Add more fields if needed, e.g., email (though changing email might require auth updates)
       ],
       buttons: [
         {

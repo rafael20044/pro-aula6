@@ -4,10 +4,13 @@ import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
 import { ReactionService, ReactionType, TargetType } from 'src/app/shared/services/reaction-service';
 import { UserService } from 'src/app/shared/services/user-service';
 import { PhotoService } from 'src/app/shared/services/photo-service';
+import { QuestionService } from 'src/app/shared/services/question-service';
 import { Const } from 'src/app/const/const';
 import { AuthService } from '../../services/auth-service';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage-service';
+import { ActionSheetController, AlertController } from '@ionic/angular';
+import { ToastService } from '../../services/toast-service';
 
 @Component({
   selector: 'app-question-card',
@@ -18,6 +21,7 @@ import { LocalStorageService } from '../../services/local-storage-service';
 export class QuestionCardComponent implements OnInit {
   @Input() question!: IQuestionHome;
   @Input() handle?: string; // username before @ from author's email
+  @Input() isOwnProfile: boolean = false; 
   @Output() emiter = new EventEmitter<boolean>();
 
   likeCount = 0;
@@ -28,20 +32,31 @@ export class QuestionCardComponent implements OnInit {
   imageUrls: string[] = [];
   userID = 0;
 
+  // Modal control properties
+  showQuestionReportModal = false;
+  showUserReportModal = false;
+  showDetailsModal = false;
+  selectedReason = '';
+  reportDetails = '';
+  currentReportType: 'question' | 'user' = 'question';
+
   constructor(
     private readonly reactionService: ReactionService,
     private readonly userService: UserService,
+    private readonly questionService: QuestionService,
     private readonly router: Router,
     private readonly auth: AuthService,
     private readonly photoService: PhotoService,
-    private readonly local:LocalStorageService,
-    private readonly reactionS:ReactionService,
+    private readonly local: LocalStorageService,
+    private readonly reactionS: ReactionService,
+    private readonly actionSheetCtrl: ActionSheetController,
+    private readonly alertCtrl: AlertController,
+    private readonly toast: ToastService
   ) { }
 
   ngOnInit() {
     this.likeCount = this.getLikeCount();
     this.dislikeCount = this.getDislikeCount();
-    // resolve avatar and question images to usable URLs
     this.resolveAvatar();
     this.resolveImages();
     this.userID = parseInt(this.local.get(Const.USER_ID) || '0');
@@ -113,7 +128,6 @@ export class QuestionCardComponent implements OnInit {
         return;
       }
 
-      // usar ID interno cacheado si existe, si no buscar y cachear
       let userId = this.auth.getInternalUserId();
       if (!userId) {
         const found = await this.userService.findIdByUid(user.id);
@@ -128,19 +142,15 @@ export class QuestionCardComponent implements OnInit {
       const previous = this.userReaction;
       const result = await this.reactionService.reaction(userId, questionId, 'question_id', 'LIKE');
       if (result) {
-        // optimistic counts update
         if (previous === 'LIKE') {
-          // toggled to DISLIKE
           this.likeCount = Math.max(0, this.likeCount - 1);
           this.dislikeCount += 1;
           this.userReaction = 'DISLIKE';
         } else if (previous === 'DISLIKE') {
-          // switched from DISLIKE to LIKE
           this.dislikeCount = Math.max(0, this.dislikeCount - 1);
           this.likeCount += 1;
           this.userReaction = 'LIKE';
         } else {
-          // first reaction
           if (result === 'LIKE') {
             this.likeCount += 1;
             this.userReaction = 'LIKE';
@@ -184,7 +194,7 @@ export class QuestionCardComponent implements OnInit {
       const result = await this.reactionService.reaction(userId, questionId, 'question_id', 'DISLIKE');
       if (result) {
         if (previous === 'DISLIKE') {
-          // toggled to LIKE
+
           this.dislikeCount = Math.max(0, this.dislikeCount - 1);
           this.likeCount += 1;
           this.userReaction = 'LIKE';
@@ -228,5 +238,176 @@ export class QuestionCardComponent implements OnInit {
 
   goToDetaiss() {
     this.router.navigate([`/question-details/${this.question.question_id}`]);
+  }
+
+  async openMenu(event: Event) {
+    event.stopPropagation();
+
+    const buttons = this.isOwnProfile ? [
+      {
+        text: 'Editar pregunta',
+        icon: 'create-outline',
+        handler: () => {
+          this.editQuestion();
+        }
+      },
+      {
+        text: 'Eliminar pregunta',
+        icon: 'trash-outline',
+        role: 'destructive',
+        handler: () => {
+          this.confirmDeleteQuestion();
+        }
+      },
+      {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel'
+      }
+    ] : [
+      {
+        text: 'Reportar pregunta',
+        icon: 'flag-outline',
+        handler: () => {
+          this.reportQuestion();
+        }
+      },
+      {
+        text: 'Reportar usuario',
+        icon: 'person-remove-outline',
+        handler: () => {
+          this.reportUser();
+        }
+      },
+      {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel'
+      }
+    ];
+
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Opciones',
+      buttons
+    });
+
+    await actionSheet.present();
+  }
+
+  editQuestion() {
+    // TODO: Navigate to edit question page
+    this.toast.show('Función de edición en desarrollo', 2000, 'bottom', 'warning');
+  }
+
+  async confirmDeleteQuestion() {
+    const alert = await this.alertCtrl.create({
+      header: '¿Eliminar pregunta?',
+      message: 'Esta acción no se puede deshacer.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          handler: async () => {
+            await this.deleteQuestion();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async deleteQuestion() {
+    try {
+      const success = await this.questionService.deleteQuestion(this.question.question_id);
+      if (success) {
+        await this.toast.show('Pregunta eliminada', 2000, 'bottom', 'success');
+        this.emiter.emit(true); // Reload questions
+      } else {
+        await this.toast.showError('Error al eliminar la pregunta');
+      }
+    } catch (error) {
+      console.error('Error deleting question:', error);
+      await this.toast.showError('Error al eliminar la pregunta');
+    }
+  }
+
+  async reportQuestion() {
+    this.selectedReason = '';
+    this.currentReportType = 'question';
+    this.showQuestionReportModal = true;
+  }
+
+  closeQuestionReportModal() {
+    this.showQuestionReportModal = false;
+    this.selectedReason = '';
+  }
+
+  proceedToQuestionDetails() {
+    if (!this.selectedReason) {
+      this.toast.show('Debes seleccionar una razón', 2000, 'bottom', 'warning');
+      return;
+    }
+    this.showQuestionReportModal = false;
+    this.reportDetails = '';
+    this.showDetailsModal = true;
+  }
+
+  async reportUser() {
+    this.selectedReason = '';
+    this.currentReportType = 'user';
+    this.showUserReportModal = true;
+  }
+
+  closeUserReportModal() {
+    this.showUserReportModal = false;
+    this.selectedReason = '';
+  }
+
+  proceedToUserDetails() {
+    if (!this.selectedReason) {
+      this.toast.show('Debes seleccionar una razón', 2000, 'bottom', 'warning');
+      return;
+    }
+    this.showUserReportModal = false;
+    this.reportDetails = '';
+    this.showDetailsModal = true;
+  }
+
+  closeDetailsModal() {
+    this.showDetailsModal = false;
+    this.reportDetails = '';
+  }
+
+  async submitReportFromModal() {
+    const details = this.reportDetails.trim();
+    if (details.length < 70) {
+      this.toast.show(
+        `Descripción muy corta. Necesitas al menos ${70 - details.length} caracteres más`,
+        3000,
+        'bottom',
+        'warning'
+      );
+      return;
+    }
+    
+    this.closeDetailsModal();
+    await this.submitReport(this.currentReportType, this.selectedReason, details);
+  }
+
+  private async submitReport(type: 'question' | 'user', reason: string, details: string) {
+    // TODO: Implement backend report submission
+    console.log('Report submitted:', { type, reason, details, questionId: this.question.question_id, userId: this.question.user_id });
+    
+    await this.toast.show(
+      type === 'question' ? 'Pregunta reportada exitosamente' : 'Usuario reportado exitosamente',
+      2500,
+      'bottom',
+      'success'
+    );
   }
 }

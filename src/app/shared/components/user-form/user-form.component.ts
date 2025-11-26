@@ -20,7 +20,7 @@ import { NotificationService } from '../../services/notification-service';
   standalone: false,
 })
 export class UserFormComponent implements OnInit {
-  @Input() isRegistration: boolean = true; // true para registro, false para editar perfil
+  @Input() isRegistration: boolean = true;
   profilePhoto: string | null = null;
   selectedFile: File | null = null;
   file: IImage | null = null;
@@ -41,7 +41,7 @@ export class UserFormComponent implements OnInit {
     email: this.emailControl,
     password: this.passwordControl,
   });
-  // wizard step: 1 = nombres/apellidos/rol, 2 = email + contraseña, 3 = foto y submit
+  //  1 = nombres/apellidos/rol, 2 = email + contraseña, 3 = foto y submit
   currentStep: number = 1;
 
 
@@ -61,15 +61,11 @@ export class UserFormComponent implements OnInit {
     this.initForm();
   }
 
-  // Wizard navigation helpers
   goToStep(step: number) {
     this.currentStep = step;
   }
-
-  // wrappers so template can bind direct function references
   goToStepTo1 = () => this.goToStep(1);
   goToStepTo2 = () => {
-    // Marcar todos los campos del paso 1 como touched para mostrar errores
     this.nameControl.markAsTouched();
     this.name2Control.markAsTouched();
     this.lastNameControl.markAsTouched();
@@ -81,7 +77,6 @@ export class UserFormComponent implements OnInit {
     }
   };
   goToStepTo3 = () => {
-    // Marcar campos del paso 2 como touched
     this.emailControl.markAsTouched();
     this.passwordControl.markAsTouched();
     this.confirmPasswordControl.markAsTouched();
@@ -92,7 +87,6 @@ export class UserFormComponent implements OnInit {
     }
   };
 
-  // Validate step 2 fields (email, password and match)
   step2Valid(): boolean {
     if (!this.emailControl || !this.passwordControl || !this.confirmPasswordControl) return false;
     const emailValid = this.emailControl.valid;
@@ -101,10 +95,7 @@ export class UserFormComponent implements OnInit {
     return emailValid && passValid && match;
   }
 
-  // Validate step 1 required fields: name, last_name and rol
   step1Valid(): boolean {
-    // Verificar que los controles OBLIGATORIOS estén válidos
-    // name2Control y lastName2Control son opcionales, pero si tienen valor deben ser válidos
     const name2Valid = !this.name2Control.value || this.name2Control.valid;
     const lastName2Valid = !this.lastName2Control.value || this.lastName2Control.valid;
     
@@ -113,8 +104,6 @@ export class UserFormComponent implements OnInit {
            name2Valid &&
            lastName2Valid;
   }
-
-  // wrapper for submit to pass as action to button
   submitForm = () => this.submit();
 
   initForm() {
@@ -124,7 +113,6 @@ export class UserFormComponent implements OnInit {
   nameValidator(control: AbstractControl): ValidationErrors | null {
     // Permitir campos vacíos (para campos opcionales)
     if (!control.value || control.value.trim() === '') return null;
-    // Regex: solo letras (a-z, A-Z), espacios, y caracteres con acentos/diéresis
     const namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
     const valid = namePattern.test(control.value);
     return valid ? null : { invalidName: true };
@@ -169,18 +157,16 @@ export class UserFormComponent implements OnInit {
     }
   }
 
-  // Trigger the native camera capture input
   async triggerCamera() {
-    // if (Capacitor.isNativePlatform()) {
-    //   const result = await this.camera.getImageFromCamera();
-    //   if (result) {
-    //     this.profilePhoto = result.webPath;
-    //     this.file = result;
-    //   }
-    // }
+    if (Capacitor.isNativePlatform()) {
+      const result = await this.fileS.pickImage();
+      if (result) {
+        this.profilePhoto = (result as any).webPath || (result as any).previewUrl || (result as any).base64 || null;
+        this.file = result;
+      }
+    }
   }
 
-  // Trigger the gallery input
   async triggerGallery() {
     const result = await this.fileS.pickImage();
     if (result) {
@@ -211,13 +197,12 @@ async submit() {
   const uid = await this.auth.registerWithEmailAndPassword(email || '', password || '');
 
   if (!uid) {
-    //this.toast.showError('El correo ya está registrado o ocurrió un error al registrarse.');
+    this.toast.showError('El correo ya está registrado o ocurrió un error al registrarse.');
     return;
   }
 
   user.uid = uid;
 
-  // Subir foto si existe
   if (this.file) {
     const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.data, this.file.mimeType);
     user.photo = result?.url;
@@ -230,7 +215,7 @@ async submit() {
   if (isCreate) {
     const id = await this.user.findIdByUid(uid);
     if (!id) {
-      await this.user.removeUser(uid); // roll back
+      await this.user.removeUser(uid); 
       this.toast.showError('Error al crear el usuario');
       return;
     }

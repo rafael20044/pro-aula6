@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment.prod'
 const supabaseUrl = environment.SUPABASE_URL
 const supabaseKey = environment.SUPABASE_KEY
 
-// Ensure a single Supabase client instance (prevents Navigator Lock issues on HMR/multiple imports)
+// Conexión a Supabase
 function getClient() {
 	const g: any = (globalThis as any);
 	if (!g.__supabaseClient) {

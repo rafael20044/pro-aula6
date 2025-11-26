@@ -20,7 +20,6 @@ export class QuestionsPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Initial load handled by ionViewWillEnter
   }
 
   ionViewWillEnter() {

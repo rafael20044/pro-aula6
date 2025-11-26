@@ -14,6 +14,9 @@
         <span class="name">{{ question.full_name }}</span>
         <span class="username">{{ handle ? ('@' + handle) : ('@' + question.user_id) }}</span>
       </div>
+      <button class="menu-btn" (click)="openMenu($event)" aria-label="Opciones">
+        <ion-icon name="ellipsis-vertical"></ion-icon>
+      </button>
     </div>
 
     <!-- Contenido principal -->
@@ -49,3 +52,136 @@
     </div>
   </ion-card-content>
 </ion-card>
+
+<!-- Modal de razones para reportar pregunta -->
+<ion-modal [isOpen]="showQuestionReportModal" (didDismiss)="closeQuestionReportModal()" [backdropDismiss]="true">
+  <ng-template>
+    <div class="report-modal-container">
+      <div class="modal-header">
+        <h2>Reportar pregunta</h2>
+        <p class="modal-subtitle">Selecciona la razón del reporte</p>
+      </div>
+      
+      <div class="modal-body">
+        <ion-radio-group [(ngModel)]="selectedReason">
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="inappropriate" slot="start"></ion-radio>
+            <ion-label>Contenido inapropiado</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="spam" slot="start"></ion-radio>
+            <ion-label>Spam o publicidad</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="harassment" slot="start"></ion-radio>
+            <ion-label>Acoso o intimidación</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="misinformation" slot="start"></ion-radio>
+            <ion-label>Información falsa</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="duplicate" slot="start"></ion-radio>
+            <ion-label>Contenido duplicado</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="other" slot="start"></ion-radio>
+            <ion-label>Otro</ion-label>
+          </ion-item>
+        </ion-radio-group>
+      </div>
+      
+      <div class="modal-footer">
+        <ion-button fill="clear" (click)="closeQuestionReportModal()">Cancelar</ion-button>
+        <ion-button (click)="proceedToQuestionDetails()">Siguiente</ion-button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- Modal de razones para reportar usuario -->
+<ion-modal [isOpen]="showUserReportModal" (didDismiss)="closeUserReportModal()" [backdropDismiss]="true">
+  <ng-template>
+    <div class="report-modal-container">
+      <div class="modal-header">
+        <h2>Reportar usuario</h2>
+        <p class="modal-subtitle">Selecciona la razón del reporte</p>
+      </div>
+      
+      <div class="modal-body">
+        <ion-radio-group [(ngModel)]="selectedReason">
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="offensive" slot="start"></ion-radio>
+            <ion-label>Comportamiento ofensivo</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="spam" slot="start"></ion-radio>
+            <ion-label>Spam o publicidad</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="impersonation" slot="start"></ion-radio>
+            <ion-label>Suplantación de identidad</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="harassment" slot="start"></ion-radio>
+            <ion-label>Acoso o intimidación</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="inappropriate" slot="start"></ion-radio>
+            <ion-label>Contenido inapropiado</ion-label>
+          </ion-item>
+          
+          <ion-item lines="none" class="radio-item">
+            <ion-radio value="other" slot="start"></ion-radio>
+            <ion-label>Otro</ion-label>
+          </ion-item>
+        </ion-radio-group>
+      </div>
+      
+      <div class="modal-footer">
+        <ion-button fill="clear" (click)="closeUserReportModal()">Cancelar</ion-button>
+        <ion-button (click)="proceedToUserDetails()">Siguiente</ion-button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- Modal de detalles del reporte -->
+<ion-modal [isOpen]="showDetailsModal" (didDismiss)="closeDetailsModal()" [backdropDismiss]="true">
+  <ng-template>
+    <div class="report-modal-container">
+      <div class="modal-header">
+        <h2>Describir el problema</h2>
+        <p class="modal-subtitle">Mínimo 70 caracteres requeridos</p>
+      </div>
+      
+      <div class="modal-body">
+        <ion-textarea
+          [(ngModel)]="reportDetails"
+          placeholder="Describe el problema en detalle (mínimo 70 caracteres, máximo 500)"
+          [maxlength]="500"
+          [rows]="6"
+          [autoGrow]="true"
+          class="details-textarea"
+        ></ion-textarea>
+        <div class="char-counter" [class.warning]="reportDetails.length > 450">
+          {{ reportDetails.length }}/500
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <ion-button fill="clear" (click)="closeDetailsModal()">Cancelar</ion-button>
+        <ion-button (click)="submitReportFromModal()">Enviar reporte</ion-button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
