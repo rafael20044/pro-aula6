@@ -11,6 +11,7 @@ import { IUserCreate } from 'src/app/interfaces/iuser';
 import { Const } from 'src/app/const/const';
 import { FilePickerService } from 'src/app/core/services/file-picker-service';
 import { UserService } from '../../services/user-service';
+import { NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-user-form',
@@ -19,15 +20,15 @@ import { UserService } from '../../services/user-service';
   standalone: false,
 })
 export class UserFormComponent implements OnInit {
-  @Input() isRegistration: boolean = true; // true para registro, false para editar perfil
+  @Input() isRegistration: boolean = true;
   profilePhoto: string | null = null;
   selectedFile: File | null = null;
   file: IImage | null = null;
 
-  nameControl = new FormControl('', [Validators.required]);
-  name2Control = new FormControl('', [Validators.required]);
-  lastNameControl = new FormControl('', [Validators.required]);
-  lastName2Control = new FormControl('', [Validators.required]);
+  nameControl = new FormControl('', [Validators.required, this.nameValidator]);
+  name2Control = new FormControl('', [this.nameValidator]); // Opcional
+  lastNameControl = new FormControl('', [Validators.required, this.nameValidator]);
+  lastName2Control = new FormControl('', [this.nameValidator]); // Opcional
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   passwordControl = new FormControl('', [Validators.required]);
   confirmPasswordControl = new FormControl('', [Validators.required]);
@@ -40,7 +41,7 @@ export class UserFormComponent implements OnInit {
     email: this.emailControl,
     password: this.passwordControl,
   });
-  // wizard step: 1 = nombres/apellidos/rol, 2 = email + contraseña, 3 = foto y submit
+  //  1 = nombres/apellidos/rol, 2 = email + contraseña, 3 = foto y submit
   currentStep: number = 1;
 
 
@@ -52,6 +53,7 @@ export class UserFormComponent implements OnInit {
     private readonly router: Router,
     private readonly local: LocalStorageService,
     private readonly storage: StorageService,
+    private readonly notification:NotificationService
   ) { }
 
 
@@ -59,17 +61,32 @@ export class UserFormComponent implements OnInit {
     this.initForm();
   }
 
-  // Wizard navigation helpers
   goToStep(step: number) {
     this.currentStep = step;
   }
-
-  // wrappers so template can bind direct function references
   goToStepTo1 = () => this.goToStep(1);
-  goToStepTo2 = () => this.goToStep(2);
-  goToStepTo3 = () => this.goToStep(3);
+  goToStepTo2 = () => {
+    this.nameControl.markAsTouched();
+    this.name2Control.markAsTouched();
+    this.lastNameControl.markAsTouched();
+    this.lastName2Control.markAsTouched();
+    
+    // Solo avanzar si el paso 1 es válido
+    if (this.step1Valid()) {
+      this.goToStep(2);
+    }
+  };
+  goToStepTo3 = () => {
+    this.emailControl.markAsTouched();
+    this.passwordControl.markAsTouched();
+    this.confirmPasswordControl.markAsTouched();
+    
+    // Solo avanzar si el paso 2 es válido
+    if (this.step2Valid()) {
+      this.goToStep(3);
+    }
+  };
 
-  // Validate step 2 fields (email, password and match)
   step2Valid(): boolean {
     if (!this.emailControl || !this.passwordControl || !this.confirmPasswordControl) return false;
     const emailValid = this.emailControl.valid;
@@ -78,17 +95,37 @@ export class UserFormComponent implements OnInit {
     return emailValid && passValid && match;
   }
 
-  // Validate step 1 required fields: name, last_name and rol
   step1Valid(): boolean {
-    const { name, lastName } = this.form.value;
-    return !!name && !!lastName;
+    const name2Valid = !this.name2Control.value || this.name2Control.valid;
+    const lastName2Valid = !this.lastName2Control.value || this.lastName2Control.valid;
+    
+    return this.nameControl.valid && 
+           this.lastNameControl.valid &&
+           name2Valid &&
+           lastName2Valid;
   }
-
-  // wrapper for submit to pass as action to button
   submitForm = () => this.submit();
 
   initForm() {
 
+  }
+
+  nameValidator(control: AbstractControl): ValidationErrors | null {
+    // Permitir campos vacíos (para campos opcionales)
+    if (!control.value || control.value.trim() === '') return null;
+    const namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+    const valid = namePattern.test(control.value);
+    return valid ? null : { invalidName: true };
+  }
+
+  private normalizeText(text: string): string {
+    if (!text) return '';
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+      .trim();
   }
 
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -120,18 +157,16 @@ export class UserFormComponent implements OnInit {
     }
   }
 
-  // Trigger the native camera capture input
   async triggerCamera() {
-    // if (Capacitor.isNativePlatform()) {
-    //   const result = await this.camera.getImageFromCamera();
-    //   if (result) {
-    //     this.profilePhoto = result.webPath;
-    //     this.file = result;
-    //   }
-    // }
+    if (Capacitor.isNativePlatform()) {
+      const result = await this.fileS.pickImage();
+      if (result) {
+        this.profilePhoto = (result as any).webPath || (result as any).previewUrl || (result as any).base64 || null;
+        this.file = result;
+      }
+    }
   }
 
-  // Trigger the gallery input
   async triggerGallery() {
     const result = await this.fileS.pickImage();
     if (result) {
@@ -146,30 +181,50 @@ export class UserFormComponent implements OnInit {
     this.file = null;
   }
 
-  async submit() {
-    const { name, name2, lastName, lastName2, email, password } = this.form.value;
-    const user: IUserCreate = {
-      name: name || '',
-      name2: name2 || '',
-      last_name: lastName || '',
-      last_name2: lastName2 || '',
-      email: email || '',
-      password: password || '',
-    }
-    const uid = await this.auth.registerWithEmailAndPassword(email || '', password || '');
-    user.uid = uid;
-    if (this.file) {
-      const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.data, this.file.mimeType);
-      user.photo = result?.url;
-      user.path = result?.path
-    }
-    const isCreate = await this.user.createUser(user);
-    if (isCreate) {
-      const id = await this.user.findIdByUid(uid || '');
-      this.local.set(Const.USER_UID, uid);
-      this.local.set(Const.USER_ID, id);
-      this.router.navigate(['/home']);
+async submit() {
+  const { name, name2, lastName, lastName2, email, password } = this.form.value;
+
+  const user: IUserCreate = {
+    name: this.normalizeText(name || ''),
+    name2: this.normalizeText(name2 || ''),
+    last_name: this.normalizeText(lastName || ''),
+    last_name2: this.normalizeText(lastName2 || ''),
+    email: email || '',
+    password: password || '',
+  };
+
+  // Registro en Supabase Auth
+  const uid = await this.auth.registerWithEmailAndPassword(email || '', password || '');
+
+  if (!uid) {
+    this.toast.showError('El correo ya está registrado o ocurrió un error al registrarse.');
+    return;
+  }
+
+  user.uid = uid;
+
+  if (this.file) {
+    const result = await this.storage.upload(Const.BUCKET, 'img', this.file.name, this.file.data, this.file.mimeType);
+    user.photo = result?.url;
+    user.path = result?.path;
+  }
+
+  // Crear usuario en tabla "users"
+  const isCreate = await this.user.createUser(user);
+
+  if (isCreate) {
+    const id = await this.user.findIdByUid(uid);
+    if (!id) {
+      await this.user.removeUser(uid); 
+      this.toast.showError('Error al crear el usuario');
       return;
     }
+
+    this.local.set(Const.USER_UID, uid);
+    this.local.set(Const.USER_ID, id);
+    this.notification.initListener();
+    this.router.navigate(['/home']);
   }
+}
+
 }

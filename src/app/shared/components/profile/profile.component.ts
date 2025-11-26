@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
 import { AuthService } from 'src/app/shared/services/auth-service';
-import { StorageService } from 'src/app/shared/services/storage-service';
+import { PhotoService } from 'src/app/shared/services/photo-service';
+import { QuestionService } from 'src/app/shared/services/question-service';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
 
 @Component({
   selector: 'app-profile',
@@ -12,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile.component.scss'],
   standalone: false,
 })
-export class ProfileComponent  implements OnInit {
+export class ProfileComponent implements OnInit {
   avatarUrl: string | null = null;
   initials: string = '';
   fullName: string = '';
@@ -21,38 +23,49 @@ export class ProfileComponent  implements OnInit {
   joinedDate: string = '';
   location?: string; // opcional por ahora
   birthdate?: string; // opcional por ahora
+  
+  // User questions
+  userQuestions: Array<{ q: IQuestionHome, handle?: string }> = [];
+  loadingQuestions: boolean = true;
+  currentUserId: number | null = null;
 
   constructor(
-    private readonly storageService: StorageService,
+    private readonly photoService: PhotoService,
+    private readonly questionService: QuestionService,
     private readonly auth: AuthService,
     private readonly alertCtrl: AlertController,
     private readonly router: Router
   ) { }
 
   async ngOnInit() {
+    await this.loadProfileData();
+  }
+
+  // Se ejecuta cada vez que la vista va a entrar (incluso al volver de edit-profile)
+  async ionViewWillEnter() {
+    await this.loadProfileData();
+  }
+
+  private async loadProfileData() {
     await this.auth.ensureReady();
     const user = this.auth.getUser();
     if (!user) return;
+    
     const { data, error } = await Supabase
       .from(Const.TB_USER)
-      .select('name, last_name, email, photo, created_at')
+      .select('id, name, last_name, email, photo, created_at')
       .eq('uid', user.id)
       .single();
-    if (error) return;
-    // Resolve photo: may be stored as a signed URL already or as a storage path
-    const raw = data?.photo || null;
-    if (raw && typeof raw === 'string' && raw.startsWith('http')) {
-      this.avatarUrl = raw;
-    } else if (raw) {
-      try {
-        const signed = await this.storageService.getSignUrl(Const.BUCKET, raw);
-        this.avatarUrl = signed?.url || null;
-      } catch {
-        this.avatarUrl = null;
-      }
-    } else {
-      this.avatarUrl = null;
+    
+    if (error) {
+      console.error('Error loading profile:', error);
+      return;
     }
+    
+    this.currentUserId = data?.id || null;
+    
+    // Resolve photo using PhotoService
+    this.avatarUrl = await this.photoService.resolvePhotoUrl(data?.photo);
     const name = (data?.name || '').trim();
     const last = (data?.last_name || '').trim();
     this.fullName = [name, last].filter(Boolean).join(' ');
@@ -60,6 +73,16 @@ export class ProfileComponent  implements OnInit {
     this.email = data?.email || '';
     this.username = this.buildUsername(this.email);
     this.joinedDate = this.formatJoinedDate(data?.created_at);
+    
+    await this.loadUserQuestions();
+  }
+
+  trackQuestion(index: number, item: { q: IQuestionHome, handle?: string }) {
+    return item.q.question_id;
+  }
+
+  editProfile() {
+    this.router.navigate(['/edit-profile']);
   }
 
   async confirmSignOut() {
@@ -70,19 +93,23 @@ export class ProfileComponent  implements OnInit {
         { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Sí, cerrar',
-          handler: async () => {
-            try {
-              await this.auth.signOut();
-              // navigate to auth/login
-              await this.router.navigate(['/auth/login']);
-            } catch (err) {
-              console.error('Error al cerrar sesión', err);
-            }
+          handler: () => {
+            this.performSignOut();
+            return true;
           }
         }
       ]
     });
     await alert.present();
+  }
+
+  private async performSignOut() {
+    try {
+      await this.auth.signOut();
+      await this.router.navigate(['/auth/login']);
+    } catch (err) {
+      console.error('Error al cerrar sesión:', err);
+    }
   }
 
   private buildInitials(name?: string, last?: string) {
@@ -107,6 +134,93 @@ export class ProfileComponent  implements OnInit {
       return `Se unió en ${text}`;
     } catch {
       return '';
+    }
+  }
+
+  private async loadUserQuestions() {
+    this.loadingQuestions = true;
+    try {
+      if (!this.currentUserId) {
+        this.userQuestions = [];
+        return;
+      }
+
+      console.log('Loading questions for user_id:', this.currentUserId);
+
+      // First, try to get questions with all related data
+      const { data: questionsData, error: questionsError } = await Supabase
+        .from(Const.TB_QUESTIONS)
+        .select('*')
+        .eq('user_id', this.currentUserId)
+        .order('created_at', { ascending: false });
+      if (questionsError) {
+        console.error('Error loading user questions:', questionsError);
+        this.userQuestions = [];
+        return;
+      }
+
+      if (!questionsData || questionsData.length === 0) {
+        this.userQuestions = [];
+        return;
+      }
+
+      // Get images for these questions using QuestionService
+      const questionIds = questionsData.map(q => q.id);
+      const imagesMap = await this.questionService.getMultipleQuestionImages(questionIds);
+
+      // Get tags for these questions
+      const { data: tagsData } = await Supabase
+        .from(Const.TB_TAGS_QUESTIONS)
+        .select('question_id, tags(name)')
+        .in('question_id', questionIds);
+
+      // Get reactions for these questions
+      const { data: reactionsData } = await Supabase
+        .from(Const.TB_REACTIONS)
+        .select('question_id, tipo')
+        .in('question_id', questionIds)
+        .is('answer_id', null);
+
+      const questions: IQuestionHome[] = questionsData.map((q: any) => {
+        const imageUrls = imagesMap.get(q.id) || [];
+        const questionImages = imageUrls.map(url => ({ image_url: url, path: url }));
+
+        const questionTags = (tagsData || [])
+          .filter((tq: any) => tq.question_id === q.id)
+          .map((tq: any) => tq.tags?.name)
+          .filter(Boolean);
+
+        // Contar reacciones
+        const questionReactions = (reactionsData || [])
+          .filter((r: any) => r.question_id === q.id);
+        const likeCount = questionReactions.filter((r: any) => r.tipo === 'LIKE').length;
+        const dislikeCount = questionReactions.filter((r: any) => r.tipo === 'DISLIKE').length;
+
+        return {
+          question_id: q.id,
+          user_id: q.user_id,
+          full_name: this.fullName,
+          photo: this.avatarUrl,
+          title: q.title,
+          body: q.body,
+          images: questionImages,
+          tags: questionTags,
+          comment_count: 0,
+          status: q.status || 'active',
+          like_count: likeCount,
+          dislike_count: dislikeCount
+        };
+      });
+
+      // hacer intento de username desde email
+      const handle = this.username.replace('@', '');
+      this.userQuestions = questions.map(q => ({ q, handle }));
+      
+    } catch (err) {
+      console.error('Error loading user questions:', err);
+      this.userQuestions = [];
+    } finally {
+      this.loadingQuestions = false;
     }
   }
 

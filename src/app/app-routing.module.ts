@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './core/guards/auth-guard';
-import { WelcomeGuard} from './core/guards/welcome-guard';
-import { LoggedGuard } from './core/guards/logged-guard';
+import { welcomeGuard } from './core/guards/welcome-guard';
+import { authGuard } from './core/guards/auth-guard';
+import { loggedGuard } from './core/guards/logged-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 const routes: Routes = [
-  // Bienvenida (pública)
+  // Página de bienvenida 
   {
     path: 'welcome',
     loadChildren: () => import('./pages/user/welcome/welcome.module').then(m => m.WelcomePageModule)
   },
 
-  // Auth (público)
+  // Autenticación (login y formulario de registro)
   {
     path: 'auth',
     children: [
@@ -19,7 +20,7 @@ const routes: Routes = [
       {
         path: 'login',
         loadChildren: () => import('./pages/user/auth/login/login.module').then(m => m.LoginPageModule),
-        // canActivate: [LoggedGuard]
+        canActivate: [welcomeGuard, loggedGuard]
       },
       {
         path: 'register',
@@ -28,41 +29,47 @@ const routes: Routes = [
     ]
   },
 
-  // Home de usuario (privado)
+  // Home de usuario
   {
     path: 'home',
     loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule),
-    // canActivate: [AuthGuard]
+    canActivate: [authGuard, roleGuard]
   },
 
-  // User area routes
+  // Rutas del usuario
   {
     path: 'user',
     children: [
       {
         path: 'home',
         loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule),
-        // canActivate: [AuthGuard]
+        canActivate: [authGuard]
       },
       {
         path: 'create-question',
         loadChildren: () => import('./pages/user/create-question/create-question.module').then(m => m.CreateQuestionPageModule),
-        // canActivate: [AuthGuard]
+        canActivate: [authGuard]
       }
     ]
   },
-
-  // Área Admin (privado) - lazy load del FEATURE admin
-  {
-    path: 'admin',
-    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
-    // canActivate: [AuthGuard]
-  },
-  
-  {
+{
     path: 'question-details/:id',
     loadChildren: () => import('./pages/user/question-details/question-details.module').then( m => m.QuestionDetailsPageModule)
   },
+
+  // Editar perfil
+  {
+    path: 'edit-profile',
+    loadChildren: () => import('./pages/user/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule)
+  },
+
+  // Área del administrador
+  {
+    path: 'admin',
+    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
+    canActivate: [authGuard]
+  },
+  
   // Default: a login
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 

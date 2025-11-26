@@ -7,7 +7,11 @@
     class="native-input"
     [placeholder]="placeholder"
     [type]="type"
-    [formControl]="control">
+    [formControl]="control"
+    [class.error]="control.invalid && control.touched">
     <ion-input-password-toggle *ngIf="isPassword" slot="end"></ion-input-password-toggle>
   </ion-input>
+  <div *ngIf="showErrors && control.invalid && control.touched" class="error-message">
+    {{ getErrorMessage() }}
+  </div>
 </div>

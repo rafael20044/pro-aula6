@@ -1,0 +1,112 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Editar perfil</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="isSaving || !isFormValid()">
+        <strong>Guardar</strong>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="edit-profile-content">
+  <div class="edit-profile-container">
+    <!-- Avatar Section -->
+    <div class="avatar-section">
+      <div class="avatar-wrapper" (click)="changePhoto()">
+        <img *ngIf="profilePhoto" [src]="profilePhoto" alt="Avatar" class="avatar-preview" />
+        <div *ngIf="!profilePhoto" class="avatar-placeholder">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <div class="change-photo-overlay">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+      </div>
+      <p class="avatar-hint">Toca para cambiar la foto</p>
+    </div>
+
+    <!-- Form Fields -->
+    <div class="form-section">
+      <div class="input-group">
+        <label class="input-label">Primer nombre *</label>
+        <ion-input
+          class="custom-input"
+          placeholder="Juan"
+          [formControl]="nameControl"
+          [class.error]="nameControl.invalid && nameControl.touched">
+        </ion-input>
+        <div *ngIf="nameControl.invalid && nameControl.touched" class="error-message">
+          {{ getErrorMessage(nameControl) }}
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Segundo nombre</label>
+        <ion-input
+          class="custom-input"
+          placeholder="Carlos"
+          [formControl]="name2Control"
+          [class.error]="name2Control.invalid && name2Control.touched">
+        </ion-input>
+        <div *ngIf="name2Control.invalid && name2Control.touched" class="error-message">
+          {{ getErrorMessage(name2Control) }}
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Primer apellido *</label>
+        <ion-input
+          class="custom-input"
+          placeholder="Pérez"
+          [formControl]="lastNameControl"
+          [class.error]="lastNameControl.invalid && lastNameControl.touched">
+        </ion-input>
+        <div *ngIf="lastNameControl.invalid && lastNameControl.touched" class="error-message">
+          {{ getErrorMessage(lastNameControl) }}
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Segundo apellido</label>
+        <ion-input
+          class="custom-input"
+          placeholder="García"
+          [formControl]="lastName2Control"
+          [class.error]="lastName2Control.invalid && lastName2Control.touched">
+        </ion-input>
+        <div *ngIf="lastName2Control.invalid && lastName2Control.touched" class="error-message">
+          {{ getErrorMessage(lastName2Control) }}
+        </div>
+      </div>
+
+      <!-- Email (disabled) -->
+      <div class="input-group">
+        <label class="input-label">Correo electrónico</label>
+        <ion-input
+          class="custom-input disabled"
+          [formControl]="emailControl"
+          [disabled]="true">
+        </ion-input>
+        <p class="field-hint">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          El correo no se puede cambiar por ahora
+        </p>
+      </div>
+
+      <!-- Save Button (Mobile) -->
+      <ion-button
+        expand="block"
+        class="save-btn-mobile"
+        (click)="save()"
+        [disabled]="isSaving || !isFormValid()">
+        <ion-spinner *ngIf="isSaving" name="crescent"></ion-spinner>
+        <span *ngIf="!isSaving">Guardar cambios</span>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

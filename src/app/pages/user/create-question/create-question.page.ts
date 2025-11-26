@@ -15,10 +15,6 @@ export class CreateQuestionPage implements OnInit {
   }
 
   onQuestionSubmit(questionData: any) {
-    console.log('Question data:', questionData);
-    // TODO: enviar a servicio para crear pregunta
-    // this.questionService.createQuestion(questionData).subscribe(...);
-    // Por ahora navegar de vuelta al home
     this.router.navigate(['/user/home']);
   }
 

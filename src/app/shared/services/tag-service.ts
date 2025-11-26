@@ -25,7 +25,7 @@ export class TagService {
   async create(name: string): Promise<TagDto | null> {
     const clean = name.trim();
     if (!clean) return null;
-    // 1) Check if already exists (case-insensitive)
+    // 1) Buscar si ya existe
     const { data: existing, error: existErr } = await (Supabase.from('tags') as any)
       .select('*')
       .ilike('name', clean)
@@ -34,13 +34,13 @@ export class TagService {
       return existing[0] as TagDto;
     }
 
-    // 2) Insert if not exists
+    // 2) Crear nuevo
     const { data, error } = await (Supabase.from('tags') as any)
       .insert({ name: clean, updated_at: new Date().toISOString() })
       .select()
       .single();
 
-    // 3) Handle potential race/unique errors by fetching again
+    // 3) Manejar posibles errores buscando de nuevo
     if (error) {
       console.error('create tag error', error);
       try {

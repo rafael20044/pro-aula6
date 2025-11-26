@@ -22,7 +22,6 @@ export class ReportsPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Initial load handled by ionViewWillEnter
   }
 
   ionViewWillEnter() {

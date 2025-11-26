@@ -1,3 +1,47 @@
-<p>
-  notification works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Notificaciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="notification-container">
+
+    <!-- Si no hay notificaciones -->
+    <div *ngIf="notifications.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <ion-icon name="notifications-off-outline"></ion-icon>
+      </div>
+      <h2>No hay notificaciones</h2>
+      <p>Cuando alguien responda a tus preguntas, recibirás notificaciones aquí.</p>
+    </div>
+
+    <!-- Lista de notificaciones -->
+    <div *ngIf="notifications.length > 0" class="notifications-list">
+      <div
+        *ngFor="let n of notifications"
+        class="notification-card"
+        [class.unread]="!n.is_read"
+        (click)="openNotification(n.id || 0, n.question_id)"
+      >
+        <div class="notification-icon">
+          <ion-icon [name]="!n.is_read ? 'notifications' : 'notifications-outline'"></ion-icon>
+        </div>
+
+        <div class="notification-content">
+          <h3 class="notification-title">{{ n.title }}</h3>
+          <p class="notification-body">{{ n.body }}</p>
+          <span class="notification-time">{{ n.created_at | date:'short' }}</span>
+        </div>
+
+        <!-- Indicador de no leído -->
+        <div *ngIf="!n.is_read" class="unread-indicator"></div>
+
+        <div class="notification-arrow">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

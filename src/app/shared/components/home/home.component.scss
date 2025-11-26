@@ -1,20 +1,19 @@
-/* Space under header so the first card is not flush to top.
-   Reduced vertical gap so cards are closer but still separated. */
+/* Modern feed layout con márgenes reducidos */
 .home-feed {
-  padding-top: 16px; /* lower so first card sits a bit below header */
+  padding-top: 76px; /* Altura del header (60px) + espacio extra (16px) */
   display: flex;
   flex-direction: column;
-  gap: 10px; /* slightly tighter spacing between cards */
+  gap: 8px;
   padding-bottom: 40px;
 }
 
 .home-feed app-question-card {
-  margin: 0 12px;
+  margin: 0 8px; /* Márgenes laterales reducidos para más ancho */
 }
 
-/* Small offset for the very first card so it doesn't stick to header */
+/* Pequeño offset para la primera card */
 .home-feed > app-question-card:first-child {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .error {
@@ -27,4 +26,55 @@
   padding: 16px;
   text-align: center;
   color: var(--ion-color-medium);
+}
+
+.end-of-feed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  margin-top: 24px;
+  text-align: center;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out forwards;
+
+  .end-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ion-text-color);
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }

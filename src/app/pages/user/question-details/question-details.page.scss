@@ -1,0 +1,445 @@
+// ============================================
+// MODERN QUESTION DETAILS PAGE
+// ============================================
+
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+.details-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 76px 16px 24px;
+}
+
+// ============================================
+// QUESTION CARD
+// ============================================
+.question-card {
+  background: var(--ion-card-background);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(135deg,
+    var(--ion-color-primary),
+    var(--ion-color-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.3);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.avatar-initials {
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ion-text-color);
+}
+
+.question-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--ion-text-color);
+  line-height: 1.3;
+}
+
+.question-body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ion-color-step-600);
+  margin: 0 0 20px 0;
+  white-space: pre-wrap;
+}
+
+// Images
+.question-images {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+  
+  img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    max-height: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Tags
+.question-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.tag {
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg,
+    rgba(var(--ion-color-primary-rgb), 0.1),
+    rgba(var(--ion-color-secondary-rgb), 0.1));
+  color: var(--ion-color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
+}
+
+// Reactions
+.reactions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ion-color-step-150);
+}
+
+.reaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 2px solid var(--ion-color-step-200);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--ion-text-color);
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  &.like:hover {
+    background: rgba(var(--ion-color-success-rgb), 0.1);
+    border-color: var(--ion-color-success);
+    color: var(--ion-color-success);
+    transform: translateY(-2px);
+  }
+
+  &.dislike:hover {
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    border-color: var(--ion-color-danger);
+    color: var(--ion-color-danger);
+    transform: translateY(-2px);
+  }
+}
+
+// ============================================
+// RESPONSE SECTION
+// ============================================
+.response-section {
+  background: var(--ion-card-background);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--ion-text-color);
+}
+
+.textarea-container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.response-textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 400px;
+  padding: 14px 16px;
+  border: 2px solid var(--ion-color-step-200);
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ion-text-color);
+  background: var(--ion-background-color);
+  resize: none;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  &::placeholder {
+    color: var(--ion-color-medium);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--ion-color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+
+  &:hover {
+    border-color: var(--ion-color-step-300);
+  }
+}
+
+.char-counter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  font-weight: 500;
+
+  .near-limit {
+    color: var(--ion-color-warning);
+    font-weight: 600;
+  }
+
+  .max-chars {
+    color: var(--ion-color-step-500);
+  }
+}
+
+// ============================================
+// ANSWERS SECTION
+// ============================================
+.answers-section {
+  margin-bottom: 40px;
+
+  > .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: var(--ion-text-color);
+  }
+}
+
+.answer-card {
+  background: var(--ion-card-background);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 1px solid var(--ion-color-step-150);
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.answer-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.answer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,
+    rgba(var(--ion-color-primary-rgb), 0.8),
+    rgba(var(--ion-color-secondary-rgb), 0.8));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-initials-small {
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.answer-user-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ion-text-color);
+}
+
+.answer-body {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ion-color-step-600);
+  margin: 0 0 16px 0;
+  white-space: pre-wrap;
+}
+
+.answer-reactions {
+  display: flex;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ion-color-step-100);
+}
+
+.reaction-btn-small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1.5px solid var(--ion-color-step-200);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--ion-text-color);
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &.like:hover {
+    background: rgba(var(--ion-color-success-rgb), 0.1);
+    border-color: var(--ion-color-success);
+    color: var(--ion-color-success);
+  }
+
+  &.dislike:hover {
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    border-color: var(--ion-color-danger);
+    color: var(--ion-color-danger);
+  }
+}
+
+// ============================================
+// LOADING STATE
+// ============================================
+ion-spinner {
+  display: block;
+  margin: 80px auto;
+  --color: var(--ion-color-primary);
+}
+
+// ============================================
+// RESPONSIVE DESIGN
+// ============================================
+
+@media (max-width: 768px) {
+  .details-container {
+    padding: 68px 12px 20px;
+  }
+
+  .question-card,
+  .response-section {
+    padding: 20px;
+  }
+
+  .question-title {
+    font-size: 22px;
+  }
+
+  .question-body {
+    font-size: 15px;
+  }
+
+  .answer-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .details-container {
+    padding: 64px 8px 16px;
+  }
+
+  .question-card,
+  .response-section {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .question-title {
+    font-size: 20px;
+  }
+
+  .question-body,
+  .answer-body {
+    font-size: 14px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .reactions {
+    gap: 8px;
+  }
+
+  .reaction-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+
+  .answer-card {
+    padding: 14px;
+  }
+
+  .answer-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .reaction-btn-small {
+    padding: 5px 12px;
+    font-size: 12px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}

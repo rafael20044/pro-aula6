@@ -4,6 +4,7 @@ import { ToastService } from './toast-service';
 import { Const } from 'src/app/const/const';
 import { UserService } from './user-service';
 import type { Session, User } from '@supabase/supabase-js';
+import { LocalStorageService } from './local-storage-service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,11 @@ export class AuthService {
   private internalUserId: number | null = null;
   private initializing = false;
 
-  constructor(private readonly toat: ToastService, private readonly userService: UserService) { }
+  constructor(
+    private readonly toat:ToastService, 
+    private readonly userService: UserService, 
+    private readonly local:LocalStorageService
+  ) { }
 
   // Inicializa y cachea sesión y usuario interno para evitar locks
   async init() {
@@ -99,6 +104,12 @@ export class AuthService {
     this.session = null;
     this.user = null;
     this.internalUserId = null;
+    
+    this.local.remove(Const.USER_UID);
+    this.local.remove(Const.USER_ID);
+    this.local.remove(Const.IS_ADMIN);
+
+    localStorage.clear();
   }
 
   async isAdmin(uid: string) {

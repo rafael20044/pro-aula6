@@ -37,6 +37,29 @@
 		&:focus-within {
 			border-color: var(--input-border-focus);
 		}
+
+		&.error {
+			border-color: var(--ion-color-danger);
+		}
+	}
+
+	.error-message {
+		font-size: 13px;
+		color: var(--ion-color-danger);
+		padding-left: 4px;
+		margin-top: -4px;
+		animation: fadeIn 0.2s ease;
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }
 

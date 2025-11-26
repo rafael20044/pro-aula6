@@ -1,131 +1,117 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Detalles de la pregunta</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pregunta</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" *ngIf="questionDetails; else loadingTpl">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ questionDetails.title }}</ion-card-title>
-      <ion-card-subtitle>
-        <ion-avatar *ngIf="questionDetails.photo">
-          <img [src]="questionDetails.photo">
-        </ion-avatar>
-        {{ questionDetails.full_name }}
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p>{{ questionDetails.body }}</p>
+  <div class="details-container">
+    
+    <!-- Card principal de la pregunta -->
+    <div class="question-card">
+      <!-- Header: avatar + nombre -->
+      <div class="question-header" (click)="goToUserProfile()">
+        <div class="avatar">
+          <ng-container *ngIf="avatarUrl; else initials">
+            <img [src]="avatarUrl" alt="avatar">
+          </ng-container>
+          <ng-template #initials>
+            <div class="avatar-initials">{{ (questionDetails.full_name || '').slice(0,2).toUpperCase() }}</div>
+          </ng-template>
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{ questionDetails.full_name }}</span>
+        </div>
+      </div>
 
-      <!-- Imágenes de la pregunta usando ion-grid -->
-      <ion-grid *ngIf="questionDetails.images.length > 0">
-        <ion-row>
-          <ion-col size="6" size-md="4" *ngFor="let img of questionDetails.images">
-            <ion-card>
-              <img [src]="img.url" [alt]="img.path">
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <!-- Contenido -->
+      <h1 class="question-title">{{ questionDetails.title }}</h1>
+      <p class="question-body">{{ questionDetails.body }}</p>
+
+      <!-- Imágenes -->
+      <div class="question-images" *ngIf="imageUrls.length > 0">
+        <img *ngFor="let url of imageUrls" [src]="url" alt="question image">
+      </div>
 
       <!-- Tags -->
-      <ion-chip *ngFor="let tag of questionDetails.tags">
-        <ion-label>{{ tag }}</ion-label>
-      </ion-chip>
-
-      <!-- Likes / Dislikes -->
-      <div class="ion-padding-top">
-        <ion-button fill="clear" color="success">
-          👍 {{ questionDetails.like_count }}
-        </ion-button>
-        <ion-button fill="clear" color="danger">
-          👎 {{ questionDetails.dislike_count }}
-        </ion-button>
+      <div class="question-tags" *ngIf="questionDetails.tags.length">
+        <span class="tag" *ngFor="let tag of questionDetails.tags">{{ tag }}</span>
       </div>
-    </ion-card-content>
-  </ion-card>
 
-  <!-- Formulario simple para agregar comentario -->
-<!-- Formulario simple para agregar comentario -->
-<ion-card class="ion-margin-top">
-  <ion-card-content>
-    <app-input
-      label="Escribe tu respuesta"
-      placeholder="Escribe algo..."
-      [control]="commentControl"
-    ></app-input>
+      <!-- Reactions -->
+      <div class="reactions">
+        <button class="reaction-btn like" (click)="reactionQuestion('LIKE')">
+          <ion-icon name="thumbs-up"></ion-icon>
+          <span>{{ questionDetails.like_count }}</span>
+        </button>
+        <button class="reaction-btn dislike" (click)="reactionQuestion('DISLIKE')">
+          <ion-icon name="thumbs-down"></ion-icon>
+          <span>{{ questionDetails.dislike_count }}</span>
+        </button>
+      </div>
+    </div>
 
-    <app-button
-      text="Publicar"
-      (click)="addComent()"
-      expand="full"
-      variant="filled"
-      class="ion-margin-top"
-    ></app-button>
-  </ion-card-content>
-</ion-card>
+    <!-- Sección de respuesta -->
+    <div class="response-section">
+      <h3 class="section-title">Escribe tu respuesta</h3>
+      
+      <div class="textarea-container">
+        <textarea
+          class="response-textarea"
+          [formControl]="commentControl"
+          placeholder="Comparte tu opinión..."
+          maxlength="2000"
+          rows="3"
+        ></textarea>
+        <div class="char-counter">
+          <span [class.near-limit]="(commentControl.value?.length || 0) > 1800">
+            {{ commentControl.value?.length || 0 }}
+          </span>
+          <span class="max-chars">/ 2000</span>
+        </div>
+      </div>
 
+      <app-button
+        text="Publicar"
+        (click)="addComent()"
+        expand="full"
+        variant="filled"
+        class="ion-margin-top"
+      ></app-button>
+    </div>
 
-  <!-- Respuestas -->
-<!-- Respuestas -->
-<ion-list *ngIf="questionDetails.answers.length > 0">
-  <ion-list-header>
-    <ion-label>Respuestas ({{ questionDetails.answer_count }})</ion-label>
-  </ion-list-header>
+    <!-- Lista de respuestas -->
+    <div class="answers-section" *ngIf="questionDetails.answers.length > 0">
+      <h3 class="section-title">Respuestas ({{ questionDetails.answers.length }})</h3>
+      
+      <div class="answer-card" *ngFor="let answer of questionDetails.answers">
+        <div class="answer-header">
+          <div class="answer-avatar">
+            <div class="avatar-initials-small">{{ (answer.user_name || '').slice(0,2).toUpperCase() }}</div>
+          </div>
+          <span class="answer-user-name">{{ answer.user_name }}</span>
+        </div>
 
-  <ion-item *ngFor="let answer of questionDetails.answers">
-    <ion-label>
-      <h2>{{ answer.user_name }}</h2>
+        <p class="answer-body">{{ answer.body }}</p>
 
-      <!-- Si está en modo edición -->
-      <ng-container *ngIf="editingAnswerId === answer.answer_id; else showBody">
-        <app-input
-          label="Editar respuesta"
-        ></app-input>
-        <app-button
-          text="Guardar"
-          expand="full"
-          variant="filled"
-          class="ion-margin-top"
-        ></app-button>
-        <app-button
-          text="Cancelar"
-          expand="full"
-          variant="flat"
-          class="ion-margin-top"
-        ></app-button>
-      </ng-container>
+        <!-- Reactions para respuestas -->
+        <div class="answer-reactions">
+          <button class="reaction-btn-small like" (click)="reactionAnswer(answer.answer_id, answer.user_id, 'LIKE')">
+            <ion-icon name="thumbs-up-outline"></ion-icon>
+            <span>{{ answer.like_count || 0 }}</span>
+          </button>
+          <button class="reaction-btn-small dislike" (click)="reactionAnswer(answer.answer_id, answer.user_id, 'DISLIKE')">
+            <ion-icon name="thumbs-down-outline"></ion-icon>
+            <span>{{ answer.dislike_count || 0 }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
-      <ng-template #showBody>
-        <p>{{ answer.body }}</p>
-
-        <!-- Mostrar botón de editar solo si es del usuario actual -->
-        <app-button
-          *ngIf="answer.user_id === useId"
-          expand="inset"
-          variant="flat"
-        ></app-button>
-      </ng-template>
-
-      <small>
-        👍 {{ answer.like_count }} | 👎 {{ answer.dislike_count }}
-      </small>
-
-      <!-- Replies -->
-      <ion-list *ngIf="answer.replies.length > 0">
-        <ion-item *ngFor="let reply of answer.replies">
-          <ion-label>
-            <h3>{{ reply.user_name }}</h3>
-            <p>{{ reply.body }}</p>
-            <small>👍 {{ reply.like_count }} | 👎 {{ reply.dislike_count }}</small>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-label>
-  </ion-item>
-</ion-list>
-
+  </div>
 </ion-content>
 
 <ng-template #loadingTpl>

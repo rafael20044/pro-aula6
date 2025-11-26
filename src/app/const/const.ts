@@ -10,5 +10,7 @@ export enum Const{
     TB_QUESTIONS = 'questions',
     TB_ANSWERS = 'answers',
     TB_IMAGES = 'images',
+    TB_NOTIFICATION = 'notifications',
     SHOW_WELCOME = 'show_welcome',
+    IS_ADMIN = 'is_admin',
 }
