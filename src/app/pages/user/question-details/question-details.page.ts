@@ -88,7 +88,7 @@ export class QuestionDetailsPage implements OnInit {
     const noti: INotificarion = {
       user_id: this.questionDetails?.user_id || 0,
       question_id: this.questionDetails?.question_id || 0,
-      title: 'Un usuario ha respondido tu pregunta',
+      title: 'Un usuario ha respondido tu pregunta', 
       body: `${this.fullName} ha respondido lo siguiente:" ${this.commentControl.value} "`
     }
     this.commentControl.reset();
@@ -121,6 +121,8 @@ export class QuestionDetailsPage implements OnInit {
     await this.notification.createNotification(noti);
     await this.loadData();
   }
+
+
 
   private async loadData() {
     try {

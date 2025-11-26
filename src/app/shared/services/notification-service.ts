@@ -5,6 +5,7 @@ import { ToastService } from './toast-service';
 import { INotificarion } from 'src/app/interfaces/inotification';
 import { LocalStorageService } from './local-storage-service';
 import { BehaviorSubject } from 'rxjs';
+import { LocalNotification } from './local-notification';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,10 @@ export class NotificationService {
   private channel: any;
   private notifications$ = new BehaviorSubject<INotificarion[]>([]);
 
-  constructor(private readonly toast: ToastService, private readonly local: LocalStorageService) { }
+  constructor(
+    private readonly local: LocalStorageService,
+    private readonly localNoti:LocalNotification
+  ) { }
 
   async createNotification(noti: any) {
     const { error } = await Supabase.from(Const.TB_NOTIFICATION).insert(noti);
@@ -66,9 +70,9 @@ export class NotificationService {
         },
         (payload) => {
           const newNotif = payload.new as INotificarion;
-
           const current = this.notifications$.value;
           this.notifications$.next([newNotif, ...current]);
+          this.localNoti.send();
         }
       )
       .subscribe();

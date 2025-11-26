@@ -160,6 +160,7 @@ export class QuestionCardComponent implements OnInit {
           }
         }
       }
+      this.emiter.emit(true);
     } catch (err) {
       console.error('Error in onLike:', err);
     } finally {
@@ -212,6 +213,7 @@ export class QuestionCardComponent implements OnInit {
           }
         }
       }
+      this.emiter.emit(true);
     } catch (err) {
       console.error('Error in onDislike:', err);
     } finally {
@@ -229,11 +231,7 @@ export class QuestionCardComponent implements OnInit {
   }
 
   onComment() {
-    const questionId = (this.question as any).question_id;
-    if (!questionId) {
-      console.warn('No question ID available');
-      return;
-    }
+    this.router.navigate([`question-details/${this.question.question_id}`]);
   }
 
   goToDetaiss() {
