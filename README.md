@@ -205,8 +205,6 @@ pro-aula6/
 - `uid` (text, Auth UUID)
 - `full_name` (text)
 - `username` (text, unique)
-- `location` (text)
-- `birthdate` (date)
 - `photo` (text, URL de Storage)
 - `is_admin` (boolean)
 - `created_at` (timestamp)
