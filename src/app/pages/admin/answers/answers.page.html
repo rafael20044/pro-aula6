@@ -1,0 +1,50 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/admin/home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Respuestas</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="answers-container">
+        <div *ngIf="loading" class="loading-state">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando respuestas...</p>
+        </div>
+
+        <div *ngIf="!loading && answers.length === 0" class="empty-state">
+            <ion-icon name="chatbubbles-outline"></ion-icon>
+            <p>No hay respuestas registradas.</p>
+        </div>
+
+        <ion-list *ngIf="!loading && answers.length > 0">
+            <ion-item-sliding *ngFor="let answer of answers">
+                <ion-item lines="full">
+                    <ion-label class="ion-text-wrap">
+                        <p class="answer-meta">
+                            <span class="user-name">{{ answer.users?.name || 'Usuario desconocido' }}</span>
+                            <span class="date">{{ answer.created_at | date:'mediumDate' }}</span>
+                        </p>
+                        <h3>{{ answer.answer_text }}</h3>
+                        <p class="question-ref">En respuesta a: {{ answer.questions?.title || 'Pregunta eliminada' }}
+                        </p>
+                    </ion-label>
+
+                    <ion-buttons slot="end">
+                        <ion-button (click)="deleteAnswer(answer)" color="danger">
+                            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-item>
+
+                <ion-item-options side="end">
+                    <ion-item-option color="danger" (click)="deleteAnswer(answer)">
+                        <ion-icon slot="icon-only" name="trash"></ion-icon>
+                    </ion-item-option>
+                </ion-item-options>
+            </ion-item-sliding>
+        </ion-list>
+    </div>
+</ion-content>

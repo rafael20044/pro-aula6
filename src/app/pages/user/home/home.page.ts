@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
 import { StorageService } from 'src/app/shared/services/storage-service';
 import { AuthService } from 'src/app/shared/services/auth-service';
+import { HomeComponent } from 'src/app/shared/components/home/home.component';
 
 @Component({
   selector: 'app-home',
@@ -11,17 +12,25 @@ import { AuthService } from 'src/app/shared/services/auth-service';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage implements OnInit{
+export class HomePage implements OnInit {
 
   showLogo = true;
   userAvatarUrl: string | null = null;
   userInitials: string = '';
   private sessionUserId: string | null = null;
 
-  constructor(private router: Router, private readonly storageService: StorageService, private readonly auth: AuthService) {}
+  @ViewChild(HomeComponent) homeComponent?: HomeComponent;
+
+  constructor(private router: Router, private readonly storageService: StorageService, private readonly auth: AuthService) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
+  }
+
+  ionViewWillEnter() {
+    if (this.homeComponent) {
+      this.homeComponent.refresh();
+    }
   }
 
   onTabChange(event: any) {

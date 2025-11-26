@@ -14,6 +14,10 @@ export class AdminService {
       .neq('rol', 'admin') // Exclude admins
       .order('created_at', { ascending: false });
 
+    if (data) {
+      console.log('Users loaded:', data.map(u => ({ id: u.id, name: u.name, rol: u.rol, status: u.status })));
+    }
+
     if (error) {
       console.error('Error fetching users:', error);
       return [];
@@ -21,11 +25,12 @@ export class AdminService {
     return data || [];
   }
 
-  async toggleUserBan(userId: string, currentStatus: boolean) {
-    console.log(`Toggling ban for user ${userId}. Current: ${currentStatus}, New: ${!currentStatus}`);
+  async toggleUserBan(userId: string, currentStatus: string) {
+    const newStatus = currentStatus === 'banned' ? 'active' : 'banned';
+    console.log(`Toggling ban for user ${userId}. Current: ${currentStatus}, New: ${newStatus}`);
     const { data, error } = await Supabase
       .from(Const.TB_USER)
-      .update({ is_banned: !currentStatus })
+      .update({ status: newStatus })
       .eq('id', userId)
       .select();
 
@@ -70,5 +75,31 @@ export class AdminService {
       reports: ticketCount || 0,
       activeToday: 0
     };
+  }
+
+  async getAnswers() {
+    const { data, error } = await Supabase
+      .from(Const.TB_ANSWERS)
+      .select(`
+        *,
+        users (name),
+        questions (title)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching answers:', error);
+      return [];
+    }
+    return data || [];
+  }
+
+  async deleteAnswer(answerId: number) {
+    const { data, error } = await Supabase
+      .from(Const.TB_ANSWERS)
+      .delete()
+      .eq('id', answerId);
+
+    return { data, error };
   }
 }

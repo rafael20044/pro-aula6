@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from 'src/app/shared/services/admin-service';
+import { AuthService } from 'src/app/shared/services/auth-service';
+import { Router } from '@angular/router';
 
 type Metric = { label: string; value: number | string };
 type QuickAction = { label: string; icon: string; link: string };
@@ -25,9 +27,14 @@ export class HomeAdminPage implements OnInit {
     { label: 'Tickets', icon: 'document-text', link: '/admin/reports' },
     { label: 'Etiquetas', icon: 'pricetags', link: '/admin/tags' },
     { label: 'Preguntas', icon: 'chatbubbles', link: '/admin/questions' },
+    { label: 'Respuestas', icon: 'chatbox-ellipses', link: '/admin/answers' },
   ];
 
-  constructor(private adminService: AdminService) { }
+  constructor(
+    private adminService: AdminService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.loadMetrics();
@@ -39,6 +46,11 @@ export class HomeAdminPage implements OnInit {
 
   async refresh() {
     await this.loadMetrics();
+  }
+
+  async logout() {
+    await this.authService.signOut();
+    this.router.navigate(['/login']);
   }
 
   private async loadMetrics() {

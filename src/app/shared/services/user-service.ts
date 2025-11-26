@@ -6,8 +6,8 @@ import { Supabase } from 'src/app/core/supabase/supabase';
   providedIn: 'root'
 })
 export class UserService {
-  
-  constructor(){}
+
+  constructor() { }
 
   async createUser(user: any) {
     const { data, error } = await Supabase.from(Const.TB_USER).insert(user);
@@ -30,12 +30,12 @@ export class UserService {
     return data.length;
   }
 
-  async findIdByUid(uid:string){
-    const {data, error} = await Supabase.from(Const.TB_USER).select('id').eq('uid', uid).single();
+  async findIdByUid(uid: string) {
+    const { data, error } = await Supabase.from(Const.TB_USER).select('id').eq('uid', uid).maybeSingle();
     if (error) {
       console.log(error);
       return;
     }
-    return data.id as number;
+    return data?.id as number;
   }
 }

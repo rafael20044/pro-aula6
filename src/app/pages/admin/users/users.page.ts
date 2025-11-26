@@ -32,6 +32,8 @@ export class UsersPage implements OnInit {
     this.loading = true;
     try {
       this.users = await this.adminService.getUsers();
+      // Client-side filter to ensure no admins are shown (backup to service filter)
+      this.users = this.users.filter(u => u.rol !== 'admin');
       this.filteredUsers = [...this.users];
     } catch (error) {
       console.error('Error loading users:', error);
@@ -51,17 +53,18 @@ export class UsersPage implements OnInit {
     }
 
     this.filteredUsers = this.users.filter(user => {
-      const name = (user.full_name || '').toLowerCase();
+      const name = (user.name || '').toLowerCase();
       const email = (user.email || '').toLowerCase();
       return name.includes(query) || email.includes(query);
     });
   }
 
   async toggleBan(user: any) {
-    const action = user.is_banned ? 'Desbanear' : 'Banear';
+    const isBanned = user.status === 'banned';
+    const action = isBanned ? 'Desbanear' : 'Banear';
     const alert = await this.alertCtrl.create({
       header: `Confirmar ${action}`,
-      message: `¿Estás seguro de que deseas ${action.toLowerCase()} a ${user.full_name || user.email}?`,
+      message: `¿Estás seguro de que deseas ${action.toLowerCase()} a ${user.name || user.email}?`,
       buttons: [
         {
           text: 'Cancelar',
@@ -70,12 +73,12 @@ export class UsersPage implements OnInit {
         {
           text: 'Sí, confirmar',
           handler: async () => {
-            const { error } = await this.adminService.toggleUserBan(user.id, user.is_banned);
+            const { error } = await this.adminService.toggleUserBan(user.id, user.status);
             if (error) {
               this.showToast('Error al actualizar el estado del usuario', 'danger');
             } else {
-              user.is_banned = !user.is_banned;
-              this.showToast(`Usuario ${user.is_banned ? 'baneado' : 'desbaneado'} correctamente`, 'success');
+              user.status = isBanned ? 'active' : 'banned';
+              this.showToast(`Usuario ${user.status === 'banned' ? 'baneado' : 'desbaneado'} correctamente`, 'success');
             }
           }
         }
@@ -90,10 +93,10 @@ export class UsersPage implements OnInit {
       header: 'Editar Usuario',
       inputs: [
         {
-          name: 'full_name',
+          name: 'name',
           type: 'text',
           placeholder: 'Nombre completo',
-          value: user.full_name
+          value: user.name
         },
         // Add more fields if needed, e.g., email (though changing email might require auth updates)
       ],
@@ -105,17 +108,17 @@ export class UsersPage implements OnInit {
         {
           text: 'Guardar',
           handler: async (data) => {
-            if (!data.full_name) {
+            if (!data.name) {
               this.showToast('El nombre no puede estar vacío', 'warning');
               return false;
             }
 
-            const { error } = await this.adminService.updateUser(user.id, { full_name: data.full_name });
+            const { error } = await this.adminService.updateUser(user.id, { name: data.name });
 
             if (error) {
               this.showToast('Error al actualizar el usuario', 'danger');
             } else {
-              user.full_name = data.full_name;
+              user.name = data.name;
               this.showToast('Usuario actualizado correctamente', 'success');
             }
             return true;

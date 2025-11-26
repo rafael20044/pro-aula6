@@ -1,17 +1,29 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { WelcomeGuard } from './welcome-guard';
+import { AuthStateService } from '../auth/auth-state';
+import { Router } from '@angular/router';
+import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
 
-import { welcomeGuard } from './welcome-guard';
-
-describe('welcomeGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => welcomeGuard(...guardParameters));
+describe('WelcomeGuard', () => {
+  let guard: WelcomeGuard;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    const authStateSpy = jasmine.createSpyObj('AuthStateService', ['getSession']);
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const localSpy = jasmine.createSpyObj('LocalStorageService', ['get']);
+
+    TestBed.configureTestingModule({
+      providers: [
+        WelcomeGuard,
+        { provide: AuthStateService, useValue: authStateSpy },
+        { provide: Router, useValue: routerSpy },
+        { provide: LocalStorageService, useValue: localSpy }
+      ]
+    });
+    guard = TestBed.inject(WelcomeGuard);
   });
 
   it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+    expect(guard).toBeTruthy();
   });
 });

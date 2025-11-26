@@ -14,7 +14,7 @@ export class AuthService {
   private internalUserId: number | null = null;
   private initializing = false;
 
-  constructor(private readonly toat:ToastService, private readonly userService: UserService) { }
+  constructor(private readonly toat: ToastService, private readonly userService: UserService) { }
 
   // Inicializa y cachea sesión y usuario interno para evitar locks
   async init() {
@@ -34,6 +34,14 @@ export class AuthService {
         if (this.user?.id) {
           const found = await this.userService.findIdByUid(this.user.id);
           this.internalUserId = found ?? null;
+
+          // Check if user is banned
+          // Check if user is banned
+          const { data: userData } = await Supabase.from(Const.TB_USER).select('status').eq('uid', this.user.id).maybeSingle();
+          if (userData?.status === 'banned') {
+            this.toat.show('Tu cuenta ha sido suspendida.', 5000, 'top', 'danger');
+            await this.signOut();
+          }
         } else {
           this.internalUserId = null;
         }
@@ -57,8 +65,8 @@ export class AuthService {
   getSession(): Session | null { return this.session; }
   getInternalUserId(): number | null { return this.internalUserId; }
 
-  async registerWithEmailAndPassword(email:string, password:string){
-    const {data, error} = await Supabase.auth.signUp({email: email, password: password});
+  async registerWithEmailAndPassword(email: string, password: string) {
+    const { data, error } = await Supabase.auth.signUp({ email: email, password: password });
     if (error) {
       console.log(error);
       return;
@@ -66,25 +74,35 @@ export class AuthService {
     return data.user?.id;
   }
 
-  async loginWithEmailAndPassword(email:string, password:string){
-    const {data, error} = await Supabase.auth.signInWithPassword({email: email, password: password});
+  async loginWithEmailAndPassword(email: string, password: string) {
+    const { data, error } = await Supabase.auth.signInWithPassword({ email: email, password: password });
     if (error) {
       console.log(error);
       this.toat.show('Correo o contraseña incorrectos', 1500, 'bottom', 'warning');
       return;
     }
+    // Check status
+    // Check status
+    const { data: userData, error: userError } = await Supabase.from(Const.TB_USER).select('status').eq('uid', data.user.id).maybeSingle();
+
+    if (userData?.status === 'banned') {
+      await this.signOut();
+      this.toat.show('Tu cuenta ha sido suspendida. No puedes iniciar sesión.', 5000, 'top', 'danger');
+      return;
+    }
+
     return data.user.id;
   }
 
-  async signOut(){
+  async signOut() {
     await Supabase.auth.signOut();
     this.session = null;
     this.user = null;
     this.internalUserId = null;
   }
 
-  async isAdmin(uid:string){
-    const {data, error} = await Supabase.from(Const.TB_USER).select('rol').eq('uid', uid).single();
+  async isAdmin(uid: string) {
+    const { data, error } = await Supabase.from(Const.TB_USER).select('rol').eq('uid', uid).single();
     if (error) {
       return false;
     }

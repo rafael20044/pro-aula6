@@ -11,7 +11,7 @@ import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
   styleUrls: ['./home.component.scss'],
   standalone: false,
 })
-export class HomeComponent  implements OnInit {
+export class HomeComponent implements OnInit {
   feed: Array<{ q: IQuestionHome, handle?: string }> = [];
   loading = true;
   errorMsg?: string;
@@ -19,6 +19,14 @@ export class HomeComponent  implements OnInit {
   constructor(private readonly questionService: QuestionService) { }
 
   async ngOnInit() {
+    await this.loadQuestions();
+  }
+
+  async refresh() {
+    await this.loadQuestions();
+  }
+
+  private async loadQuestions() {
     try {
       let questions = await this.questionService.findAllQuestions();
       console.debug('Questions from RPC:', questions);

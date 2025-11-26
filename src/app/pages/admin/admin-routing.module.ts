@@ -25,6 +25,10 @@ const routes: Routes = [
     path: 'questions',
     loadChildren: () => import('./questions/questions.module').then(m => m.QuestionsPageModule)
   },
+  {
+    path: 'answers',
+    loadChildren: () => import('./answers/answers.module').then(m => m.AnswersPageModule)
+  },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 
