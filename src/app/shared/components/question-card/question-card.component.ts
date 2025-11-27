@@ -309,8 +309,11 @@ export class QuestionCardComponent implements OnInit {
   }
 
   editQuestion() {
-    // TODO: Navigate to edit question page
-    this.toast.show('Función de edición en desarrollo', 2000, 'bottom', 'warning');
+    this.router.navigate(['/user/create-question'], {
+      queryParams: {
+        edit: this.question.question_id
+      }
+    });
   }
 
   async confirmDeleteQuestion() {
@@ -325,8 +328,9 @@ export class QuestionCardComponent implements OnInit {
         {
           text: 'Eliminar',
           role: 'destructive',
-          handler: async () => {
-            await this.deleteQuestion();
+          handler: () => {
+            this.deleteQuestion();
+            return true;
           }
         }
       ]
@@ -340,7 +344,7 @@ export class QuestionCardComponent implements OnInit {
       const success = await this.questionService.deleteQuestion(this.question.question_id);
       if (success) {
         await this.toast.show('Pregunta eliminada', 2000, 'bottom', 'success');
-        this.emiter.emit(true); // Reload questions
+        this.emiter.emit(true);
       } else {
         await this.toast.showError('Error al eliminar la pregunta');
       }

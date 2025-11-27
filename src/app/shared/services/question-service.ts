@@ -241,5 +241,134 @@ export class QuestionService {
 
     return result;
   }
+
+  async updateQuestion(questionId: number, updateData: any, tags: string[], newImages: IImage[], imagesToDelete: number[] = []) {
+    try {
+      // Eliminar imágenes marcadas para borrar
+      if (imagesToDelete && imagesToDelete.length > 0) {
+        // Obtener paths de las imágenes a eliminar
+        const { data: imagesToDeleteData } = await Supabase
+          .from(Const.TB_IMAGES)
+          .select('path')
+          .in('id', imagesToDelete);
+
+        if (imagesToDeleteData && imagesToDeleteData.length > 0) {
+          // Eliminar archivos del storage
+          const pathsToDelete = imagesToDeleteData
+            .map(img => img.path)
+            .filter(path => path != null);
+
+          if (pathsToDelete.length > 0) {
+            try {
+              await Supabase.storage.from(Const.BUCKET).remove(pathsToDelete);
+            } catch (err) {
+              console.error('Error deleting images from storage:', err);
+            }
+          }
+        }
+
+        // Eliminar registros de la BD
+        await Supabase
+          .from(Const.TB_IMAGES)
+          .delete()
+          .in('id', imagesToDelete);
+      }
+
+      // Actualizar pregunta
+      const { error: updateError } = await Supabase
+        .from(Const.TB_QUESTIONS)
+        .update({
+          title: updateData.title,
+          body: updateData.body,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', questionId);
+
+      if (updateError) {
+        console.error('Error updating question:', updateError);
+        return false;
+      }
+
+      // Actualizar tags si cambiaron
+      if (tags && tags.length > 0) {
+        // Eliminar tags anteriores
+        await Supabase
+          .from(Const.TB_TAGS_QUESTIONS)
+          .delete()
+          .eq('question_id', questionId);
+
+        // Agregar nuevos tags
+        for (const tag of tags) {
+          const { data: existingTag } = await Supabase
+            .from(Const.TB_TAGS)
+            .select('id')
+            .eq('name', tag)
+            .maybeSingle();
+
+          let tagId = existingTag?.id;
+
+          if (!tagId) {
+            const { data: newTag } = await Supabase
+              .from(Const.TB_TAGS)
+              .insert({
+                name: tag,
+                updated_at: new Date().toISOString()
+              })
+              .select('id')
+              .single();
+            tagId = newTag?.id;
+          }
+
+          if (tagId) {
+            await Supabase
+              .from(Const.TB_TAGS_QUESTIONS)
+              .insert({ tag_id: tagId, question_id: questionId });
+          }
+        }
+      }
+
+      // Agregar nuevas imágenes si hay
+      if (newImages && newImages.length > 0) {
+        const uploadedImages: any[] = [];
+
+        for (const img of newImages) {
+          try {
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.jpg`;
+            const folder = `questions/${questionId}`;
+            const bucket = Const.BUCKET;
+
+            const uploaded = await this.storageService.upload(
+              bucket,
+              folder,
+              fileName,
+              img.data,
+              img.mimeType
+            );
+
+            if (uploaded) {
+              uploadedImages.push({
+                question_id: questionId,
+                image_url: uploaded.url,
+                path: uploaded.path
+              });
+            }
+          } catch (err) {
+            console.error('Error uploading new image:', err);
+          }
+        }
+
+        if (uploadedImages.length > 0) {
+          await Supabase
+            .from(Const.TB_IMAGES)
+            .insert(uploadedImages);
+        }
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Error in updateQuestion:', err);
+      return false;
+    }
+  }
 }
 

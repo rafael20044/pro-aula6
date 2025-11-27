@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
 import { StorageService } from 'src/app/shared/services/storage-service';
 import { AuthService } from 'src/app/shared/services/auth-service';
 import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { ProfileComponent } from 'src/app/shared/components/profile/profile.component';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,7 @@ import { HomeComponent } from 'src/app/shared/components/home/home.component';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, AfterViewInit {
 
   showLogo = true;
   userAvatarUrl: string | null = null;
@@ -20,17 +21,41 @@ export class HomePage implements OnInit {
   private sessionUserId: string | null = null;
 
   @ViewChild(HomeComponent) homeComponent?: HomeComponent;
+  @ViewChild(ProfileComponent) profileComponent?: ProfileComponent;
 
-  constructor(private router: Router, private readonly storageService: StorageService, private readonly auth: AuthService) { }
+  constructor(
+    private router: Router, 
+    private route: ActivatedRoute,
+    private readonly storageService: StorageService, 
+    private readonly auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
   }
 
+  ngAfterViewInit() {
+    // Detectar cuando se vuelve de editar/crear una pregunta
+    this.route.queryParams.subscribe(params => {
+      if (params['refresh']) {
+        setTimeout(() => {
+          this.homeComponent?.loadData(false);
+          this.profileComponent?.getEmiter();
+        }, 100);
+      }
+    });
+  }
+
   ionViewWillEnter() {
-    if (this.homeComponent) {
-      //this.homeComponent.refresh();
-    }
+    // Recargar datos cuando se vuelve a esta vista
+    setTimeout(() => {
+      if (this.homeComponent) {
+        this.homeComponent.loadData(false);
+      }
+      if (this.profileComponent) {
+        this.profileComponent.getEmiter();
+      }
+    }, 100);
   }
 
   onTabChange(event: any) {
