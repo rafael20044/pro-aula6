@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage-service';
 import { ActionSheetController, AlertController } from '@ionic/angular';
 import { ToastService } from '../../services/toast-service';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { TicketService } from '../../services/ticket-service';
 import { ITicketCreate } from 'src/app/interfaces/iticket';
 
@@ -48,6 +48,12 @@ export class QuestionCardComponent implements OnInit {
   radioControl = new FormControl();
   targetId = new FormControl();
   targettype = new FormControl();
+  form = new FormGroup({
+    textAreaControl: this.textAreaControl,
+    radioControl: this.radioControl,
+    targetId: this.targetId,
+    targettype: this.targettype,
+  });
 
   constructor(
     private readonly reactionService: ReactionService,
@@ -385,8 +391,8 @@ export class QuestionCardComponent implements OnInit {
   async submit(){
     const ticket:ITicketCreate ={
       user_id: this.userID,
-      title: this.radioControl.value,
-      body: this.textAreaControl.value,
+      title: this.form.value.radioControl,
+      body: this.form.value.textAreaControl,
       question_id: (this.targettype.value === 'question_id') ? this.targetId.value : undefined,
       user_report_id: (this.targettype.value === 'user_id') ? this.targetId.value : undefined,
     };
@@ -396,6 +402,8 @@ export class QuestionCardComponent implements OnInit {
       return;
     }
     this.toast.show('Reporte enviado exitosamente');
+    this.form.reset();
+    this.closeDetailsModal();
   }
 
   proceedToUserDetails() {

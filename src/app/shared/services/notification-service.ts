@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Const } from 'src/app/const/const';
 import { Supabase } from 'src/app/core/supabase/supabase';
-import { ToastService } from './toast-service';
 import { INotificarion } from 'src/app/interfaces/inotification';
 import { LocalStorageService } from './local-storage-service';
 import { BehaviorSubject } from 'rxjs';

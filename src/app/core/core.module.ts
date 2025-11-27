@@ -6,6 +6,7 @@ import { LocalStorageService } from '../shared/services/local-storage-service';
 import { Const } from '../const/const';
 import { StatusBarService } from './services/status-bar-service';
 import { NotificationService } from '../shared/services/notification-service';
+import { LocalNotification } from '../shared/services/local-notification';
 
 
 
@@ -20,7 +21,8 @@ export class CoreModule implements OnInit{
     private readonly file:FilePickerService, 
     private readonly local:LocalStorageService,
     private readonly status:StatusBarService,
-    private readonly noti:NotificationService
+    private readonly noti:NotificationService,
+    private readonly localNoti:LocalNotification
   ){
     this.ngOnInit();
   }
@@ -29,6 +31,7 @@ export class CoreModule implements OnInit{
     if (Capacitor.isNativePlatform()) {
       await this.file.permission();
       await this.status.statusBar();
+      await this.localNoti.requestPermissions();
     }
     this.noti.initListener();
     const showWelcome = this.local.get(Const.SHOW_WELCOME);

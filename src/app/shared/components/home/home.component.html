@@ -17,7 +17,7 @@
 
 		<ng-container *ngIf="!loading">
 			<ng-container *ngFor="let item of feed">
-				<app-question-card [question]="item.q" [handle]="item.handle" (emiter)="loadData(true)">
+				<app-question-card [question]="item.q" [handle]="item.handle" (emiter)="loadData(false)">
 				</app-question-card>
 			</ng-container>
 
