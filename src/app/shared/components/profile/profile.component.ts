@@ -152,6 +152,7 @@ export class ProfileComponent implements OnInit {
         .from(Const.TB_QUESTIONS)
         .select('*')
         .eq('user_id', this.currentUserId)
+        .eq('status', 'ACTIVE')
         .order('created_at', { ascending: false });
       if (questionsError) {
         console.error('Error loading user questions:', questionsError);

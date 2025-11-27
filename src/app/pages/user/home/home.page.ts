@@ -29,7 +29,7 @@ export class HomePage implements OnInit {
 
   ionViewWillEnter() {
     if (this.homeComponent) {
-      this.homeComponent.refresh();
+      //this.homeComponent.refresh();
     }
   }
 

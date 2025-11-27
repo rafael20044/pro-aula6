@@ -11,6 +11,9 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage-service';
 import { ActionSheetController, AlertController } from '@ionic/angular';
 import { ToastService } from '../../services/toast-service';
+import { FormControl } from '@angular/forms';
+import { TicketService } from '../../services/ticket-service';
+import { ITicketCreate } from 'src/app/interfaces/iticket';
 
 @Component({
   selector: 'app-question-card',
@@ -40,6 +43,12 @@ export class QuestionCardComponent implements OnInit {
   reportDetails = '';
   currentReportType: 'question' | 'user' = 'question';
 
+  // form
+  textAreaControl = new FormControl();
+  radioControl = new FormControl();
+  targetId = new FormControl();
+  targettype = new FormControl();
+
   constructor(
     private readonly reactionService: ReactionService,
     private readonly userService: UserService,
@@ -51,7 +60,8 @@ export class QuestionCardComponent implements OnInit {
     private readonly reactionS: ReactionService,
     private readonly actionSheetCtrl: ActionSheetController,
     private readonly alertCtrl: AlertController,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly ticket:TicketService,
   ) { }
 
   ngOnInit() {
@@ -364,6 +374,28 @@ export class QuestionCardComponent implements OnInit {
   closeUserReportModal() {
     this.showUserReportModal = false;
     this.selectedReason = '';
+  }
+
+  getValue(value:string, target: 'question' | 'user', targetId:number){
+    this.radioControl.setValue(value);
+    this.targetId.setValue(targetId);
+    this.targettype.setValue((target === 'user') ? 'user_id' : 'question_id');
+  }
+
+  async submit(){
+    const ticket:ITicketCreate ={
+      user_id: this.userID,
+      title: this.radioControl.value,
+      body: this.textAreaControl.value,
+      question_id: (this.targettype.value === 'question_id') ? this.targetId.value : undefined,
+      user_report_id: (this.targettype.value === 'user_id') ? this.targetId.value : undefined,
+    };
+    const create = await this.ticket.createTicket(ticket);
+    if (!create) {
+      this.toast.showError('Error al enviar el reporte');
+      return;
+    }
+    this.toast.show('Reporte enviado exitosamente');
   }
 
   proceedToUserDetails() {
