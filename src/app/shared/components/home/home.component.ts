@@ -80,8 +80,4 @@ export class HomeComponent implements OnInit {
     return shuffled;
   }
 
-  refresh() {
-    this.loadData(true);
-  }
-
 }
