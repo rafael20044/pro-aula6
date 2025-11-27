@@ -8,7 +8,6 @@ import { environment } from 'src/environments/environment';
 export class ContentModerationService {
     private genAI: GoogleGenerativeAI;
 
-    // ACTUALIZADO: Ponemos 'gemini-2.5-flash' primero porque es el que tu llave tiene activado
     private readonly modelsToTry = ['gemini-2.5-flash', 'gemini-1.5-flash'];
 
     constructor() {
