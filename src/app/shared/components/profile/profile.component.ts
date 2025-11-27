@@ -23,7 +23,7 @@ export class ProfileComponent implements OnInit {
   joinedDate: string = '';
   location?: string; // opcional por ahora
   birthdate?: string; // opcional por ahora
-  
+
   // User questions
   userQuestions: Array<{ q: IQuestionHome, handle?: string }> = [];
   loadingQuestions: boolean = true;
@@ -53,24 +53,29 @@ export class ProfileComponent implements OnInit {
     this.loadingQuestions = false;
   }
 
+  async refresh(event: any) {
+    await this.loadProfileData();
+    event.target.complete();
+  }
+
   private async loadProfileData() {
     await this.auth.ensureReady();
     const user = this.auth.getUser();
     if (!user) return;
-    
+
     const { data, error } = await Supabase
       .from(Const.TB_USER)
       .select('id, name, last_name, email, photo, created_at')
       .eq('uid', user.id)
       .single();
-    
+
     if (error) {
       console.error('Error loading profile:', error);
       return;
     }
-    
+
     this.currentUserId = data?.id || null;
-    
+
     // Resolve photo using PhotoService
     this.avatarUrl = await this.photoService.resolvePhotoUrl(data?.photo);
     const name = (data?.name || '').trim();
@@ -80,7 +85,7 @@ export class ProfileComponent implements OnInit {
     this.email = data?.email || '';
     this.username = this.buildUsername(this.email);
     this.joinedDate = this.formatJoinedDate(data?.created_at);
-    
+
     await this.loadUserQuestions();
   }
 
@@ -223,7 +228,7 @@ export class ProfileComponent implements OnInit {
       // hacer intento de username desde email
       const handle = this.username.replace('@', '');
       this.userQuestions = questions.map(q => ({ q, handle }));
-      
+
     } catch (err) {
       console.error('Error loading user questions:', err);
       this.userQuestions = [];

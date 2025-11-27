@@ -1,4 +1,4 @@
-@import '../login/login.page.scss';
+@use '../login/login.page.scss';
 
 // Estilos específicos para registro
 .auth-content {
@@ -30,9 +30,10 @@
   border-radius: 12px !important;
   padding: 10px 18px !important;
   height: 44px !important;
-  box-shadow: 0 6px 14px rgba(74,144,226,0.14) !important;
+  box-shadow: 0 6px 14px rgba(74, 144, 226, 0.14) !important;
   border: none !important;
 }
+
 ::ng-deep .auth-card .upload-buttons app-button.upload-btn {
   display: block;
   border: none !important;
@@ -55,7 +56,8 @@
 }
 
 .photo-card__remove {
-  background: #ef4444; /* fallback red */
+  background: #ef4444;
+  /* fallback red */
   right: 6px;
   top: 6px;
 }

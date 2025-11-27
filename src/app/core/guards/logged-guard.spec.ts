@@ -1,29 +1,43 @@
 import { TestBed } from '@angular/core/testing';
-import { LoggedGuard } from './logged-guard';
-import { AuthStateService } from '../auth/auth-state';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/shared/services/auth-service';
+import { loggedGuard } from './logged-guard';
+import { LocalStorageService } from 'src/app/shared/services/local-storage-service';
+import { Const } from 'src/app/const/const';
 
-describe('LoggedGuard', () => {
-  let guard: LoggedGuard;
+describe('loggedGuard', () => {
+  let routerSpy: jasmine.SpyObj<Router>;
+  let localStorageSpy: jasmine.SpyObj<LocalStorageService>;
+
+  const executeGuard = (route: any, state: any) =>
+    TestBed.runInInjectionContext(() => loggedGuard(route, state));
 
   beforeEach(() => {
-    const authStateSpy = jasmine.createSpyObj('AuthStateService', ['getSession']);
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const authSpy = jasmine.createSpyObj('AuthService', ['ensureReady', 'getSession']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    localStorageSpy = jasmine.createSpyObj('LocalStorageService', ['get']);
 
     TestBed.configureTestingModule({
       providers: [
-        LoggedGuard,
-        { provide: AuthStateService, useValue: authStateSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: AuthService, useValue: authSpy }
+        { provide: LocalStorageService, useValue: localStorageSpy }
       ]
     });
-    guard = TestBed.inject(LoggedGuard);
   });
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(executeGuard).toBeTruthy();
+  });
+
+  it('should allow access if user is NOT logged in', () => {
+    localStorageSpy.get.and.returnValue(null); // No UID
+    const result = executeGuard({} as any, {} as any);
+    expect(result).toBeTrue();
+    expect(routerSpy.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should redirect to home if user IS logged in', () => {
+    localStorageSpy.get.withArgs(Const.USER_UID).and.returnValue('some-uid');
+    const result = executeGuard({} as any, {} as any);
+    expect(result).toBeFalse();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/home']);
   });
 });

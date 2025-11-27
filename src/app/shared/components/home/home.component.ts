@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
         questions = (directData || []).map((r: any) => ({
           question_id: r.id,
           user_id: r.user_id,
-          full_name: r.full_name ?? '', 
+          full_name: r.full_name ?? '',
           photo: r.photo ?? null,
           title: r.title,
           body: r.body,
@@ -84,6 +84,12 @@ export class HomeComponent implements OnInit {
       this.loading = false;
     }
   }
+
+  async refresh(event: any) {
+    await this.loadData(true);
+    event.target.complete();
+  }
+
 
   // Fisher-Yates shuffle algorithm para aleatorizar array
   private shuffleArray<T>(array: T[]): T[] {
