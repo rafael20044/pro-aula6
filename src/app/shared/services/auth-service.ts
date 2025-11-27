@@ -108,8 +108,6 @@ export class AuthService {
     this.local.remove(Const.USER_UID);
     this.local.remove(Const.USER_ID);
     this.local.remove(Const.IS_ADMIN);
-
-    localStorage.clear();
   }
 
   async isAdmin(uid: string) {

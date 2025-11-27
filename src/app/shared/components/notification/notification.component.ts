@@ -22,12 +22,13 @@ export class NotificationComponent  implements OnInit {
     private readonly router:Router
   ) { }
 
-  ngOnInit() {
-    this.load();
+  async ngOnInit() {
+    await this.load();
   }
 
   async openNotification(id:number, question_id:number){
     await this.notification.markAsRead(id);
+    await this.load();
     this.router.navigate([`question-details/${question_id}`]);
   }
 

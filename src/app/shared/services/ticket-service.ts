@@ -29,4 +29,13 @@ export class TicketService {
     }
     return data.length;
   }
+
+  async createTicket(tick:any){
+    const {error} = await Supabase.from(Const.TB_TICKETS).insert(tick);
+    if (error) {
+      console.log(error);
+      return false;
+    }
+    return true;
+  }
 }

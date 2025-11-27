@@ -65,32 +65,32 @@
       <div class="modal-body">
         <ion-radio-group [(ngModel)]="selectedReason">
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="inappropriate" slot="start"></ion-radio>
+            <ion-radio value="inappropriate" slot="start" (click)="getValue('inappropriate', 'question', question.question_id)"></ion-radio>
             <ion-label>Contenido inapropiado</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="spam" slot="start"></ion-radio>
+            <ion-radio value="spam" slot="start" (click)="getValue('spam', 'question', question.question_id)"></ion-radio>
             <ion-label>Spam o publicidad</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="harassment" slot="start"></ion-radio>
+            <ion-radio value="harassment" slot="start" (click)="getValue('harassment', 'question', question.question_id)"></ion-radio>
             <ion-label>Acoso o intimidación</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="misinformation" slot="start"></ion-radio>
+            <ion-radio value="misinformation" slot="start" (click)="getValue('misinformation', 'question', question.question_id)"></ion-radio>
             <ion-label>Información falsa</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="duplicate" slot="start"></ion-radio>
+            <ion-radio value="duplicate" slot="start" (click)="getValue('duplicate', 'question', question.question_id)"></ion-radio>
             <ion-label>Contenido duplicado</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="other" slot="start"></ion-radio>
+            <ion-radio value="other" slot="start" (click)="getValue('other', 'question', question.question_id)"></ion-radio>
             <ion-label>Otro</ion-label>
           </ion-item>
         </ion-radio-group>
@@ -116,32 +116,32 @@
       <div class="modal-body">
         <ion-radio-group [(ngModel)]="selectedReason">
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="offensive" slot="start"></ion-radio>
+            <ion-radio value="offensive" slot="start" (click)="getValue('offensive', 'user', question.user_id)"></ion-radio>
             <ion-label>Comportamiento ofensivo</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="spam" slot="start"></ion-radio>
+            <ion-radio value="spam" slot="start" (click)="getValue('spam', 'user', question.user_id)"></ion-radio>
             <ion-label>Spam o publicidad</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="impersonation" slot="start"></ion-radio>
+            <ion-radio value="impersonation" slot="start" (click)="getValue('impersonation', 'user', question.user_id)"></ion-radio>
             <ion-label>Suplantación de identidad</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="harassment" slot="start"></ion-radio>
+            <ion-radio value="harassment" slot="start" (click)="getValue('harassment', 'user', question.user_id)"></ion-radio>
             <ion-label>Acoso o intimidación</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="inappropriate" slot="start"></ion-radio>
+            <ion-radio value="inappropriate" slot="start" (click)="getValue('inappropriate', 'user', question.user_id)"></ion-radio>
             <ion-label>Contenido inapropiado</ion-label>
           </ion-item>
           
           <ion-item lines="none" class="radio-item">
-            <ion-radio value="other" slot="start"></ion-radio>
+            <ion-radio value="other" slot="start" (click)="getValue('other', 'user', question.user_id)"></ion-radio>
             <ion-label>Otro</ion-label>
           </ion-item>
         </ion-radio-group>
@@ -164,24 +164,27 @@
         <p class="modal-subtitle">Mínimo 70 caracteres requeridos</p>
       </div>
       
-      <div class="modal-body">
-        <ion-textarea
-          [(ngModel)]="reportDetails"
-          placeholder="Describe el problema en detalle (mínimo 70 caracteres, máximo 500)"
-          [maxlength]="500"
-          [rows]="6"
-          [autoGrow]="true"
-          class="details-textarea"
-        ></ion-textarea>
-        <div class="char-counter" [class.warning]="reportDetails.length > 450">
-          {{ reportDetails.length }}/500
+      <form (ngSubmit)="submit()">
+        <div class="modal-body">
+          <ion-textarea
+            [(ngModel)]="reportDetails"
+            placeholder="Describe el problema en detalle"
+            [maxlength]="500"
+            [rows]="6"
+            [autoGrow]="true"
+            class="details-textarea"
+            [formControl]="textAreaControl"
+          ></ion-textarea>
+          <div class="char-counter" [class.warning]="reportDetails.length > 450">
+            {{ reportDetails.length }}/500
+          </div>
         </div>
-      </div>
-      
-      <div class="modal-footer">
-        <ion-button fill="clear" (click)="closeDetailsModal()">Cancelar</ion-button>
-        <ion-button (click)="submitReportFromModal()">Enviar reporte</ion-button>
-      </div>
+        
+        <div class="modal-footer">
+          <ion-button fill="clear" (click)="closeDetailsModal()">Cancelar</ion-button>
+          <ion-button   type="submit">Enviar reporte</ion-button>
+        </div>
+      </form>
     </div>
   </ng-template>
 </ion-modal>

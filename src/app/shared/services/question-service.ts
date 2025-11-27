@@ -185,9 +185,8 @@ export class QuestionService {
   async deleteQuestion(id: number): Promise<boolean> {
     const { error } = await Supabase
       .from(Const.TB_QUESTIONS)
-      .delete()
+      .update({status: 'DELETE'})
       .eq('id', id);
-
     if (error) {
       console.error('Error deleting question:', error);
       return false;

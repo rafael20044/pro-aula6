@@ -1,21 +1,34 @@
-<div class="home-feed">
-	<div *ngIf="loading">Cargando preguntas...</div>
-	<div *ngIf="!loading && errorMsg" class="error">{{ errorMsg }}</div>
-	<ng-container *ngIf="!loading && feed.length === 0 && !errorMsg">
-		<div class="empty">No hay preguntas para mostrar.</div>
-	</ng-container>
+<ion-content>
 
-	<ng-container *ngIf="!loading">
-		<ng-container *ngFor="let item of feed">
-			<app-question-card [question]="item.q" [handle]="item.handle" (emiter)="loadData()"></app-question-card>
+	<ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+		<ion-refresher-content pullingIcon="arrow-down-circle-outline" refreshingSpinner="circles"
+			pullingText="Desliza para actualizar" refreshingText="Actualizando..."></ion-refresher-content>
+	</ion-refresher>
+
+	<div class="home-feed">
+
+		<div *ngIf="loading">Cargando preguntas...</div>
+
+		<div *ngIf="!loading && errorMsg" class="error">{{ errorMsg }}</div>
+
+		<ng-container *ngIf="!loading && feed.length === 0 && !errorMsg">
+			<div class="empty">No hay preguntas para mostrar.</div>
 		</ng-container>
-		
-		<!-- Mensaje de fin del feed -->
-		<div class="end-of-feed" *ngIf="feed.length > 0">
-			<div class="end-icon">✨</div>
-			<h3>Has llegado al final</h3>
-			<p>Eso es todo por hoy</p>
-		</div>
-	</ng-container>
-</div>
 
+		<ng-container *ngIf="!loading">
+			<ng-container *ngFor="let item of feed">
+				<app-question-card [question]="item.q" [handle]="item.handle" (emiter)="loadData(true)">
+				</app-question-card>
+			</ng-container>
+
+			<!-- FIN DEL FEED -->
+			<div class="end-of-feed" *ngIf="feed.length > 0">
+				<div class="end-icon">✨</div>
+				<h3>Has llegado al final</h3>
+				<p>Eso es todo por hoy</p>
+			</div>
+		</ng-container>
+
+	</div>
+
+</ion-content>

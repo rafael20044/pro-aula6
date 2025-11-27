@@ -64,6 +64,12 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  async refresh(event: any) {
+    await this.loadData(true);
+    event.target.complete();
+  }
+
+
   // Fisher-Yates shuffle algorithm para aleatorizar array
   private shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];

@@ -4,12 +4,13 @@ export interface ITicket {
     question_id?: number;
     answers_id?: number;
     user_report_id?: number;
-    body: string;
+    title:string;
+    body?: string;
     created_at: string;
     status: string;
 }
 
-export interface ITicketCreate extends Pick<ITicket, 'answers_id' | 'body' | 'question_id' | 'user_id' | 'user_report_id'> {
+export interface ITicketCreate extends Pick<ITicket, 'answers_id' | 'body' | 'question_id' | 'user_id' | 'user_report_id'|'title'> {
 }
 
 export interface ITicketFind extends ITicketCreate, Pick<ITicket, 'status' | 'id' | 'created_at'> {
