@@ -43,6 +43,11 @@ export class ProfileComponent implements OnInit {
 
   // Se ejecuta cada vez que la vista va a entrar (incluso al volver de edit-profile)
   async ionViewWillEnter() {
+    console.log('no funciona')
+    await this.loadProfileData();
+  }
+
+  async getEmiter(){
     await this.loadProfileData();
   }
 

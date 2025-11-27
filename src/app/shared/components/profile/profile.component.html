@@ -54,7 +54,8 @@
               *ngFor="let item of userQuestions; trackBy: trackQuestion" 
               [question]="item.q"
               [handle]="item.handle"
-              [isOwnProfile]="true">
+              [isOwnProfile]="true"
+              (emiter)="getEmiter()">
             </app-question-card>
           </div>
           
