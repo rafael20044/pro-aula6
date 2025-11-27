@@ -68,10 +68,10 @@ export class NotificationService {
           filter: `user_id=eq.${userId}`
         },
         (payload) => {
+          this.localNoti.send();
           const newNotif = payload.new as INotificarion;
           const current = this.notifications$.value;
           this.notifications$.next([newNotif, ...current]);
-          this.localNoti.send();
         }
       )
       .subscribe();

@@ -126,10 +126,10 @@
         </ion-button>
       </div>
 
-      <ion-button expand="block" fill="outline" (click)="triggerCamera()">
+      <!-- <ion-button expand="block" fill="outline" (click)="triggerCamera()">
         <ion-icon name="camera" slot="start"></ion-icon>
         {{ profilePhoto ? 'Cambiar foto' : 'Tomar foto' }}
-      </ion-button>
+      </ion-button> -->
 
       <input type="file" accept="image/*" #fileInput class="hidden-file-input" (change)="onFileSelected($event)" title="Seleccionar imagen" aria-label="Seleccionar imagen de perfil">
 
