@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   errorMsg?: string;
 
   constructor(private readonly questionService: QuestionService) { }
-  
+
   async ngOnInit() {
     this.loadData(true);
   }
@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
         questions = (directData || []).map((r: any) => ({
           question_id: r.id,
           user_id: r.user_id,
-          full_name: r.full_name ?? '', 
+          full_name: r.full_name ?? '',
           photo: r.photo ?? null,
           title: r.title,
           body: r.body,
@@ -72,6 +72,10 @@ export class HomeComponent implements OnInit {
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
+  }
+
+  refresh() {
+    this.loadData(true);
   }
 
 }
