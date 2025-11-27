@@ -78,12 +78,14 @@
   
   <!-- Botón de envío -->
   <div class="form-actions">
-    <app-button
-      [text]="'Publicar Pregunta'"
-      [type]="'submit'"
-      variant="filled"
-      [expand]="'block'">
-    </app-button>
+    <ion-button
+      type="submit"
+      expand="block"
+      [disabled]="submitting || !form.valid"
+      class="submit-button">
+      <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+      {{ submitting ? 'Guardando...' : (isEditing ? 'Guardar cambios' : 'Publicar Pregunta') }}
+    </ion-button>
   </div>
 
 </form>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionService } from 'src/app/shared/services/question-service';
+import { AuthService } from 'src/app/shared/services/auth-service';
 import { Supabase } from 'src/app/core/supabase/supabase';
 import { Const } from 'src/app/const/const';
 import { IQuestionHome } from 'src/app/interfaces/iquiestionhome';
@@ -14,10 +15,24 @@ export class HomeComponent implements OnInit {
   feed: Array<{ q: IQuestionHome, handle?: string }> = [];
   loading = true;
   errorMsg?: string;
+  currentUserId: number | null = null;
 
-  constructor(private readonly questionService: QuestionService) { }
+  constructor(
+    private readonly questionService: QuestionService,
+    private readonly auth: AuthService
+  ) { }
   
   async ngOnInit() {
+    await this.auth.ensureReady();
+    const user = this.auth.getUser();
+    if (user) {
+      const { data } = await Supabase
+        .from(Const.TB_USER)
+        .select('id')
+        .eq('uid', user.id)
+        .single();
+      this.currentUserId = data?.id || null;
+    }
     this.loadData(true);
   }
 
@@ -25,7 +40,10 @@ export class HomeComponent implements OnInit {
     try {
       let questions = await this.questionService.findAllQuestions();
       if (!questions || !Array.isArray(questions) || questions.length === 0) {
-        const { data: directData } = await Supabase.from(Const.TB_QUESTIONS).select('*');
+        const { data: directData } = await Supabase
+          .from(Const.TB_QUESTIONS)
+          .select('*')
+          .eq('status', 'ACTIVE');
         questions = (directData || []).map((r: any) => ({
           question_id: r.id,
           user_id: r.user_id,
@@ -41,6 +59,9 @@ export class HomeComponent implements OnInit {
           dislike_count: r.dislike_count ?? 0,
         }));
       }
+
+      // Filtrar preguntas eliminadas por si acaso
+      questions = questions.filter(q => q.status !== 'DELETE');
 
       // Email → handle
       const userIds = [...new Set(questions.map(q => q.user_id))];

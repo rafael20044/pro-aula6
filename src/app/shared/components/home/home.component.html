@@ -7,7 +7,12 @@
 
 	<ng-container *ngIf="!loading">
 		<ng-container *ngFor="let item of feed">
-			<app-question-card [question]="item.q" [handle]="item.handle" (emiter)="loadData()"></app-question-card>
+			<app-question-card 
+				[question]="item.q" 
+				[handle]="item.handle" 
+				[isOwnProfile]="currentUserId === item.q.user_id"
+				(emiter)="loadData()">
+			</app-question-card>
 		</ng-container>
 		
 		<!-- Mensaje de fin del feed -->
