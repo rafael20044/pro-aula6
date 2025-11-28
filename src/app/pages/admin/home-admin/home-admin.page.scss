@@ -124,7 +124,7 @@
   font-size: 16px;
   font-weight: 700;
   color: var(--text-secondary);
-  margin: 22px 4px 12px;
+  margin: 32px 4px 16px;
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
@@ -193,10 +193,131 @@
 
 .glass {
   --background: var(--bg-card-elevated);
-  border-radius: 16px;
+  border-radius: 20px;
   border: 1px solid var(--border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   color: var(--text-primary);
+  overflow: hidden;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  padding: 8px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+}
+
+.summary-col {
+  .col-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+}
+
+.custom-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-app);
+  border-radius: 12px;
+  transition: background 0.2s;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--bg-card-hover);
+    }
+  }
+
+  .item-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .item-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    color: var(--ion-color-danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+
+    .item-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-subtitle,
+    .item-date {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  }
+
+  .item-arrow {
+    font-size: 18px;
+    color: var(--text-muted);
+  }
+}
+
+.empty-item {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  background: var(--bg-app);
+  border-radius: 12px;
+  border: 1px dashed var(--border);
 }
 
 @media (max-width: 480px) {

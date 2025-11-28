@@ -36,7 +36,7 @@ export class TagService {
 
     // 2) Crear nuevo
     const { data, error } = await (Supabase.from('tags') as any)
-      .insert({ name: clean, updated_at: new Date().toISOString() })
+      .insert({ name: clean })
       .select()
       .single();
 
@@ -56,15 +56,15 @@ export class TagService {
     }
     return data as TagDto;
   }
-  async delete(id: number): Promise<boolean> {
+  async delete(id: number): Promise<{ success: boolean; error?: any }> {
     const { error } = await (Supabase.from('tags') as any)
       .delete()
       .eq('id', id);
 
     if (error) {
       console.error('delete tag error', error);
-      return false;
+      return { success: false, error };
     }
-    return true;
+    return { success: true };
   }
 }

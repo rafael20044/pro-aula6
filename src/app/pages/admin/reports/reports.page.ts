@@ -52,13 +52,9 @@ export class ReportsPage implements OnInit {
         {
           text: 'Sí, resolver',
           handler: async () => {
-            // Assuming we just update the status to true (closed)
-            const { error } = await Supabase
-              .from(Const.TB_TICKETS)
-              .update({ status: true })
-              .eq('id', ticket.id);
+            const success = await this.ticketService.resolveTicket(ticket.id);
 
-            if (error) {
+            if (!success) {
               this.showToast('Error al resolver el ticket', 'danger');
             } else {
               this.showToast('Ticket resuelto', 'success');

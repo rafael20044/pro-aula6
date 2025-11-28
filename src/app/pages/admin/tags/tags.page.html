@@ -4,8 +4,8 @@
       <ion-back-button defaultHref="/admin/home"></ion-back-button>
     </ion-buttons>
     <ion-title>Etiquetas</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="createTag()">
+    <ion-buttons slot="end" class="header-actions">
+      <ion-button (click)="createTag()" class="add-button">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -25,13 +25,16 @@
       <p>No hay etiquetas creadas.</p>
     </div>
 
-    <ion-list *ngIf="!loading && tags.length > 0">
-      <ion-item *ngFor="let tag of tags">
-        <ion-label>{{ tag.name }}</ion-label>
-        <ion-button fill="clear" slot="end" color="danger" (click)="deleteTag(tag)">
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </ion-list>
+    <div class="tags-grid" *ngIf="!loading && tags.length > 0">
+      <div class="tag-chip" *ngFor="let tag of tags">
+        <div class="tag-content">
+          <ion-icon name="pricetag-outline" class="tag-icon"></ion-icon>
+          <span class="tag-name">{{ tag.name }}</span>
+        </div>
+        <button class="delete-btn" (click)="deleteTag(tag)">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
   </div>
 </ion-content>

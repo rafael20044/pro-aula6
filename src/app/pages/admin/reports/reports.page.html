@@ -23,19 +23,36 @@
     <ion-list *ngIf="!loading && tickets.length > 0">
       <ion-card *ngFor="let ticket of tickets" class="ticket-card">
         <ion-card-header>
-          <ion-card-subtitle>Ticket #{{ ticket.id }}</ion-card-subtitle>
-          <ion-card-title>
+          <ion-card-subtitle>
             <span *ngIf="ticket.question_id">Reporte de Pregunta</span>
             <span *ngIf="ticket.answers_id">Reporte de Respuesta</span>
             <span *ngIf="ticket.user_report_id">Reporte de Usuario</span>
             <span *ngIf="!ticket.question_id && !ticket.answers_id && !ticket.user_report_id">Reporte General</span>
-          </ion-card-title>
+            • #{{ ticket.id }}
+          </ion-card-subtitle>
+          <ion-card-title>{{ ticket.body }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <p class="description">{{ ticket.body }}</p>
+
+          <!-- Detalles del contenido reportado -->
+          <div class="reported-content" *ngIf="ticket.questions">
+            <p><strong>Pregunta:</strong> {{ ticket.questions.title }}</p>
+            <p class="text-muted">{{ ticket.questions.body }}</p>
+          </div>
+
+          <div class="reported-content" *ngIf="ticket.answers">
+            <p><strong>Respuesta:</strong> {{ ticket.answers.body }}</p>
+          </div>
+
+          <div class="reported-content" *ngIf="ticket.reported_user">
+            <p><strong>Usuario Reportado:</strong> {{ ticket.reported_user.name }} {{ ticket.reported_user.last_name }}
+            </p>
+            <p class="text-muted">{{ ticket.reported_user.email }}</p>
+          </div>
+
           <div class="meta">
             <span class="date">{{ ticket.created_at | date:'medium' }}</span>
-            <span class="user" *ngIf="ticket.name_user_id">Por: {{ ticket.name_user_id }}</span>
+            <span class="user" *ngIf="ticket.users">Por: {{ ticket.users.name }} {{ ticket.users.last_name }}</span>
           </div>
 
           <div class="actions">

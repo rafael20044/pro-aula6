@@ -77,12 +77,33 @@ export class AdminService {
     };
   }
 
+  async getRecentActivity() {
+    const { data: recentUsers } = await Supabase
+      .from(Const.TB_USER)
+      .select('name, last_name, created_at')
+      .neq('rol', 'admin')
+      .order('created_at', { ascending: false })
+      .limit(3);
+
+    const { data: recentTickets } = await Supabase
+      .from(Const.TB_TICKETS)
+      .select('id, body, created_at')
+      .eq('status', false)
+      .order('created_at', { ascending: false })
+      .limit(3);
+
+    return {
+      users: recentUsers || [],
+      tickets: recentTickets || []
+    };
+  }
+
   async getAnswers() {
     const { data, error } = await Supabase
       .from(Const.TB_ANSWERS)
       .select(`
         *,
-        users (name),
+        users (name, photo),
         questions (title)
       `)
       .order('created_at', { ascending: false });

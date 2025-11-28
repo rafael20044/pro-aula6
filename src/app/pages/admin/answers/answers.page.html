@@ -19,32 +19,32 @@
             <p>No hay respuestas registradas.</p>
         </div>
 
-        <ion-list *ngIf="!loading && answers.length > 0">
-            <ion-item-sliding *ngFor="let answer of answers">
-                <ion-item lines="full">
-                    <ion-label class="ion-text-wrap">
-                        <p class="answer-meta">
-                            <span class="user-name">{{ answer.users?.name || 'Usuario desconocido' }}</span>
-                            <span class="date">{{ answer.created_at | date:'mediumDate' }}</span>
-                        </p>
-                        <h3>{{ answer.answer_text }}</h3>
-                        <p class="question-ref">En respuesta a: {{ answer.questions?.title || 'Pregunta eliminada' }}
-                        </p>
-                    </ion-label>
+        <div class="answers-grid" *ngIf="!loading && answers.length > 0">
+            <div class="answer-card" *ngFor="let answer of answers">
+                <div class="answer-header">
+                    <div class="user-info">
+                        <div class="avatar-placeholder" *ngIf="!answer.users?.photo">{{ answer.users?.name?.charAt(0) ||
+                            'U' }}</div>
+                        <img *ngIf="answer.users?.photo" [src]="answer.users.photo" class="avatar-image" alt="Avatar">
+                        <span class="user-name">{{ answer.users?.name || 'Usuario desconocido' }}</span>
+                    </div>
+                    <span class="date">{{ answer.created_at | date:'mediumDate' }}</span>
+                </div>
 
-                    <ion-buttons slot="end">
-                        <ion-button (click)="deleteAnswer(answer)" color="danger">
-                            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-                        </ion-button>
-                    </ion-buttons>
-                </ion-item>
+                <div class="answer-body">
+                    <p>{{ answer.body }}</p>
+                </div>
 
-                <ion-item-options side="end">
-                    <ion-item-option color="danger" (click)="deleteAnswer(answer)">
-                        <ion-icon slot="icon-only" name="trash"></ion-icon>
-                    </ion-item-option>
-                </ion-item-options>
-            </ion-item-sliding>
-        </ion-list>
+                <div class="answer-footer">
+                    <p class="question-ref">
+                        <ion-icon name="return-down-forward-outline"></ion-icon>
+                        En respuesta a: <strong>{{ answer.questions?.title || 'Pregunta eliminada' }}</strong>
+                    </p>
+                    <ion-button fill="clear" color="danger" size="small" (click)="deleteAnswer(answer)">
+                        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+        </div>
     </div>
 </ion-content>

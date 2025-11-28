@@ -39,7 +39,50 @@
         <h2 class="section-title">Resumen</h2>
         <ion-card class="glass">
           <ion-card-content>
-            Aquí podrás ver actividad reciente, usuarios nuevos, alertas, etc.
+            <div class="summary-grid">
+              <div class="summary-col">
+                <div class="col-header">
+                  <ion-icon name="people-outline"></ion-icon>
+                  <h3>Usuarios Recientes</h3>
+                </div>
+                <div class="custom-list">
+                  <div class="list-item" *ngFor="let u of recentUsers">
+                    <div class="item-avatar">
+                      {{ u.name.charAt(0) | uppercase }}
+                    </div>
+                    <div class="item-content">
+                      <span class="item-title">{{ u.name }} {{ u.last_name }}</span>
+                      <span class="item-date">{{ u.created_at | date:'MMM d, y' }}</span>
+                    </div>
+                  </div>
+                  <div class="empty-item" *ngIf="recentUsers.length === 0">
+                    <p>Sin actividad reciente</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="summary-col">
+                <div class="col-header">
+                  <ion-icon name="ticket-outline"></ion-icon>
+                  <h3>Tickets Recientes</h3>
+                </div>
+                <div class="custom-list">
+                  <div class="list-item clickable" *ngFor="let t of recentTickets" [routerLink]="['/admin/reports']">
+                    <div class="item-icon-wrapper">
+                      <ion-icon name="alert-circle-outline"></ion-icon>
+                    </div>
+                    <div class="item-content">
+                      <span class="item-title">Ticket #{{ t.id }}</span>
+                      <span class="item-subtitle">{{ t.body | slice:0:40 }}{{ t.body.length > 40 ? '...' : '' }}</span>
+                    </div>
+                    <ion-icon name="chevron-forward-outline" class="item-arrow"></ion-icon>
+                  </div>
+                  <div class="empty-item" *ngIf="recentTickets.length === 0">
+                    <p>No hay tickets pendientes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </ion-card-content>
         </ion-card>
       </section>

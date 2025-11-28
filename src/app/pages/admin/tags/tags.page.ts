@@ -75,12 +75,16 @@ export class TagsPage implements OnInit {
           text: 'Eliminar',
           handler: async () => {
             if (!tag.id) return;
-            const success = await this.tagService.delete(tag.id);
-            if (success) {
+            const result = await this.tagService.delete(tag.id);
+            if (result.success) {
               this.showToast('Etiqueta eliminada', 'success');
               this.loadTags();
             } else {
-              this.showToast('Error al eliminar la etiqueta', 'danger');
+              if (result.error?.code === '23503') {
+                this.showToast('No se puede eliminar: Esta etiqueta está siendo usada en preguntas o usuarios.', 'warning');
+              } else {
+                this.showToast('Error al eliminar la etiqueta', 'danger');
+              }
             }
           }
         }

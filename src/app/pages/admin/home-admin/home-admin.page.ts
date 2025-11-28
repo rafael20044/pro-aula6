@@ -53,16 +53,23 @@ export class HomeAdminPage implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  recentUsers: any[] = [];
+  recentTickets: any[] = [];
+
   private async loadMetrics() {
     this.loading = true;
     try {
       const stats = await this.adminService.getDashboardStats();
+      const activity = await this.adminService.getRecentActivity();
 
       this.metrics = [
         { label: 'Usuarios', value: stats.users },
         { label: 'Activos hoy', value: stats.activeToday },
         { label: 'Tickets', value: stats.reports },
       ];
+
+      this.recentUsers = activity.users;
+      this.recentTickets = activity.tickets;
     } catch (e) {
       console.error('Error cargando métricas', e);
     } finally {

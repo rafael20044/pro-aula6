@@ -20,29 +20,30 @@
       <p>No hay preguntas publicadas.</p>
     </div>
 
-    <ion-list *ngIf="!loading && questions.length > 0">
-      <ion-item-sliding *ngFor="let q of questions">
-        <ion-item lines="full" detail="false">
-          <ion-label>
-            <h2>{{ q.title }}</h2>
-            <p>{{ q.body | slice:0:50 }}{{ q.body.length > 50 ? '...' : '' }}</p>
-            <ion-note color="medium" class="meta-info">
-              <small>Por: {{ q.full_name }}</small> •
-              <small>{{ q.like_count }} 👍</small>
-            </ion-note>
-          </ion-label>
-
-          <ion-button fill="clear" slot="end" color="danger" (click)="deleteQuestion(q)">
+    <div class="questions-grid" *ngIf="!loading && questions.length > 0">
+      <div class="question-card" *ngFor="let q of questions">
+        <div class="question-header">
+          <div class="user-info">
+            <div class="avatar-placeholder" *ngIf="!q.photo">{{ q.full_name.charAt(0) || 'U' }}</div>
+            <img *ngIf="q.photo" [src]="q.photo" class="avatar-image" alt="Avatar">
+            <span class="user-name">{{ q.full_name || 'Usuario desconocido' }}</span>
+          </div>
+          <ion-button fill="clear" color="danger" size="small" (click)="deleteQuestion(q)">
             <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
           </ion-button>
-        </ion-item>
+        </div>
 
-        <ion-item-options side="end">
-          <ion-item-option color="danger" (click)="deleteQuestion(q)">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
+        <div class="question-body">
+          <h3>{{ q.title }}</h3>
+          <p>{{ q.body | slice:0:150 }}{{ q.body.length > 150 ? '...' : '' }}</p>
+        </div>
+
+        <div class="question-footer">
+          <span class="likes">
+            <ion-icon name="thumbs-up"></ion-icon> {{ q.like_count }}
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </ion-content>
