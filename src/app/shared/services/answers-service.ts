@@ -36,4 +36,22 @@ export class AnswersService {
     }
     return data.id;
   }
+
+  async deleteAnswer(answerId: number) {
+    const { data, error } = await Supabase
+      .from(Const.TB_ANSWERS)
+      .update({ status: 'DELETE' })
+      .eq('id', answerId);
+
+    return { data, error };
+  }
+
+  async updateAnswer(answerId: number, body: string){
+    const {error} = await Supabase.from(Const.TB_ANSWERS).update({body: body}).eq('id', answerId);
+    if (error) {
+      console.log(error);
+      return false;
+    }
+    return true;
+  }
 }

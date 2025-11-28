@@ -9,7 +9,7 @@
 
 <ion-content [fullscreen]="true" *ngIf="questionDetails; else loadingTpl">
   <div class="details-container">
-    
+
     <!-- Card principal de la pregunta -->
     <div class="question-card">
       <!-- Header: avatar + nombre -->
@@ -57,15 +57,10 @@
     <!-- Sección de respuesta -->
     <div class="response-section">
       <h3 class="section-title">Escribe tu respuesta</h3>
-      
+
       <div class="textarea-container">
-        <textarea
-          class="response-textarea"
-          [formControl]="commentControl"
-          placeholder="Comparte tu opinión..."
-          maxlength="2000"
-          rows="3"
-        ></textarea>
+        <textarea class="response-textarea" [formControl]="commentControl" placeholder="Comparte tu opinión..."
+          maxlength="2000" rows="3"></textarea>
         <div class="char-counter">
           <span [class.near-limit]="(commentControl.value?.length || 0) > 1800">
             {{ commentControl.value?.length || 0 }}
@@ -74,36 +69,45 @@
         </div>
       </div>
 
-      <app-button
-        text="Publicar"
-        (click)="addComent()"
-        expand="full"
-        variant="filled"
-        class="ion-margin-top"
-      ></app-button>
+      <app-button text="Publicar" (click)="addComent()" expand="full" variant="filled"
+        class="ion-margin-top"></app-button>
     </div>
 
     <!-- Lista de respuestas -->
+    <!-- Lista de respuestas -->
     <div class="answers-section" *ngIf="questionDetails.answers.length > 0">
       <h3 class="section-title">Respuestas ({{ questionDetails.answers.length }})</h3>
-      
+
       <div class="answer-card" *ngFor="let answer of questionDetails.answers">
+
         <div class="answer-header">
           <div class="answer-avatar">
             <div class="avatar-initials-small">{{ (answer.user_name || '').slice(0,2).toUpperCase() }}</div>
           </div>
           <span class="answer-user-name">{{ answer.user_name }}</span>
+
+          <!-- 🔥 Opciones solo si es el dueño -->
+          <div class="answer-actions" *ngIf="answer.user_id == useId">
+            <ion-button fill="clear" size="small" (click)="openEditModal(answer)">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+
+            <ion-button fill="clear" color="danger" size="small" (click)="deleteAnswer(answer.answer_id)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
         </div>
 
         <p class="answer-body">{{ answer.body }}</p>
 
-        <!-- Reactions para respuestas -->
+        <!-- Reactions -->
         <div class="answer-reactions">
           <button class="reaction-btn-small like" (click)="reactionAnswer(answer.answer_id, answer.user_id, 'LIKE')">
             <ion-icon name="thumbs-up-outline"></ion-icon>
             <span>{{ answer.like_count || 0 }}</span>
           </button>
-          <button class="reaction-btn-small dislike" (click)="reactionAnswer(answer.answer_id, answer.user_id, 'DISLIKE')">
+          <button class="reaction-btn-small dislike"
+            (click)="reactionAnswer(answer.answer_id, answer.user_id, 'DISLIKE')">
             <ion-icon name="thumbs-down-outline"></ion-icon>
             <span>{{ answer.dislike_count || 0 }}</span>
           </button>
@@ -111,8 +115,33 @@
       </div>
     </div>
 
+
   </div>
 </ion-content>
+
+<ion-modal [isOpen]="modalOpen" (didDismiss)="modalOpen = false">
+  <ng-template>
+    <ion-header translucent>
+      <ion-toolbar>
+        <ion-title>Editar respuesta</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="modalOpen = false">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      
+      <form (ngSubmit)="saveEdit()">
+        <ion-textarea [formControl]="editControl" rows="6" placeholder="Edita tu respuesta..."></ion-textarea>
+        <ion-button expand="full" class="ion-margin-top" type="submit">
+          Guardar cambios
+        </ion-button>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
 
 <ng-template #loadingTpl>
   <ion-spinner name="crescent" class="ion-margin-top"></ion-spinner>

@@ -106,6 +106,7 @@ export class AdminService {
         users (name, photo),
         questions (title)
       `)
+      .eq('status', 'ACTIVE')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -118,7 +119,7 @@ export class AdminService {
   async deleteAnswer(answerId: number) {
     const { data, error } = await Supabase
       .from(Const.TB_ANSWERS)
-      .delete()
+      .update({ status: 'DELETE' })
       .eq('id', answerId);
 
     return { data, error };

@@ -28,6 +28,9 @@ export class QuestionDetailsPage implements OnInit {
   commentControl = new FormControl('');
   useId: number = 0;
   editingAnswerId: number = 0;
+  modalOpen = false;
+  currentAnswerId!: number;
+  editControl = new FormControl("");
   private fullName: string = '';
 
   avatarUrl: string | null = null;
@@ -43,7 +46,8 @@ export class QuestionDetailsPage implements OnInit {
     private readonly storageService: StorageService,
     private readonly reactionService: ReactionService,
     private readonly notification: NotificationService,
-    private readonly user: UserService
+    private readonly user: UserService,
+    private readonly answer: AnswersService,
   ) { }
 
   async ngOnInit() {
@@ -52,7 +56,7 @@ export class QuestionDetailsPage implements OnInit {
     await this.loadData();
     this.useId = parseInt(this.local.get(Const.USER_ID) || '0');
     this.fullName = await this.user.getFullName(this.useId) || '';
-    
+
     this.commentControl.valueChanges.subscribe(() => {
       this.autoResizeTextarea();
     });
@@ -88,7 +92,7 @@ export class QuestionDetailsPage implements OnInit {
     const noti: INotificarion = {
       user_id: this.questionDetails?.user_id || 0,
       question_id: this.questionDetails?.question_id || 0,
-      title: 'Un usuario ha respondido tu pregunta', 
+      title: 'Un usuario ha respondido tu pregunta',
       body: `${this.fullName} ha respondido lo siguiente:" ${this.commentControl.value} "`
     }
     this.commentControl.reset();
@@ -128,7 +132,7 @@ export class QuestionDetailsPage implements OnInit {
     try {
       this.loading = true;
       const data = await this.question.getQuestionDetails(this.id);
-      
+
       // Eliminar respuestas duplicadas
       if (data?.answers) {
         const uniqueAnswersMap = new Map();
@@ -139,7 +143,7 @@ export class QuestionDetailsPage implements OnInit {
         });
         data.answers = Array.from(uniqueAnswersMap.values());
       }
-      
+
       this.questionDetails = data;
 
       if (data) {
@@ -212,5 +216,35 @@ export class QuestionDetailsPage implements OnInit {
     if (userId) {
       this.router.navigate([`/profile/${userId}`]);
     }
+  }
+
+  async deleteAnswer(id: number) {
+    const { data, error } = await this.answer.deleteAnswer(id);
+    if (error) {
+      this.toas.showError('Error al eliminar la respuesta');
+      return;
+    }
+    this.toas.show('Respuesta eliminada');
+    await this.loadData();
+  }
+
+  openEditModal(answer: any) {
+    this.currentAnswerId = answer.answer_id;
+    this.editControl.setValue(answer.body);
+    this.modalOpen = true;
+  }
+
+  async saveEdit() {
+    const body = this.editControl.value?.trim();
+    if (!body) return;
+
+    const result = await this.answer.updateAnswer(this.currentAnswerId, body);
+    if (!result) {
+      this.toas.showError('Error al actualizar la respuesta');
+      return;
+    }
+    this.toas.show('Respuesta actualizada');
+    await this.loadData();
+    this.modalOpen = false;
   }
 }
