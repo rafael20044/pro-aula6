@@ -31,9 +31,9 @@
       <h1 class="question-title">{{ questionDetails.title }}</h1>
       <p class="question-body">{{ questionDetails.body }}</p>
 
-      <!-- Imágenes -->
+      <!-- Imágenes con lazy loading -->
       <div class="question-images" *ngIf="imageUrls.length > 0">
-        <img *ngFor="let url of imageUrls" [src]="url" alt="question image">
+        <img *ngFor="let url of imageUrls" [src]="url" alt="question image" loading="lazy">
       </div>
 
       <!-- Tags -->

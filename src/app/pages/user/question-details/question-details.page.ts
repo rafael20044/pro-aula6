@@ -10,6 +10,7 @@ import { QuestionService } from 'src/app/shared/services/question-service';
 import { ReactionService, ReactionType, TargetType } from 'src/app/shared/services/reaction-service';
 import { ToastService } from 'src/app/shared/services/toast-service';
 import { StorageService } from 'src/app/shared/services/storage-service';
+import { PhotoService } from 'src/app/shared/services/photo-service';
 import { NotificationService } from 'src/app/shared/services/notification-service';
 import { INotificarion } from 'src/app/interfaces/inotification';
 import { UserService } from 'src/app/shared/services/user-service';
@@ -44,6 +45,7 @@ export class QuestionDetailsPage implements OnInit {
     private readonly answers: AnswersService,
     private readonly local: LocalStorageService,
     private readonly storageService: StorageService,
+    private readonly photoService: PhotoService,
     private readonly reactionService: ReactionService,
     private readonly notification: NotificationService,
     private readonly user: UserService,
@@ -147,8 +149,11 @@ export class QuestionDetailsPage implements OnInit {
       this.questionDetails = data;
 
       if (data) {
-        await this.resolveAvatarUrl();
-        await this.resolveImageUrls();
+
+        await Promise.all([
+          this.resolveAvatarUrl(),
+          this.resolveImageUrls()
+        ]);
       }
     } catch (error) {
       console.error('Error al obtener la pregunta:', error);
@@ -163,21 +168,8 @@ export class QuestionDetailsPage implements OnInit {
       return;
     }
 
-    const photo = this.questionDetails.photo;
-
-    if (typeof photo === 'string' && photo.startsWith('http')) {
-      this.avatarUrl = photo;
-      return;
-    }
-
-    // Otherwise, get signed URL from storage
-    try {
-      const signed = await this.storageService.getSignUrl(Const.BUCKET, photo);
-      this.avatarUrl = signed?.url || null;
-    } catch (err) {
-      console.error('Error resolving avatar URL:', err);
-      this.avatarUrl = null;
-    }
+    // Usar PhotoService optimizado con caché
+    this.avatarUrl = await this.photoService.resolvePhotoUrl(this.questionDetails.photo, Const.BUCKET);
   }
 
   private async resolveImageUrls() {
@@ -186,29 +178,8 @@ export class QuestionDetailsPage implements OnInit {
       return;
     }
 
-    const resolved: string[] = [];
-    for (const img of this.questionDetails.images) {
-      const path = img.path || img.url;
-      if (!path) continue;
-
-      // If already a full URL, use it
-      if (typeof path === 'string' && path.startsWith('http')) {
-        resolved.push(path);
-        continue;
-      }
-
-      // Otherwise, get signed URL from storage
-      try {
-        const signed = await this.storageService.getSignUrl(Const.BUCKET, path);
-        if (signed?.url) {
-          resolved.push(signed.url);
-        }
-      } catch (err) {
-        console.error('Error resolving image URL:', err);
-      }
-    }
-
-    this.imageUrls = resolved;
+    // Usar PhotoService optimizado: procesa todas en paralelo y usa caché
+    this.imageUrls = await this.photoService.resolveImageUrls(this.questionDetails.images, Const.BUCKET);
   }
 
   goToUserProfile() {

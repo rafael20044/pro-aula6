@@ -22,7 +22,7 @@
 			</ng-container>
 
 			<!-- FIN DEL FEED -->
-			<div class="end-of-feed" *ngIf="feed.length > 0">
+			<div class="end-of-feed" *ngIf="feed.length > 0 && allQuestionsLoaded">
 				<div class="end-icon">✨</div>
 				<h3>Has llegado al final</h3>
 				<p>Eso es todo por hoy</p>
@@ -30,5 +30,11 @@
 		</ng-container>
 
 	</div>
+
+	<!-- Infinite Scroll -->
+	<ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)" *ngIf="!allQuestionsLoaded">
+		<ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más preguntas...">
+		</ion-infinite-scroll-content>
+	</ion-infinite-scroll>
 
 </ion-content>

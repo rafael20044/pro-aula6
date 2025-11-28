@@ -23,7 +23,6 @@ export class CreateQuestionPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // Check if we're in edit mode via query params
     this.route.queryParams.subscribe(async (params) => {
       const questionId = params['edit'];
       if (questionId) {
@@ -43,37 +42,37 @@ export class CreateQuestionPage implements OnInit {
 
   private async loadQuestionForEdit(questionId: number) {
     try {
-      // Fetch question data
-      const { data: questionData, error: qError } = await Supabase
-        .from(Const.TB_QUESTIONS)
-        .select('*')
-        .eq('id', questionId)
-        .single();
+      const [questionResult, imagesResult, tagsResult] = await Promise.all([
+        Supabase
+          .from(Const.TB_QUESTIONS)
+          .select('*')
+          .eq('id', questionId)
+          .single(),
+        Supabase
+          .from(Const.TB_IMAGES)
+          .select('*')
+          .eq('question_id', questionId),
+        Supabase
+          .from(Const.TB_TAGS_QUESTIONS)
+          .select(`
+            tags!inner(
+              name
+            )
+          `)
+          .eq('question_id', questionId)
+      ]);
+
+      const questionData = questionResult.data;
+      const qError = questionResult.error;
 
       if (qError || !questionData) {
         console.error('Error loading question:', qError);
         return;
       }
 
-      // Fetch images
-      const { data: images } = await Supabase
-        .from(Const.TB_IMAGES)
-        .select('*')
-        .eq('question_id', questionId);
+      const images = imagesResult.data;
+      const tags = tagsResult.data?.map((t: any) => t.tags?.name).filter(Boolean) || [];
 
-      // Fetch tags
-      const { data: tagsData } = await Supabase
-        .from(Const.TB_TAGS_QUESTIONS)
-        .select(`
-          tags!inner(
-            name
-          )
-        `)
-        .eq('question_id', questionId);
-
-      const tags = tagsData?.map((t: any) => t.tags?.name).filter(Boolean) || [];
-
-      // Build question object
       this.existingQuestion = {
         question_id: questionData.id,
         user_id: questionData.user_id,

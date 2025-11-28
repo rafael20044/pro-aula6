@@ -159,53 +159,46 @@ export class ProfileComponent implements OnInit {
 
       console.log('Loading questions for user_id:', this.currentUserId);
 
-      // First, try to get questions with all related data
-      const { data: questionsData, error: questionsError } = await Supabase
-        .from(Const.TB_QUESTIONS)
-        .select('*')
-        .eq('user_id', this.currentUserId)
-        .eq('status', 'ACTIVE')
-        .order('created_at', { ascending: false });
-      if (questionsError) {
-        console.error('Error loading user questions:', questionsError);
+      // Optimización: hacer todas las consultas en paralelo
+      const questionIds = await this.getQuestionIds();
+      if (questionIds.length === 0) {
         this.userQuestions = [];
         return;
       }
 
-      if (!questionsData || questionsData.length === 0) {
-        this.userQuestions = [];
-        return;
-      }
-
-      // Get images for these questions using QuestionService
-      const questionIds = questionsData.map(q => q.id);
-      const imagesMap = await this.questionService.getMultipleQuestionImages(questionIds);
-
-      // Get tags for these questions
-      const { data: tagsData } = await Supabase
-        .from(Const.TB_TAGS_QUESTIONS)
-        .select('question_id, tags(name)')
-        .in('question_id', questionIds);
-
-      // Get reactions for these questions
-      const { data: reactionsData } = await Supabase
-        .from(Const.TB_REACTIONS)
-        .select('question_id, tipo')
-        .in('question_id', questionIds)
-        .is('answer_id', null);
+      const [questionsData, imagesMap, tagsData, reactionsData] = await Promise.all([
+        Supabase
+          .from(Const.TB_QUESTIONS)
+          .select('*')
+          .eq('user_id', this.currentUserId)
+          .eq('status', 'ACTIVE')
+          .order('created_at', { ascending: false })
+          .then(result => result.data || []),
+        this.questionService.getMultipleQuestionImages(questionIds),
+        Supabase
+          .from(Const.TB_TAGS_QUESTIONS)
+          .select('question_id, tags(name)')
+          .in('question_id', questionIds)
+          .then(result => result.data || []),
+        Supabase
+          .from(Const.TB_REACTIONS)
+          .select('question_id, tipo')
+          .in('question_id', questionIds)
+          .is('answer_id', null)
+          .then(result => result.data || [])
+      ]);
 
       const questions: IQuestionHome[] = questionsData.map((q: any) => {
         const imageUrls = imagesMap.get(q.id) || [];
         const questionImages = imageUrls.map(url => ({ image_url: url, path: url }));
 
-        const questionTags = (tagsData || [])
+        const questionTags = tagsData
           .filter((tq: any) => tq.question_id === q.id)
           .map((tq: any) => tq.tags?.name)
           .filter(Boolean);
 
         // Contar reacciones
-        const questionReactions = (reactionsData || [])
-          .filter((r: any) => r.question_id === q.id);
+        const questionReactions = reactionsData.filter((r: any) => r.question_id === q.id);
         const likeCount = questionReactions.filter((r: any) => r.tipo === 'LIKE').length;
         const dislikeCount = questionReactions.filter((r: any) => r.tipo === 'DISLIKE').length;
 
@@ -235,6 +228,15 @@ export class ProfileComponent implements OnInit {
     } finally {
       this.loadingQuestions = false;
     }
+  }
+
+  private async getQuestionIds(): Promise<number[]> {
+    const { data } = await Supabase
+      .from(Const.TB_QUESTIONS)
+      .select('id')
+      .eq('user_id', this.currentUserId)
+      .eq('status', 'ACTIVE');
+    return data?.map(q => q.id) || [];
   }
 
 }

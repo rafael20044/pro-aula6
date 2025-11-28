@@ -15,6 +15,9 @@ import { ToastService } from './toast-service';
   providedIn: 'root'
 })
 export class QuestionService {
+  private questionsCache: IQuestionHome[] = [];
+  private cacheTimestamp: number = 0;
+  private readonly CACHE_DURATION = 60000; // 1 minuto
 
   constructor(
     private readonly storageService: StorageService,
@@ -23,13 +26,47 @@ export class QuestionService {
     private readonly toastService: ToastService
   ) { }
 
-  async findAllQuestions() {
+  async findAllQuestions(forceRefresh: boolean = false) {
+    const now = Date.now();
+    
+    // Usar caché si existe y no ha expirado
+    if (!forceRefresh && this.questionsCache.length > 0 && (now - this.cacheTimestamp) < this.CACHE_DURATION) {
+      return this.questionsCache;
+    }
+
     const { data, error } = await Supabase.rpc('get_all_questions');
     if (error) {
       console.log(error);
+      return this.questionsCache.length > 0 ? this.questionsCache : [];
+    }
+    
+    this.questionsCache = data as IQuestionHome[];
+    this.cacheTimestamp = now;
+    return this.questionsCache;
+  }
+
+  async findQuestionsPaginated(page: number = 0, pageSize: number = 10) {
+    const start = page * pageSize;
+    const end = start + pageSize - 1;
+
+    const { data, error } = await Supabase
+      .from(Const.TB_QUESTIONS)
+      .select('*, users!inner(name, last_name, photo)')
+      .eq('status', 'ACTIVE')
+      .order('created_at', { ascending: false })
+      .range(start, end);
+
+    if (error) {
+      console.error('Error loading paginated questions:', error);
       return [];
     }
-    return data as IQuestionHome[];
+
+    return data || [];
+  }
+
+  clearCache() {
+    this.questionsCache = [];
+    this.cacheTimestamp = 0;
   }
 
   async getQuestionDetails(questionId: number): Promise<IQuestionDetails | null> {

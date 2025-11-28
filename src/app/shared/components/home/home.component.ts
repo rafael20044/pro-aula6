@@ -16,6 +16,12 @@ export class HomeComponent implements OnInit {
   loading = true;
   errorMsg?: string;
   currentUserId: number | null = null;
+  
+  // Paginación
+  pageSize = 15; // Cargar 15 preguntas a la vez
+  currentPage = 0;
+  allQuestionsLoaded = false;
+  isLoadingMore = false;
 
   constructor(
     private readonly questionService: QuestionService,
@@ -36,14 +42,26 @@ export class HomeComponent implements OnInit {
     this.loadData(true);
   }
 
-  async loadData(random = false) {
+  async loadData(reset = false) {
+    if (reset) {
+      this.currentPage = 0;
+      this.feed = [];
+      this.allQuestionsLoaded = false;
+    }
+    
     try {
-      let questions = await this.questionService.findAllQuestions();
+      // Usar versión con caché
+      let questions = await this.questionService.findAllQuestions(reset);
+      
       if (!questions || !Array.isArray(questions) || questions.length === 0) {
+        // Fallback a consulta directa
         const { data: directData } = await Supabase
           .from(Const.TB_QUESTIONS)
           .select('*')
-          .eq('status', 'ACTIVE');
+          .eq('status', 'ACTIVE')
+          .order('created_at', { ascending: false })
+          .limit(this.pageSize);
+          
         questions = (directData || []).map((r: any) => ({
           question_id: r.id,
           user_id: r.user_id,
@@ -60,45 +78,58 @@ export class HomeComponent implements OnInit {
         }));
       }
 
-      // Filtrar preguntas eliminadas por si acaso
+      // Filtrar preguntas eliminadas
       questions = questions.filter(q => q.status !== 'DELETE');
+      
+      // Tomar solo el chunk actual para paginación
+      const start = this.currentPage * this.pageSize;
+      const end = start + this.pageSize;
+      const pageQuestions = questions.slice(start, end);
+      
+      if (pageQuestions.length < this.pageSize) {
+        this.allQuestionsLoaded = true;
+      }
 
-      // Email → handle
-      const userIds = [...new Set(questions.map(q => q.user_id))];
-      const { data: users } = await Supabase.from(Const.TB_USER).select('id,email').in('id', userIds);
+      // Email → handle solo para las preguntas de esta página
+      const userIds = [...new Set(pageQuestions.map(q => q.user_id))];
+      const { data: users } = await Supabase
+        .from(Const.TB_USER)
+        .select('id,email')
+        .in('id', userIds);
 
       const userMap = Object.fromEntries(
         (users || []).map(u => [u.id, u.email?.split('@')[0] ?? ''])
       );
 
-      let mapped = questions.map(q => ({ q, handle: userMap[q.user_id] }));
-
-      // Solo mezclar si es primera vez
-      this.feed = random ? this.shuffleArray(mapped) : mapped;
+      const mapped = pageQuestions.map(q => ({ q, handle: userMap[q.user_id] }));
+      this.feed = reset ? mapped : [...this.feed, ...mapped];
 
     } catch (err) {
       console.error(err);
       this.errorMsg = 'No se pudieron cargar las preguntas.';
-      this.feed = [];
+      if (reset) this.feed = [];
     } finally {
       this.loading = false;
+      this.isLoadingMore = false;
     }
   }
 
-  async refresh(event: any) {
-    await this.loadData(true);
+  async loadMore(event: any) {
+    if (this.allQuestionsLoaded || this.isLoadingMore) {
+      event.target.complete();
+      return;
+    }
+    
+    this.isLoadingMore = true;
+    this.currentPage++;
+    await this.loadData(false);
     event.target.complete();
   }
 
-
-  // Fisher-Yates shuffle algorithm para aleatorizar array
-  private shuffleArray<T>(array: T[]): T[] {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
+  async refresh(event: any) {
+    // Forzar recarga desde servidor
+    this.questionService.clearCache();
+    await this.loadData(true);
+    event.target.complete();
   }
-
 }

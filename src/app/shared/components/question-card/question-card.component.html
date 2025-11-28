@@ -24,9 +24,9 @@
       <h3 class="title">{{ question.title }}</h3>
       <p class="body">{{ question.body }}</p>
   
-      <!-- Imágenes -->
+      <!-- Imágenes con lazy loading -->
       <div class="images" *ngIf="imageUrls.length">
-        <img *ngFor="let src of imageUrls" [src]="src" alt="question image" />
+        <img *ngFor="let src of imageUrls" [src]="src" alt="question image" loading="lazy" />
       </div>
       
       <!-- Tags estilo pill -->
